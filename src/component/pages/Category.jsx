@@ -198,11 +198,12 @@ export default function Category() {
 
     // Delete category data api ----------------------------------------
     const handleDelete = () => {
+        const languagesId = categoryData.vlanguageId || selectedLanguage?.id;
         axios.delete(`${Test_Api}category/details`, {
             data: { vCatId: deleteID }
         }).then(response => {
             console.log("Deleted Category Data ==>", response.data);
-            fetchData(categoryData.vlanguageId);
+            fetchData(languagesId);
             toast.warning('Language deleted successfully!');
         }).catch(error => {
             console.log(error);

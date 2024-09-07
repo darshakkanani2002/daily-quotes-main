@@ -29,7 +29,7 @@ export default function Sidebar() {
                     <h2>Daily Quates</h2>
                     <ul className="side-menu">
                         <li className={`my-2 ${activeMenu === 'language' ? 'active' : ''}`}>
-                            <Link to="/" className='nav-link' onClick={() => handleMenuClick('language')}>
+                            <Link to="/" className='nav-link active' onClick={() => handleMenuClick('language')}>
                                 <i className="fa-solid fa-language me-3 sidebar-icon"></i>Language
                             </Link>
                         </li>
