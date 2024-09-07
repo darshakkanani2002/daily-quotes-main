@@ -249,12 +249,14 @@ export default function Category() {
                     <form onSubmit={handleSubmit}>
                         <div className='row'>
                             <div className='col-lg-12'>
+                                <label>Select Language <span className='text-danger'>*</span></label>
                                 <Select className='mb-3'
                                     value={selectedLanguage}
                                     onChange={handleCategorySelect}
                                     onMenuOpen={loadOptions}
                                     options={options}
-                                ></Select>
+                                    required
+                                />
                             </div>
                             <div className='col-lg-3'>
                                 <label>Name <span className='text-danger'>*</span></label>

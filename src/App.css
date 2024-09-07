@@ -77,6 +77,16 @@ body {
   font-weight: 700;
 }
 
+/* post data form */
+.color-input {
+  height: 38px;
+  width: 38px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  margin: auto;
+}
+
 /* Add this to your CSS file */
 .spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
