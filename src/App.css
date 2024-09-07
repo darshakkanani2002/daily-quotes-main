@@ -81,10 +81,12 @@ body {
 .color-input {
   height: 38px;
   width: 38px;
-  border: none;
-  border-radius: 50%;
+  border: 0px !important;
+  border-radius: 0px;
   display: flex;
   margin: auto;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Add this to your CSS file */
