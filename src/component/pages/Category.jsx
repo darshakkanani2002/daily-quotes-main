@@ -31,6 +31,7 @@ export default function Category() {
         loadOptions();
     }, [])
 
+    // feching Data ----------------------------------------------------------------------------------------
     const fetchData = (vlanguageId) => {
         axios.post(`${Test_Api}category/list`, { vlanguageId }).then(response => {
             console.log("category Data ==>", response.data.data);
@@ -256,12 +257,12 @@ export default function Category() {
                                 ></Select>
                             </div>
                             <div className='col-lg-3'>
-                                <label>Name</label>
-                                <input value={categoryData.vName} type="text" name="name" id="name" className='form-control mb-3' onChange={(e) => setCategoryData({ ...categoryData, vName: e.target.value })} />
+                                <label>Name <span className='text-danger'>*</span></label>
+                                <input value={categoryData.vName} type="text" name="name" id="name" className='form-control mb-3' onChange={(e) => setCategoryData({ ...categoryData, vName: e.target.value })} required />
                             </div>
                             <div className='col-lg-3'>
-                                <label htmlFor="fontsize">iCatFontSize</label>
-                                <input value={categoryData.iCatFontSize} type="text" name="fontsize" id="fontsize" className='form-control mb-3' onChange={(e) => setCategoryData({ ...categoryData, iCatFontSize: e.target.value })} />
+                                <label htmlFor="fontsize">iCatFontSize <span className='text-danger'>*</span></label>
+                                <input value={categoryData.iCatFontSize} type="text" name="fontsize" id="fontsize" className='form-control mb-3' onChange={(e) => setCategoryData({ ...categoryData, iCatFontSize: e.target.value })} required />
                             </div>
                             <div className='col-lg-3'>
                                 <label htmlFor="vspace">iChipVspace</label>
@@ -281,14 +282,15 @@ export default function Category() {
                             </div>
 
                             <div className='col-lg-12 text-center'>
-                                <button type='submit' className='btn btn-success'>Submit</button>
+
+                                <button type='submit' className='btn btn-success'>{isUpdating ? ("Save Change") : ("Add Data")}</button>
                             </div>
                         </div>
                     </form>
                 </div>
 
                 <div className='side-container my-5'>
-                    <div>
+                    <div className='table-responsive'>
                         <table className='table text-center'>
                             <thead>
                                 <tr>

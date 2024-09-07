@@ -38,6 +38,7 @@ body {
 
 .btn-success {
   background-color: #4B49AC !important;
+  border: 1px solid #4B49AC !important;
 }
 
 /* category form */
@@ -58,6 +59,14 @@ body {
 }
 
 /* table */
+.table th {
+  border: 1px solid #d5d5d5 !important;
+}
+
+.table td {
+  border: 1px solid #d5d5d5 !important;
+}
+
 .table-no-data-img {
   height: 40px;
   width: 40px;
@@ -66,4 +75,24 @@ body {
 .table-data-not-found-text {
   font-size: 20px;
   font-weight: 700;
+}
+
+/* Add this to your CSS file */
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
