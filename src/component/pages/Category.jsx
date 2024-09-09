@@ -5,6 +5,7 @@ import axios from 'axios';
 import { toast, ToastContainer, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DeleteModal from '../modal/DeleteModal';
+import LanguageSelect from '../language/LanguageSelected';
 
 export default function Category() {
     const [languages, setLanguages] = useState([]);
@@ -59,7 +60,7 @@ export default function Category() {
     };
 
     // Language select handle ---------------------------
-    const handleCategorySelect = (selectedOption) => {
+    const handleLanguageSelect = (selectedOption) => {
         setSelectedLanguage(selectedOption);
         setCategoryData(prevState => ({
             ...prevState,
@@ -132,54 +133,6 @@ export default function Category() {
         }
     };
 
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     const languageId = categoryData.vlanguageId || selectedLanguage?.id;
-    //     if (isUpdating) {
-    //         const updateData = {
-    //             vCatId: currentId,
-    //             vName: categoryData.vName,
-    //             iCatFontSize: categoryData.iCatFontSize,
-    //             vlanguageId: languageId
-    //         }
-    //         console.log("Updated Category Data ==> ", updateData)
-
-    //         axios.put(`${Test_Api}category/details`, updateData).then(response => {
-    //             console.log("category Updated Data ==>", response.data);
-    //             fetchData(languageId);
-    //             toast.success("Catagory Updated successfully!")
-    //             setCategoryData({
-    //                 vName: '',
-    //                 iCatFontSize: '',
-    //                 vlanguageId: ''
-    //             })
-    //         }).catch(error => {
-    //             console.log(error);
-
-    //         })
-    //     } else {
-    //         const newCategoryData = { ...categoryData, vlanguageId: languageId };
-    //         axios.post(`${Test_Api}category/details`, newCategoryData).then(response => {
-    //             console.log("category Save Data ==>", response.data);
-    //             // setCategory(prevCategory => [response.data.data, ...prevCategory]);
-    //             setCategoryData({
-    //                 vName: '',
-    //                 iCatFontSize: '',
-    //                 vlanguageId: ''
-    //             });
-    //             fetchData(languageId);
-    //             toast.success("Catagory created successfully!")
-
-    //         }).catch(error => {
-    //             console.log(error);
-
-    //         })
-
-    //     }
-
-    // }
-
     // Handel Update Data ----------------------------------------------------
 
 
@@ -250,13 +203,11 @@ export default function Category() {
                         <div className='row'>
                             <div className='col-lg-12'>
                                 <label>Select Language <span className='text-danger'>*</span></label>
-                                <Select className='mb-3'
+                                <LanguageSelect
                                     value={selectedLanguage}
-                                    onChange={handleCategorySelect}
-                                    onMenuOpen={loadOptions}
-                                    options={options}
-                                    required
-                                />
+                                    selectedLanguage={selectedLanguage}
+                                    handleLanguageSelect={handleLanguageSelect}
+                                ></LanguageSelect>
                             </div>
                             <div className='col-lg-3'>
                                 <label>Name <span className='text-danger'>*</span></label>
