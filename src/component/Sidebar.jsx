@@ -50,7 +50,7 @@ export default function Sidebar() {
 
                 <Offcanvas show={show} onHide={handleClose} className="d-md-none">
                     <Offcanvas.Header closeButton>
-                        <h2>Crafto</h2>
+                        <h2>Daily Quates</h2>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                         <ul className="side-menu">
