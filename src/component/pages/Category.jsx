@@ -253,7 +253,7 @@ export default function Category() {
                                     <th>iCatLine</th>
                                     <th>iChipVspace</th>
                                     <th>icon</th>
-                                    <th>Delete/Updatae</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -267,10 +267,10 @@ export default function Category() {
                                             <td>{item.iChipVspace}</td>
                                             <td><img crossOrigin="anonymous" src={`http://192.168.1.3:4500/${item.vIcon}`} alt="" className='category-icon' /></td>
                                             <td>
-                                                <button className='btn btn-danger mx-2' onClick={() => setDeleteId(item._id)} data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                <button className='btn btn-danger mx-2' onClick={() => setDeleteId(item._id)} data-bs-toggle="modal" data-bs-target="#deleteModal" title='Delete'>
                                                     <i className="fa-solid fa-trash"></i>
                                                 </button>
-                                                <button className='btn btn-success mx-2' onClick={() => handleUpdate(item)}>
+                                                <button className='btn btn-success mx-2' onClick={() => handleUpdate(item)} title='Update'>
                                                     <i className="fa-solid fa-pen-to-square"></i>
                                                 </button>
                                             </td>
