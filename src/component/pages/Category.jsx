@@ -279,7 +279,7 @@ export default function Category() {
                                 ) : (
                                     <tr className='text-center'>
                                         <td colSpan="7" className='py-3'>
-                                            <img src="/images/no-data-icon.png" alt="" className='img-fluid table-no-data-img' />
+                                            <img src="/images/ic-content.svg" alt="ic-content" className='img-fluid' />
                                             <span className='table-data-not-found-text mt-1 d-block'>Data Not Found !</span>
                                         </td>
                                     </tr>
