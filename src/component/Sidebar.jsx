@@ -6,7 +6,7 @@ import './Sidebar.css';
 export default function Sidebar() {
     const [show, setShow] = useState(false);
     const [activeMenu, setActiveMenu] = useState(() => {
-        return localStorage.getItem('activeMenu') || 'language';
+        return sessionStorage.getItem('activeMenu') || 'language';
     });
 
     const handleClose = () => setShow(false);
@@ -14,7 +14,7 @@ export default function Sidebar() {
 
     const handleMenuClick = (menu) => {
         setActiveMenu(menu);
-        localStorage.setItem('activeMenu', menu); // Save the active menu to localStorage
+        sessionStorage.setItem('activeMenu', menu); // Save the active menu to localStorage
         handleClose(); // Close the offcanvas when an item is selected
     };
 
