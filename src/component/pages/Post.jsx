@@ -11,11 +11,12 @@ export default function Post({ selectedLanguage }) {
     const [post, setPost] = useState([]);
     const [postData, setPostData] = useState({
         vCatId: '',
-        vStartColor: '',
-        vEndColor: '',
-        vTextColor: '',
-        vLanguageCode: '',
+        vStartColor: '#000000',
+        vEndColor: '#000000',
+        vTextColor: '#000000',
+        // vLanguageCode: '',
         vLanguageId: '',
+        vImages: ''
     });
 
     const fileInputRef = useRef(null);
@@ -84,7 +85,6 @@ export default function Post({ selectedLanguage }) {
     };
 
     // Category Select Handle ---------------------------------------------------------------------------------------------
-    // Category Select Handle ---------------------------------------------------------------------------------------------
     const handleCategorySelect = (selectedOption) => {
         setSelectedCategory(selectedOption);
         setPostData(prevState => ({
@@ -99,79 +99,106 @@ export default function Post({ selectedLanguage }) {
         }
     };
     // Handle File Change -----------------------------------------------------------------
-    const handleFileChange = async (e, _id) => {
+    // Inside the Post component
+
+    const handleFileChange = (e) => {
         const file = e.target.files[0];
-        if (!file) return;
-        const formData = new FormData();
-        formData.append(e.target.name, file);
-        try {
-            const res = await axios.post(`${Test_Api}addImage/details`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            });
-            // Assuming the API returns the paths of the uploaded images
-            if (e.target.name === "vImage") {
-                setPostData(prevState => ({
-                    ...prevState,
-                    vImages: res.data.data.vImage
-                }));
-            }
-            console.log("Uploaded Data ===>", res.data.data);
-        } catch (err) {
-            console.error("Error uploading images:", err);
+        if (file) {
+            setPostData({ ...postData, vImages: file });  // Set the file in state
+            setPreview(URL.createObjectURL(file));  // Set the preview URL
         }
     };
 
     // Submit Handle ----------------------------------------------------------------------------------------------------
-    const handleSubmit = (event) => {
-        event.preventDefault();
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
 
-        // Create a shallow copy of postData and remove vLanguageId before submitting
-        const submitData = { ...postData };
-        delete submitData.vLanguageId; // Remove vLanguageId
+    //     // Remove vLanguageId before submitting
+    //     const submitData = { ...postData };
+    //     delete submitData.vLanguageId;
 
-        // Log the data being sent to the API
-        console.log('Form data before submission:', submitData);
+    //     // Submit the post data with the image URL (from state)
+    //     axios.post(`${Test_Api}post/details`, submitData).then(response => {
+    //         console.log("Post Save Data ==>", response.data);
+    //         setPostData({
+    //             vCatId: postData.vCatId,
+    //             vStartColor: '',
+    //             vEndColor: '',
+    //             vTextColor: '',
+    //             vLanguageCode: '',
+    //             vImages: ''
+    //         });
+    //         fetchData(postData.vCatId);  // Refresh data after submission
+    //     }).catch(error => {
+    //         console.log(error);
+    //     });
+    // };
 
-        // Check if vImages exists and include it in the submission if necessary
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        // Create FormData to handle file uploads
+        const formData = new FormData();
+        delete formData.vLanguageId;
+        formData.append('vCatId', postData.vCatId);
+        formData.append('vStartColor', postData.vStartColor);
+        formData.append('vEndColor', postData.vEndColor);
+        formData.append('vTextColor', postData.vTextColor);
+
         if (postData.vImages) {
-            submitData.vImages = postData.vImages;
+            formData.append('vImages', postData.vImages);  // Append the file
         }
 
-        console.log('Form data:', submitData);
-
-        // Submit the modified data
-        axios.post('http://192.168.1.3:4500/api/v1/post/details', submitData)
-            .then(response => {
-                console.log("post data ==>", response.data);
-                setPostData({
-                    vCatId: '',
-                    vStartColor: '',
-                    vEndColor: '',
-                    vTextColor: '',
-                    vLanguageCode: '',
-                    vLanguageId: '' // Reset vLanguageId
-                });
-                fetchData(postData.vCatId);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    };
-
-
-    // Delete Handle --------------------------
-    const handleDelete = () => {
-        axios.delete('http://192.168.1.3:4500/api/v1/post/details', {
-            data: { vImageId: deleteID }
+        // Submit the post data with the FormData
+        axios.post(`${Test_Api}post/details`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'  // Ensure correct content type
+            }
         }).then(response => {
-            console.log("Deleted Post Data ==>", response.data);;
-            fetchData(postData.vCatId);
+            console.log("Post Save Data ==>", response.data);
+            setPostData({
+                vCatId: postData.vCatId,
+                vStartColor: '',
+                vEndColor: '',
+                vTextColor: '',
+                vLanguageCode: '',
+                vLanguageId: '',
+                vImages: ''
+            });
+            // Reset the file input field
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";  // Reset the file input value
+            }
+            // Clear the image preview
+            setPreview(null);
+
+            fetchData(postData.vCatId);  // Refresh data after submission
         }).catch(error => {
             console.log(error);
+        });
+    };
 
+    // handle update data------------------------------------------------
+    const handleUpdate = (post, id) => {
+        setPostData({
+            vFrameId: id,
+            vStartColor: post.vStartColor,
+            vEndColor: post.vEndColor,
+            vTextColor: post.vTextColor,
+            vImages: post.vImages
         })
+    }
+
+    // Delete Handle ----------------------------------------------
+    const handleDelete = () => {
+        axios.delete(`${Test_Api}post/details`, {
+            data: { vImageId: deleteID }
+        }).then(response => {
+            console.log("Deleted Post Data Response:", response.data);
+            fetchData(postData.vCatId); // Re-fetch data
+        }).catch(error => {
+            console.log("Delete Error:", error);
+        });
     }
 
     return (
@@ -198,19 +225,13 @@ export default function Post({ selectedLanguage }) {
                                     required
                                 />
                             </div>
-                            {/* <div className='col-lg-6 mb-3'>
+                            <div className='col-lg-6 mb-3'>
                                 <label htmlFor="image">Image</label>
-                                <input type="file" name="vImage" id="image" className='form-control'
+                                <input type="file" name="file" id="image" className='form-control'
                                     onChange={handleFileChange}
                                     ref={fileInputRef}
                                 />
-                                
-                                {postData.vImages && (
-                                    <img crossOrigin="anonymous" src={`http://192.168.1.3:4500/${postData.vImages}`} alt="images" style={{ width: '100px', height: 'auto' }} />
-                                )}
-                            </div> */}
-                            <div className='col-lg-6  mb-3'>
-
+                                {preview && <img crossOrigin="anonymous" src={preview} alt="Preview" className='img-fluid mt-2 category-select-icon' />}
                             </div>
                             <div className='col-lg-2 mb-2'>
                                 <div className='d-inline-block'>
@@ -230,7 +251,7 @@ export default function Post({ selectedLanguage }) {
                                     <input type="color" name="textcolor" id="textcolor" className='form-control p-0 color-input' value={postData.vTextColor} onChange={(e) => setPostData({ ...postData, vTextColor: e.target.value })} />
                                 </div>
                             </div>
-                            <div className='col-lg-3 mb-2'>
+                            {/* <div className='col-lg-3 mb-2'>
                                 <div className="d-inline-block">
                                     <label htmlFor="languagecode">Language Code</label>
                                     <input
@@ -242,7 +263,7 @@ export default function Post({ selectedLanguage }) {
                                         onChange={(e) => setPostData({ ...postData, vLanguageCode: e.target.value })}
                                     />
                                 </div>
-                            </div>
+                            </div> */}
                             <div className='col-lg-12 mb-2 text-center'>
                                 <button type='submit' className='btn btn-success'>Submit</button>
                             </div>
@@ -260,7 +281,7 @@ export default function Post({ selectedLanguage }) {
                                     <th>Start Color</th>
                                     <th>End Color</th>
                                     <th>Text Color</th>
-                                    <th>Language Code</th>
+                                    {/* <th>Language Code</th> */}
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -275,12 +296,12 @@ export default function Post({ selectedLanguage }) {
                                             <td><input type="color" value={item.vStartColor} readOnly /></td>
                                             <td><input type="color" value={item.vEndColor} readOnly /></td>
                                             <td><input type="color" value={item.vTextColor} readOnly /></td>
-                                            <td>{item.vLanguageCode}</td>
+                                            {/* <td>{item.vLanguageCode}</td> */}
                                             <td>
                                                 <button className='btn btn-danger mx-2' title='Delete' onClick={() => setDeleteId(item._id)} data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                     <i className="fa-solid fa-trash"></i>
                                                 </button>
-                                                <button className='btn btn-success mx-2' title='Update'>
+                                                <button className='btn btn-success mx-2' title='Update' onClick={() => handleUpdate(item)}>
                                                     <i className="fa-solid fa-pen-to-square"></i>
                                                 </button>
                                             </td>

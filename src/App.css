@@ -65,6 +65,7 @@ body {
 
 .table td {
   border: 1px solid #d5d5d5 !important;
+  vertical-align: middle;
 }
 
 .table-no-data-img {
