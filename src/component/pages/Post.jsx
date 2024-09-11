@@ -4,24 +4,30 @@ import axios from 'axios';
 import { Test_Api } from '../Config';
 import LanguageSelect from '../language/LanguageSelected';
 import DeleteModal from '../modal/DeleteModal';
+import { toast, ToastContainer, } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Post({ selectedLanguage }) {
     const [options, setOptions] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [post, setPost] = useState([]);
     const [postData, setPostData] = useState({
+        _id: '',
         vCatId: '',
         vStartColor: '#000000',
         vEndColor: '#000000',
         vTextColor: '#000000',
         // vLanguageCode: '',
         vLanguageId: '',
-        vImages: ''
+        vImages: '',
+        vFrameId: ''
     });
 
     const fileInputRef = useRef(null);
     const [preview, setPreview] = useState(null);
-    const [deleteID, setDeleteId] = useState(null)
+    const [deleteID, setDeleteId] = useState(null);
+    const [isUpdating, setIsUpdating] = useState(false)
+    const [currentId, setCurrentId] = useState(null)
 
     useEffect(() => {
         if (postData.vLanguageId) {
@@ -110,84 +116,114 @@ export default function Post({ selectedLanguage }) {
     };
 
     // Submit Handle ----------------------------------------------------------------------------------------------------
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-
-    //     // Remove vLanguageId before submitting
-    //     const submitData = { ...postData };
-    //     delete submitData.vLanguageId;
-
-    //     // Submit the post data with the image URL (from state)
-    //     axios.post(`${Test_Api}post/details`, submitData).then(response => {
-    //         console.log("Post Save Data ==>", response.data);
-    //         setPostData({
-    //             vCatId: postData.vCatId,
-    //             vStartColor: '',
-    //             vEndColor: '',
-    //             vTextColor: '',
-    //             vLanguageCode: '',
-    //             vImages: ''
-    //         });
-    //         fetchData(postData.vCatId);  // Refresh data after submission
-    //     }).catch(error => {
-    //         console.log(error);
-    //     });
-    // };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = (e, _id) => {
         e.preventDefault();
 
-        // Create FormData to handle file uploads
+        if (!postData.vCatId) {
+            toast.error("Category is required!");
+            return;
+        }
+
+        if (isUpdating && !postData.vFrameId) {
+            toast.error("vFrameId is required for updating!");
+            return;
+        }
+
         const formData = new FormData();
-        delete formData.vLanguageId;
         formData.append('vCatId', postData.vCatId);
         formData.append('vStartColor', postData.vStartColor);
         formData.append('vEndColor', postData.vEndColor);
         formData.append('vTextColor', postData.vTextColor);
+        // formData.append('vLanguageId', postData.vLanguageId);
 
         if (postData.vImages) {
-            formData.append('vImages', postData.vImages);  // Append the file
+            formData.append('vImages', postData.vImages);
         }
 
-        // Submit the post data with the FormData
-        axios.post(`${Test_Api}post/details`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'  // Ensure correct content type
+        if (isUpdating) {
+            if (postData.vFrameId) {
+                formData.append('vFrameId', postData.vFrameId);
+            } else {
+                console.error("vFrameId is undefined or null");
             }
-        }).then(response => {
-            console.log("Post Save Data ==>", response.data);
-            setPostData({
-                vCatId: postData.vCatId,
-                vStartColor: '',
-                vEndColor: '',
-                vTextColor: '',
-                vLanguageCode: '',
-                vLanguageId: '',
-                vImages: ''
-            });
-            // Reset the file input field
-            if (fileInputRef.current) {
-                fileInputRef.current.value = "";  // Reset the file input value
-            }
-            // Clear the image preview
-            setPreview(null);
 
-            fetchData(postData.vCatId);  // Refresh data after submission
-        }).catch(error => {
-            console.log(error);
+            // Debug: Log formData entries
+            for (let pair of formData.entries()) {
+                console.log(`${pair[0]}: ${pair[1]}`);
+            }
+
+            axios.put(`${Test_Api}post/details`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+                .then(response => {
+                    console.log(response.data);
+                    setIsUpdating(false);  // Reset update mode
+                    fetchData(postData.vCatId);
+                    toast.success("Post updated successfully!");
+                })
+                .catch(error => {
+                    console.log("Error while updating:", error.response ? error.response.data : error.message);
+                    toast.error("Update failed. Please check the category selection.");
+                });
+        } else {
+            // Creating a new post
+            axios.post(`${Test_Api}post/details`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+                .then(response => {
+                    console.log("Post Save Data ==>", response.data);
+                    fetchData(postData.vCatId)
+                    resetForm();  // Reset form after successful creation
+                    toast.success("Post created successfully!");
+                })
+                .catch(error => {
+                    console.log("Error while creating:", error.response ? error.response.data : error.message);
+                    toast.error("Creation failed. Please check the category selection.");
+                });
+        }
+    };
+    
+    const resetForm = () => {
+        setPostData({
+            vStartColor: '#000000',
+            vEndColor: '#000000',
+            vTextColor: '#000000',
+            vLanguageId: '',
+            vImages: ''
         });
+        setPreview(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';  // Reset file input
+        }
+        setIsUpdating(false);  // Reset update mode
     };
 
+
+
     // handle update data------------------------------------------------
-    const handleUpdate = (post, id) => {
+    // handle update data------------------------------------------------
+    const handleUpdate = (post, _id) => {
+        setIsUpdating(true);  // Set the state to updating mode
+        setCurrentId(_id);  // Store the current post ID
         setPostData({
-            vFrameId: id,
-            vStartColor: post.vStartColor,
-            vEndColor: post.vEndColor,
-            vTextColor: post.vTextColor,
-            vImages: post.vImages
-        })
-    }
+            vCatId: post.vCatId || '', // Ensure category ID is set
+            vStartColor: post.vStartColor || '#000000',
+            vEndColor: post.vEndColor || '#000000',
+            vTextColor: post.vTextColor || '#000000',
+            vLanguageId: post.vLanguageId || '',
+            vImages: post.vImages || ''
+        });
+
+        // If the image is already set, create a preview
+        if (post.vImages) {
+            setPreview(`http://192.168.1.3:4500/${post.vImages}`);
+        }
+    };
+
 
     // Delete Handle ----------------------------------------------
     const handleDelete = () => {
@@ -196,6 +232,7 @@ export default function Post({ selectedLanguage }) {
         }).then(response => {
             console.log("Deleted Post Data Response:", response.data);
             fetchData(postData.vCatId); // Re-fetch data
+            toast.warning('Language deleted successfully!');
         }).catch(error => {
             console.log("Delete Error:", error);
         });
@@ -203,6 +240,19 @@ export default function Post({ selectedLanguage }) {
 
     return (
         <div>
+            <ToastContainer
+                position="top-center"
+                autoClose={1000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition:Bounce
+            />
             <div className='my-3'>
                 <div className='side-container category-form p-3'>
                     <form onSubmit={handleSubmit}>
