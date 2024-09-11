@@ -109,3 +109,15 @@ body {
     transform: rotate(360deg);
   }
 }
+
+/* data no -found back */
+.data-not-found-bg {
+  background-color: #cfcef736;
+  padding: 20px 0px;
+  border-radius: 8px;
+}
+
+.data-no-found-ic {
+  box-shadow: 0px 0px 42px 23px #4b49ac40;
+  border-radius: 50%;
+}
