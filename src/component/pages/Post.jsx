@@ -341,7 +341,7 @@ export default function Post({ selectedLanguage }) {
                                         <tr key={id}>
                                             <td>{id + 1}</td>
                                             <td>
-                                                <img crossOrigin="anonymous" src={`http://192.168.1.3:4500/${item.vImages}`} alt="images" style={{ width: '100px', height: 'auto' }} />
+                                                <img crossOrigin="anonymous" src={`http://192.168.1.3:4500/${item.vImages}`} alt="images" className='post-table-image' />
                                             </td>
                                             <td><input type="color" value={item.vStartColor} readOnly /></td>
                                             <td><input type="color" value={item.vEndColor} readOnly /></td>
