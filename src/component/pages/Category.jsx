@@ -209,19 +209,19 @@ export default function Category() {
                                     handleLanguageSelect={handleLanguageSelect}
                                 ></LanguageSelect>
                             </div>
-                            <div className='col-lg-3'>
+                            <div className='col-lg-4'>
                                 <label>Name <span className='text-danger'>*</span></label>
                                 <input value={categoryData.vName} type="text" name="name" id="name" className='form-control mb-3' onChange={(e) => setCategoryData({ ...categoryData, vName: e.target.value })} required />
                             </div>
-                            <div className='col-lg-3'>
+                            <div className='col-lg-4'>
                                 <label htmlFor="fontsize">iCatFontSize <span className='text-danger'>*</span></label>
                                 <input value={categoryData.iCatFontSize} type="text" name="fontsize" id="fontsize" className='form-control mb-3' onChange={(e) => setCategoryData({ ...categoryData, iCatFontSize: e.target.value })} required />
                             </div>
-                            <div className='col-lg-3'>
+                            <div className='col-lg-3 d-none'>
                                 <label htmlFor="vspace">iChipVspace</label>
                                 <input type="text" name="vspace" id="vspace" className='form-control mb-3' onChange={(e) => setCategoryData({ ...categoryData, iChipVspace: e.target.value })} />
                             </div>
-                            <div className='col-lg-3'>
+                            <div className='col-lg-4'>
                                 <label htmlFor="vspace">iCatLine</label>
                                 <input value={categoryData.iCatLine} type="text" name="vspace" id="vspace" className='form-control mb-3' onChange={(e) => setCategoryData({ ...categoryData, iCatLine: e.target.value })} />
                             </div>
@@ -251,7 +251,7 @@ export default function Category() {
                                     <th>Name</th>
                                     <th>iCatFontSize</th>
                                     <th>iCatLine</th>
-                                    <th>iChipVspace</th>
+                                    <th className='d-none'>iChipVspace</th>
                                     <th>icon</th>
                                     <th>Actions</th>
                                 </tr>
@@ -264,7 +264,7 @@ export default function Category() {
                                             <td>{item.vName}</td>
                                             <td>{item.iCatFontSize}</td>
                                             <td>{item.iCatLine}</td>
-                                            <td>{item.iChipVspace}</td>
+                                            <td className='d-none'>{item.iChipVspace}</td>
                                             <td><img crossOrigin="anonymous" src={`http://192.168.1.3:4500/${item.vIcon}`} alt="" className='category-icon' /></td>
                                             <td>
                                                 <button className='btn btn-danger mx-2' onClick={() => setDeleteId(item._id)} data-bs-toggle="modal" data-bs-target="#deleteModal" title='Delete'>

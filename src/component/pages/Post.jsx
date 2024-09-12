@@ -14,13 +14,11 @@ export default function Post({ selectedLanguage }) {
     const [postData, setPostData] = useState({
         _id: '',
         vCatId: '',
-        vStartColor: '#000000',
-        vEndColor: '#000000',
-        vTextColor: '#000000',
-        // vLanguageCode: '',
+        vStartColor: '#000000', // Use a default color or empty string if necessary
+        vEndColor: '#000000', // Use a default color or empty string
+        vTextColor: '#000000', // Use a default color or empty string
         vLanguageId: '',
         vImages: '',
-        vFrameId: ''
     });
 
     const fileInputRef = useRef(null);
@@ -37,15 +35,30 @@ export default function Post({ selectedLanguage }) {
 
     // Fetch Data --------------------------------------------------------------------
     const fetchData = (vCatId) => {
+        if (!vCatId) {
+            console.error('vCatId is missing.');
+            return;
+        }
         axios.post(`${Test_Api}post/withoutLoginList`, { vCatId })
             .then(response => {
                 console.log("Post Data List ==>", response.data.data);
-                setPost(response.data.data);
+
+                // Ensure the colors are correctly coming from the response
+                response.data.data.forEach(post => {
+                    console.log("Post Colors =>", {
+                        vStartColor: post.vStartColor,
+                        vEndColor: post.vEndColor,
+                        vTextColor: post.vTextColor
+                    });
+                });
+
+                setPost(response.data.data); // Ensure response.data.data exists
             })
             .catch(error => {
-                console.log(error);
+                console.error('Error fetching data:', error);
             });
     };
+
 
     // Category Load Option Data ---------------------------------------------------------------------------------------
     const loadOptions = async () => {
@@ -115,105 +128,32 @@ export default function Post({ selectedLanguage }) {
         }
     };
 
-    // Submit Handle ----------------------------------------------------------------------------------------------------
-    const handleSubmit = (e, _id) => {
-        e.preventDefault();
-
-        if (!postData.vCatId) {
-            toast.error("Category is required!");
-            return;
-        }
-
-        if (isUpdating && !postData.vFrameId) {
-            toast.error("vFrameId is required for updating!");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('vCatId', postData.vCatId);
-        formData.append('vStartColor', postData.vStartColor);
-        formData.append('vEndColor', postData.vEndColor);
-        formData.append('vTextColor', postData.vTextColor);
-        // formData.append('vLanguageId', postData.vLanguageId);
-
-        if (postData.vImages) {
-            formData.append('vImages', postData.vImages);
-        }
-
-        if (isUpdating) {
-            if (postData.vFrameId) {
-                formData.append('vFrameId', postData.vFrameId);
-            } else {
-                console.error("vFrameId is undefined or null");
-            }
-
-            // Debug: Log formData entries
-            for (let pair of formData.entries()) {
-                console.log(`${pair[0]}: ${pair[1]}`);
-            }
-
-            axios.put(`${Test_Api}post/details`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-                .then(response => {
-                    console.log(response.data);
-                    setIsUpdating(false);  // Reset update mode
-                    fetchData(postData.vCatId);
-                    toast.success("Post updated successfully!");
-                })
-                .catch(error => {
-                    console.log("Error while updating:", error.response ? error.response.data : error.message);
-                    toast.error("Update failed. Please check the category selection.");
-                });
-        } else {
-            // Creating a new post
-            axios.post(`${Test_Api}post/details`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-                .then(response => {
-                    console.log("Post Save Data ==>", response.data);
-                    fetchData(postData.vCatId)
-                    resetForm();  // Reset form after successful creation
-                    toast.success("Post created successfully!");
-                })
-                .catch(error => {
-                    console.log("Error while creating:", error.response ? error.response.data : error.message);
-                    toast.error("Creation failed. Please check the category selection.");
-                });
-        }
+    // Update the color fields in the form when the user selects a new color.
+    const handleColorChange = (e) => {
+        const { name, value } = e.target;
+        setPostData(prevState => ({
+            ...prevState,
+            [name]: value  // Dynamically update the color fields based on the input name.
+        }));
     };
-
-    const resetForm = () => {
-        setPostData({
-            vStartColor: '#000000',
-            vEndColor: '#000000',
-            vTextColor: '#000000',
-            vLanguageId: '',
-            vImages: ''
-        });
-        setPreview(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';  // Reset file input
-        }
-        setIsUpdating(false);  // Reset update mode
-    };
-
-
-
-    // handle update data------------------------------------------------
-    // handle update data------------------------------------------------
-    const handleUpdate = (post, _id) => {
+    // handleUpdate function
+    const handleUpdate = (post) => {
         setIsUpdating(true);  // Set the state to updating mode
-        setCurrentId(_id);  // Store the current post ID
+        setCurrentId(post._id);  // Store the current post ID
+
+        // Log fetched post colors
+        console.log("Fetched Post Colors:", {
+            vStartColor: post.vStartColor,
+            vEndColor: post.vEndColor,
+            vTextColor: post.vTextColor
+        });
+
         setPostData({
-            vCatId: post.vCatId || '', // Ensure category ID is set
-            vStartColor: post.vStartColor || '#000000',
-            vEndColor: post.vEndColor || '#000000',
-            vTextColor: post.vTextColor || '#000000',
+            _id: post._id,  // Set the _id as the vFrameId
+            vCatId: post.vCatId,  // Ensure category ID is set
+            vStartColor: post.vStartColor || '#000000', // Default color if value is null
+            vEndColor: post.vEndColor || '#000000', // Default color if value is null
+            vTextColor: post.vTextColor || '#000000', // Default color if value is null
             vLanguageId: post.vLanguageId || '',
             vImages: post.vImages || ''
         });
@@ -223,6 +163,80 @@ export default function Post({ selectedLanguage }) {
             setPreview(`http://192.168.1.3:4500/${post.vImages}`);
         }
     };
+
+    // Handle form submission to ensure colors are sent correctly
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        // Check if a category has already been selected and stored, otherwise use the current selection.
+        const catId = postData.vCatId || selectedCategory?.id;
+
+        if (!catId) {
+            toast.error("Please select a category.");
+            return;
+        }
+
+        formData.append('vCatId', catId);  // Ensure category ID is appended
+        formData.append('vStartColor', postData.vStartColor || '#000000');  // Ensure color is appended
+        formData.append('vEndColor', postData.vEndColor || '#000000');
+        formData.append('vTextColor', postData.vTextColor || '#000000');
+
+        if (postData.vImages) {
+            formData.append('vImages', postData.vImages);
+        }
+
+        if (isUpdating) {
+            if (!postData._id) {
+                toast.error("vFrameId is missing! Please try again.");
+                return;
+            }
+
+            axios.put(`${Test_Api}post/details`, { vFrameId: postData._id }, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            })
+                .then(response => {
+                    console.log("Post Updated data ==>", response.data.data);
+                    setIsUpdating(false);
+                    toast.success("Post updated successfully!");
+                    resetForm();
+                    fetchData(catId);  // Use the correct vCatId here
+
+                })
+                .catch(error => {
+                    console.error("Update failed:", error.response ? error.response.data : error.message);
+                    toast.error("Update failed. Please check the category selection.");
+                });
+        } else {
+            // Creating a new post
+            axios.post(`${Test_Api}post/details`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            })
+                .then(response => {
+                    const responseData = response.data.data;
+                    setPostData(prevState => ({
+                        ...prevState,
+                        vCatId: responseData.vCatId,  // Ensure category ID is retained
+                        _id: responseData._id,
+                    }));
+                    console.log("Created Post Data ==>", response.data);
+
+                    resetForm();
+                    toast.success("Post created successfully!");
+                    fetchData(catId);  // Fetch posts for the selected category
+                })
+                .catch(error => {
+                    console.error("Creation failed:", error.response ? error.response.data : error.message);
+                    toast.error("Creation failed. Please check the category selection.");
+                });
+        }
+    };
+
+
 
 
     // Delete Handle ----------------------------------------------
@@ -237,6 +251,22 @@ export default function Post({ selectedLanguage }) {
             console.log("Delete Error:", error);
         });
     }
+
+    // --------------------------------------------------------------------
+    const resetForm = () => {
+        setPostData({
+            vStartColor: '#000000',
+            vEndColor: '#000000',
+            vTextColor: '#000000',
+            vLanguageId: '',
+            vImages: ''
+        });
+        setPreview(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';  // Reset file input
+        }
+        setIsUpdating(false);  // Reset update mode
+    };
 
     return (
         <div>
@@ -286,19 +316,40 @@ export default function Post({ selectedLanguage }) {
                             <div className='col-lg-2 mb-2'>
                                 <div className='d-inline-block'>
                                     <label htmlFor="startcolor">Start Color</label>
-                                    <input type="color" name="startcolor" id="startcolor" className='form-control p-0 color-input' value={postData.vStartColor} onChange={(e) => setPostData({ ...postData, vStartColor: e.target.value })} />
+                                    <input
+                                        type="color"
+                                        name="vStartColor"
+                                        id="startcolor"
+                                        className='form-control p-0 color-input'
+                                        value={postData.vStartColor || ''}
+                                        onChange={handleColorChange}  // Correctly update the state
+                                    />
                                 </div>
                             </div>
                             <div className='col-lg-2 mb-2'>
                                 <div className="d-inline-block">
                                     <label htmlFor="endcolor">End Color</label>
-                                    <input type="color" name="endcolor" id="endcolor" className='form-control p-0 color-input' value={postData.vEndColor} onChange={(e) => setPostData({ ...postData, vEndColor: e.target.value })} />
+                                    <input
+                                        type="color"
+                                        name="vEndColor"
+                                        id="endcolor"
+                                        className='form-control p-0 color-input'
+                                        value={postData.vEndColor || ''}
+                                        onChange={handleColorChange}  // Correctly update the state
+                                    />
                                 </div>
                             </div>
                             <div className='col-lg-2 mb-2'>
                                 <div className="d-inline-block">
                                     <label htmlFor="textcolor">Text Color</label>
-                                    <input type="color" name="textcolor" id="textcolor" className='form-control p-0 color-input' value={postData.vTextColor} onChange={(e) => setPostData({ ...postData, vTextColor: e.target.value })} />
+                                    <input
+                                        type="color"
+                                        name="vTextColor"
+                                        id="textcolor"
+                                        className='form-control p-0 color-input'
+                                        value={postData.vTextColor || ''}
+                                        onChange={handleColorChange}  // Correctly update the state
+                                    />
                                 </div>
                             </div>
                             {/* <div className='col-lg-3 mb-2'>
@@ -315,7 +366,7 @@ export default function Post({ selectedLanguage }) {
                                 </div>
                             </div> */}
                             <div className='col-lg-12 mb-2 text-center'>
-                                <button type='submit' className='btn btn-success'>Submit</button>
+                                <button type='submit' className='btn btn-success'>{isUpdating ? ("Update Dtata") : ("Submit Data")}</button>
                             </div>
                         </div>
                     </form>
@@ -336,22 +387,30 @@ export default function Post({ selectedLanguage }) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {post.length > 0 ? (
+                                {Array.isArray(post) && post.length > 0 ? (
                                     post.map((item, id) => (
                                         <tr key={id}>
                                             <td>{id + 1}</td>
                                             <td>
-                                                <img crossOrigin="anonymous" src={`http://192.168.1.3:4500/${item.vImages}`} alt="images" className='post-table-image' />
+                                                <img crossOrigin="anonymous" src={`http://192.168.1.3:4500/${item.vImages}`} alt="images" style={{ width: '60px', height: 'auto' }} />
                                             </td>
-                                            <td><input type="color" value={item.vStartColor} readOnly /></td>
-                                            <td><input type="color" value={item.vEndColor} readOnly /></td>
-                                            <td><input type="color" value={item.vTextColor} readOnly /></td>
-                                            {/* <td>{item.vLanguageCode}</td> */}
+                                            <td>
+                                                <div>{item.vStartColor}</div>
+                                                <input type="color" value={item.vStartColor || '#000000'} name="startcolor" id="startcolor" readOnly />
+                                            </td> {/* Ensure color is displayed */}
+                                            <td>
+                                                <div>{item.vEndColor}</div>
+                                                <input type="color" value={item.vEndColor || '#000000'} name="endcolor" id="endcolor" readOnly />
+                                            </td> {/* Ensure color is displayed */}
+                                            <td>
+                                                <div>{item.vTextColor}</div>
+                                                <input type="color" value={item.vTextColor || '#000000'} name="textcolor" id="endcolor" readOnly />
+                                            </td> {/* Ensure color is displayed */}
                                             <td>
                                                 <button className='btn btn-danger mx-2' title='Delete' onClick={() => setDeleteId(item._id)} data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                     <i className="fa-solid fa-trash"></i>
                                                 </button>
-                                                <button className='btn btn-success mx-2' title='Update' onClick={() => handleUpdate(item)}>
+                                                <button className='btn btn-success mx-2 d-none' title='Update' onClick={() => handleUpdate(item)}>
                                                     <i className="fa-solid fa-pen-to-square"></i>
                                                 </button>
                                             </td>
@@ -361,7 +420,7 @@ export default function Post({ selectedLanguage }) {
                                     <tr className='text-center'>
                                         <td colSpan="7" className='p-2'>
                                             <div className='data-not-found-bg'>
-                                                <img src="/images/question.png" alt="question" className='img-fluid data-no-found-ic' />
+                                                <img src="/images/question.png" alt="question" className='img-fluid' />
                                                 <span className='table-data-not-found-text mt-1 d-block'>Data Not Found !</span>
                                             </div>
                                         </td>
