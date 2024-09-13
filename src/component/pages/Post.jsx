@@ -6,7 +6,7 @@ import LanguageSelect from '../language/LanguageSelected';
 import DeleteModal from '../modal/DeleteModal';
 import { toast, ToastContainer, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import Pagination from '../pagination/Pagination';
 export default function Post({ selectedLanguage }) {
     const [options, setOptions] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -26,6 +26,9 @@ export default function Post({ selectedLanguage }) {
     const [deleteID, setDeleteId] = useState(null);
     const [isUpdating, setIsUpdating] = useState(false)
     const [currentId, setCurrentId] = useState(null)
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 12;  // Display 12 posts per page
 
     useEffect(() => {
         if (postData.vLanguageId) {
@@ -42,16 +45,6 @@ export default function Post({ selectedLanguage }) {
         axios.post(`${Test_Api}post/withoutLoginList`, { vCatId })
             .then(response => {
                 console.log("Post Data List ==>", response.data.data);
-
-                // Ensure the colors are correctly coming from the response
-                response.data.data.forEach(post => {
-                    console.log("Post Colors =>", {
-                        vStartColor: post.vStartColor,
-                        vEndColor: post.vEndColor,
-                        vTextColor: post.vTextColor
-                    });
-                });
-
                 setPost(response.data.data); // Ensure response.data.data exists
             })
             .catch(error => {
@@ -128,14 +121,57 @@ export default function Post({ selectedLanguage }) {
         }
     };
 
-    // Update the color fields in the form when the user selects a new color.
+    const rgbaToHex = (r, g, b, a, alphaScale) => {
+        const alpha = Math.round(a * alphaScale).toString(16).padStart(2, '0');
+        return `#${alpha}${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    };
+
+    const hexToRgba = (hex, alphaScale) => {
+        let r = 0, g = 0, b = 0, a = 1;
+
+        if (hex.length === 9) { // Full 8-char hex (#AARRGGBB)
+            a = parseInt(hex.slice(1, 3), 16) / alphaScale; // Alpha from first 2 characters
+            r = parseInt(hex.slice(3, 5), 16);
+            g = parseInt(hex.slice(5, 7), 16);
+            b = parseInt(hex.slice(7, 9), 16);
+        } else if (hex.length === 7) { // RGB only (#RRGGBB)
+            r = parseInt(hex.slice(1, 3), 16);
+            g = parseInt(hex.slice(3, 5), 16);
+            b = parseInt(hex.slice(5, 7), 16);
+        }
+
+        return `rgba(${r}, ${g}, ${b}, ${a})`;
+    };
     const handleColorChange = (e) => {
         const { name, value } = e.target;
+        const alphaScale = name === 'vStartColor' ? 80 : 32; // Custom alpha scale per color field
+
+        // Convert hex color to RGBA and then back to 8-char hex
+        const rgbaColor = hexToRgba(value, alphaScale); // Append 'FF' to handle alpha as fully opaque
+        const [r, g, b, a] = rgbaColor.match(/\d+(\.\d+)?/g).map(Number);
+
+        // Convert RGBA back to 8-char hex
+        const hexColor = rgbaToHex(r, g, b, a, alphaScale);
+
         setPostData(prevState => ({
             ...prevState,
-            [name]: value  // Dynamically update the color fields based on the input name.
+            [name]: hexColor
         }));
     };
+
+    const handleHexChange = (e) => {
+        const { name, value } = e.target;
+        const alphaScale = 100; // Custom alpha scale per color field
+
+        // Validate if hex code is in correct format
+        if (/^#[0-9A-Fa-f]{8}$/.test(value)) {
+            setPostData(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        }
+    };
+
     // handleUpdate function
     const handleUpdate = (post) => {
         setIsUpdating(true);  // Set the state to updating mode
@@ -241,11 +277,12 @@ export default function Post({ selectedLanguage }) {
 
     // Delete Handle ----------------------------------------------
     const handleDelete = () => {
+        const catId = postData.vCatId || selectedCategory?.id;
         axios.delete(`${Test_Api}post/details`, {
             data: { vImageId: deleteID }
         }).then(response => {
             console.log("Deleted Post Data Response:", response.data);
-            fetchData(postData.vCatId); // Re-fetch data
+            fetchData(catId); // Re-fetch data
             toast.warning('Language deleted successfully!');
         }).catch(error => {
             console.log("Delete Error:", error);
@@ -266,6 +303,29 @@ export default function Post({ selectedLanguage }) {
             fileInputRef.current.value = '';  // Reset file input
         }
         setIsUpdating(false);  // Reset update mode
+    };
+
+    // Pagination Logic ---------------------------------------------------------------------
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = post.slice(indexOfFirstPost, indexOfLastPost);
+
+    const totalPages = Math.ceil(post.length / postsPerPage);
+
+    const handlePaginationClick = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
     };
 
     return (
@@ -314,15 +374,22 @@ export default function Post({ selectedLanguage }) {
                                 {preview && <img crossOrigin="anonymous" src={preview} alt="Preview" className='img-fluid mt-2 category-select-icon' />}
                             </div>
                             <div className='col-lg-2 mb-2'>
-                                <div className='d-inline-block'>
+                                <div className="d-inline-block">
                                     <label htmlFor="startcolor">Start Color</label>
                                     <input
                                         type="color"
                                         name="vStartColor"
                                         id="startcolor"
                                         className='form-control p-0 color-input'
-                                        value={postData.vStartColor || ''}
-                                        onChange={handleColorChange}  // Correctly update the state
+                                        value={postData.vStartColor.slice(0, 7)}
+                                        onChange={handleColorChange} // Handle color picker change
+                                    />
+                                    <input
+                                        type="text"
+                                        name="vStartColor"
+                                        value={postData.vStartColor}
+                                        onChange={handleHexChange} // Handle text input change
+                                        placeholder="#RRGGBB"
                                     />
                                 </div>
                             </div>
@@ -334,8 +401,15 @@ export default function Post({ selectedLanguage }) {
                                         name="vEndColor"
                                         id="endcolor"
                                         className='form-control p-0 color-input'
-                                        value={postData.vEndColor || ''}
-                                        onChange={handleColorChange}  // Correctly update the state
+                                        value={postData.vEndColor.slice(0, 7)}
+                                        onChange={handleColorChange} // Handle color picker change
+                                    />
+                                    <input
+                                        type="text"
+                                        name="vEndColor"
+                                        value={postData.vEndColor}
+                                        onChange={handleHexChange} // Handle text input change
+                                        placeholder="#RRGGBB"
                                     />
                                 </div>
                             </div>
@@ -347,8 +421,8 @@ export default function Post({ selectedLanguage }) {
                                         name="vTextColor"
                                         id="textcolor"
                                         className='form-control p-0 color-input'
-                                        value={postData.vTextColor || ''}
-                                        onChange={handleColorChange}  // Correctly update the state
+                                        value={postData.vTextColor}
+                                        onChange={(e) => setPostData({ ...postData, vTextColor: e.target.value })}  // Correctly update the state
                                     />
                                 </div>
                             </div>
@@ -388,7 +462,7 @@ export default function Post({ selectedLanguage }) {
                             </thead>
                             <tbody>
                                 {Array.isArray(post) && post.length > 0 ? (
-                                    post.map((item, id) => (
+                                    currentPosts.map((item, id) => (
                                         <tr key={id}>
                                             <td>{id + 1}</td>
                                             <td>
@@ -396,15 +470,15 @@ export default function Post({ selectedLanguage }) {
                                             </td>
                                             <td>
                                                 <div>{item.vStartColor}</div>
-                                                <input type="color" value={item.vStartColor || '#000000'} name="startcolor" id="startcolor" readOnly />
+                                                <input type="color" value={item.vStartColor.slice(0, 7)} name="startcolor" id="startcolor" readOnly />
                                             </td> {/* Ensure color is displayed */}
                                             <td>
                                                 <div>{item.vEndColor}</div>
-                                                <input type="color" value={item.vEndColor || '#000000'} name="endcolor" id="endcolor" readOnly />
+                                                <input type="color" value={(item.vEndColor.slice(0, 7))} name="endcolor" id="endcolor" readOnly />
                                             </td> {/* Ensure color is displayed */}
                                             <td>
                                                 <div>{item.vTextColor}</div>
-                                                <input type="color" value={item.vTextColor || '#000000'} name="textcolor" id="endcolor" readOnly />
+                                                <input type="color" value={item.vTextColor} name="textcolor" id="endcolor" readOnly />
                                             </td> {/* Ensure color is displayed */}
                                             <td>
                                                 <button className='btn btn-danger mx-2' title='Delete' onClick={() => setDeleteId(item._id)} data-bs-toggle="modal" data-bs-target="#deleteModal">
@@ -432,6 +506,19 @@ export default function Post({ selectedLanguage }) {
                 </div>
                 {/* Delete Modal */}
                 <DeleteModal deleteID={deleteID} handleDelete={handleDelete}></DeleteModal>
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="container">
+                {/* Form and other post logic */}
+                {/* Pagination */}
+                <Pagination
+                    handlePrevious={handlePrevious}
+                    handleNext={handleNext}
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    handlePaginationClick={handlePaginationClick}
+                ></Pagination>
             </div>
         </div>
     );
