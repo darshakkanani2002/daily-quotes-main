@@ -7,6 +7,8 @@ import DeleteModal from '../modal/DeleteModal';
 import { toast, ToastContainer, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Pagination from '../pagination/Pagination';
+import PostList from './post/PostList';
+import PostForm from './post/PostForm';
 export default function Post({ selectedLanguage }) {
     const [options, setOptions] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -346,195 +348,31 @@ export default function Post({ selectedLanguage }) {
                 transition:Bounce
             />
             <div className='my-3'>
-                <div className='side-container category-form p-3'>
-                    <form onSubmit={handleSubmit}>
-                        <div className='row'>
-                            <div className='col-lg-12 mb-3'>
-                                <label>Select Language <span className='text-danger'>*</span></label>
-                                <LanguageSelect
-                                    value={selectedLanguage} // Ensure this matches the format expected by LanguageSelect
-                                    handleLanguageSelect={handleLanguageSelect}
-                                />
-                            </div>
-                            <div className='col-lg-12 mb-3'>
-                                <div>
-                                    <label htmlFor="languagecode">Language Code<span className='text-danger'>*</span></label>
+                {/* Post Form --------------------------------------------------------------------------- */}
+                <PostForm
+                    handleSubmit={handleSubmit}
+                    selectedLanguag={selectedLanguage}
+                    handleLanguageSelect={handleLanguageSelect}
+                    postData={postData}
+                    setPostData={setPostData}
+                    selectedCategory={selectedCategory}
+                    handleCategorySelect={handleCategorySelect}
+                    handleFileChange={handleFileChange}
+                    fileInputRef={fileInputRef}
+                    preview={preview}
+                    handleColorChange={handleColorChange}
+                    handleHexChange={handleHexChange}
+                    isUpdating={isUpdating}
+                    options={options}
+                />
 
-                                    <select className="form-select" aria-label="Default select example"
-                                        value={postData.vLanguageCode}
-                                        onChange={(e) => setPostData({ ...postData, vLanguageCode: e.target.value })}
-                                        required
-                                    >
-                                        <option selected>Open this select menu</option>
-                                        <option value="hi">hi</option>
-                                        <option value="en">en</option>
-                                        <option value="guj">guj</option>
-                                        <option value="ts">ts</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div className='col-lg-12 mb-3'>
-                                <label htmlFor="category">Category Name<span className='text-danger'>*</span></label>
-                                <Select
-                                    id="category"
-                                    className='mb-3'
-                                    value={selectedCategory}
-                                    onChange={handleCategorySelect}
-                                    options={options}
-                                    required
-                                />
-                            </div>
-                            <div className='col-lg-6 mb-3'>
-                                <label htmlFor="image">Image</label>
-                                <input type="file" name="file" id="image" className='form-control'
-                                    onChange={handleFileChange}
-                                    ref={fileInputRef}
-                                />
-                                {preview && <img crossOrigin="anonymous" src={preview} alt="Preview" className='img-fluid mt-2 post-select-icon' />}
-                            </div>
-                            <div className='col-lg-2 mb-2'>
-                                <div className="d-inline-block">
-                                    <label htmlFor="startcolor">Start Color</label>
-                                    <input
-                                        type="text"
-                                        className='form-control post-hex-color'
-                                        name='vStartColor'
-                                        value={postData.vStartColor}
-                                        onChange={(e) => setPostData({ ...postData, vStartColor: e.target.value })}
-                                        placeholder='Enter Start Color'
-                                    />
-                                    <input
-                                        type="color"
-                                        name="vStartColor"
-                                        id="startcolor"
-                                        className='form-control p-0 color-input d-none'
-                                        value={postData.vStartColor.slice(0, 7)}
-                                        onChange={handleColorChange} // Handle color picker change
-                                    />
-                                    <input
-                                        type="text"
-                                        className='form-control post-hex-color d-none'
-                                        name="vStartColor"
-                                        value={postData.vStartColor}
-                                        onChange={handleHexChange} // Handle text input change
-                                        placeholder="#RRGGBBAA"
-                                    />
-                                </div>
-                            </div>
-                            <div className='col-lg-2 mb-2'>
-                                <div className="d-inline-block">
-                                    <label htmlFor="endcolor">End Color</label>
-                                    <input
-                                        type="text"
-                                        className='form-control post-hex-color'
-                                        name='vEndColor'
-                                        value={postData.vEndColor}
-                                        onChange={(e) => setPostData({ ...postData, vEndColor: e.target.value })}
-                                        placeholder='Enter End Color'
-                                    />
-                                    <input
-                                        type="color"
-                                        name="vEndColor"
-                                        id="endcolor"
-                                        className='form-control p-0 color-input d-none'
-                                        value={postData.vEndColor.slice(0, 7)}
-                                        onChange={handleColorChange} // Handle color picker change
-                                    />
-                                    <input
-                                        type="text"
-                                        className='form-control post-hex-color d-none'
-                                        name="vEndColor"
-                                        value={postData.vEndColor}
-                                        onChange={handleHexChange} // Handle text input change
-                                        placeholder="#RRGGBBAA"
-                                    />
-                                </div>
-                            </div>
-                            <div className='col-lg-2 mb-2'>
-                                <div className="d-inline-block">
-                                    <label htmlFor="textcolor">Text Color</label>
-                                    <input
-                                        type="color"
-                                        name="vTextColor"
-                                        id="textcolor"
-                                        className='form-control p-0 color-input'
-                                        value={postData.vTextColor}
-                                        onChange={(e) => setPostData({ ...postData, vTextColor: e.target.value })}  // Correctly update the state
-                                    />
-                                    <input
-                                        type="text"
-                                        className='form-control post-hex-color'
-                                        name='vTextColor'
-                                        value={postData.vTextColor}
-                                        onChange={(e) => setPostData({ ...postData, vTextColor: e.target.value })} />
-                                </div>
-                            </div>
-
-                            <div className='col-lg-12 mb-2 text-center'>
-                                <button type='submit' className='btn btn-success'>{isUpdating ? ("Update Dtata") : ("Submit Data")}</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <div className='side-container mt-5'>
-                    <div className='table-responsive'>
-                        <table className='table text-center'>
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Images</th>
-                                    <th>Start Color</th>
-                                    <th>End Color</th>
-                                    <th>Text Color</th>
-                                    {/* <th>Language Code</th> */}
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {Array.isArray(post) && post.length > 0 ? (
-                                    currentPosts.map((item, id) => (
-                                        <tr key={id}>
-                                            <td>{id + 1}</td>
-                                            <td>
-                                                <img crossOrigin="anonymous" src={`${Img_Url}${item.vImages}`} alt="images" style={{ width: '60px', height: 'auto' }} />
-                                            </td>
-                                            <td>
-                                                <div className='post-hex-color'>{item.vStartColor}</div>
-                                                <input type="color" value={item.vStartColor.slice(0, 7)} name="startcolor" id="startcolor" readOnly />
-                                            </td> {/* Ensure color is displayed */}
-                                            <td>
-                                                <div className='post-hex-color'>{item.vEndColor}</div>
-                                                <input type="color" value={(item.vEndColor.slice(0, 7))} name="endcolor" id="endcolor" readOnly />
-                                            </td> {/* Ensure color is displayed */}
-                                            <td>
-                                                <div className='post-hex-color'>{item.vTextColor}</div>
-                                                <input type="color" value={item.vTextColor} name="textcolor" id="endcolor" readOnly />
-                                            </td> {/* Ensure color is displayed */}
-                                            <td>
-                                                <button className='btn btn-danger mx-2' title='Delete' onClick={() => setDeleteId(item._id)} data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                    <i className="fa-solid fa-trash"></i>
-                                                </button>
-                                                <button className='btn btn-success mx-2 d-none' title='Update' onClick={() => handleUpdate(item)}>
-                                                    <i className="fa-solid fa-pen-to-square"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr className='text-center'>
-                                        <td colSpan="7" className='p-2'>
-                                            <div className='data-not-found-bg'>
-                                                <img src="/images/question.png" alt="question" className='img-fluid' />
-                                                <span className='table-data-not-found-text mt-1 d-block'>Data Not Found !</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                {/* Post List Data ---------------------------------------------------------------------- */}
+                <PostList
+                    post={post}
+                    currentPosts={currentPosts}
+                    setDeleteId={setDeleteId}
+                    handleUpdate={handleUpdate}
+                ></PostList>
                 {/* Delete Modal */}
                 <DeleteModal deleteID={deleteID} handleDelete={handleDelete}></DeleteModal>
             </div>
