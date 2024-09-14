@@ -41,7 +41,7 @@ export default function PostForm({
                                     <option value='' disabled>Open this select menu</option>
                                     <option value="hi">hi</option>
                                     <option value="en">en</option>
-                                    <option value="guj">guj</option>
+                                    <option value="gu">gu</option>
                                     <option value="ts">ts</option>
                                 </select>
                             </div>
