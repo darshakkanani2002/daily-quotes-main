@@ -6,7 +6,6 @@ import LanguageSelect from '../language/LanguageSelected';
 import DeleteModal from '../modal/DeleteModal';
 import { toast, ToastContainer, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { SketchPicker } from 'react-color';
 import Pagination from '../pagination/Pagination';
 export default function Post({ selectedLanguage }) {
     const [options, setOptions] = useState([]);
