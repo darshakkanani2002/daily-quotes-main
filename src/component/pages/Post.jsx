@@ -390,7 +390,7 @@ export default function Post({ selectedLanguage }) {
                                     onChange={handleFileChange}
                                     ref={fileInputRef}
                                 />
-                                {preview && <img crossOrigin="anonymous" src={preview} alt="Preview" className='img-fluid mt-2 category-select-icon' />}
+                                {preview && <img crossOrigin="anonymous" src={preview} alt="Preview" className='img-fluid mt-2 post-select-icon' />}
                             </div>
                             <div className='col-lg-2 mb-2'>
                                 <div className="d-inline-block">
