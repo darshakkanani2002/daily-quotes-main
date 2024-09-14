@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
 import axios from 'axios';
-import { Img_Url, Test_Api } from '../Config';
-import LanguageSelect from '../language/LanguageSelected';
-import DeleteModal from '../modal/DeleteModal';
+import { Img_Url, Test_Api } from '../../Config';
+import LanguageSelect from '../../language/LanguageSelected';
+import DeleteModal from '../../modal/DeleteModal';
 import { toast, ToastContainer, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Pagination from '../pagination/Pagination';
-import PostList from './post/PostList';
-import PostForm from './post/PostForm';
+import Pagination from '../../pagination/Pagination';
+import PostList from './PostList';
+import PostForm from './PostForm';
 export default function Post({ selectedLanguage }) {
     const [options, setOptions] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -287,7 +287,7 @@ export default function Post({ selectedLanguage }) {
         }).then(response => {
             console.log("Deleted Post Data Response:", response.data);
             fetchData(catId); // Re-fetch data
-            toast.warning('Language deleted successfully!');
+            toast.success('Post deleted successfully!');
         }).catch(error => {
             console.log("Delete Error:", error);
         });

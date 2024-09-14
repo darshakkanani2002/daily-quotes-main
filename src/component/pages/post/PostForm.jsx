@@ -2,7 +2,21 @@ import React from 'react'
 import LanguageSelect from '../../language/LanguageSelected'
 import Select from 'react-select';
 
-export default function PostForm({ options, handleSubmit, selectedLanguage, handleLanguageSelect, postData, setPostData, selectedCategory, handleCategorySelect, handleFileChange, fileInputRef, preview, handleColorChange, handleHexChange, isUpdating }) {
+export default function PostForm({
+    options,
+    handleSubmit,
+    selectedLanguage,
+    handleLanguageSelect,
+    postData,
+    setPostData,
+    selectedCategory,
+    handleCategorySelect,
+    handleFileChange,
+    fileInputRef,
+    preview,
+    handleColorChange,
+    handleHexChange,
+    isUpdating }) {
     return (
         <div>
             <div className='side-container category-form p-3'>
@@ -24,7 +38,7 @@ export default function PostForm({ options, handleSubmit, selectedLanguage, hand
                                     onChange={(e) => setPostData({ ...postData, vLanguageCode: e.target.value })}
                                     required
                                 >
-                                    <option selected>Open this select menu</option>
+                                    <option value='' disabled>Open this select menu</option>
                                     <option value="hi">hi</option>
                                     <option value="en">en</option>
                                     <option value="guj">guj</option>

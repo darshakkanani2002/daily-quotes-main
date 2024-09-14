@@ -177,7 +177,7 @@ export default function Category() {
         }).then(response => {
             console.log("Deleted Category Data ==>", response.data);
             fetchData(languagesId);
-            toast.warning('Language deleted successfully!');
+            toast.success('Category deleted successfully!');
         }).catch(error => {
             console.log(error);
 

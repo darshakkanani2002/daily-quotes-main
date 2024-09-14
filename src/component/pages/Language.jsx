@@ -90,7 +90,7 @@ export default function Language() {
         }).then(response => {
             console.log("Language deleted successfully:", response.data);
             fetchData();
-            toast.warning('Language deleted successfully!');
+            toast.success(<i className="fa-solid fa-trash"></i>, 'Language deleted successfully!');
         }).catch(error => {
             console.log(error);
 

@@ -5,7 +5,7 @@ import Sidebar from './component/Sidebar'
 import Header from './component/Header'
 import Language from './component/pages/Language'
 import Category from './component/pages/Category'
-import Post from './component/pages/Post'
+import Post from './component/pages/post/Post'
 
 function App() {
 
