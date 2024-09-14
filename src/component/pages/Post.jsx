@@ -6,6 +6,7 @@ import LanguageSelect from '../language/LanguageSelected';
 import DeleteModal from '../modal/DeleteModal';
 import { toast, ToastContainer, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { SketchPicker } from 'react-color';
 import Pagination from '../pagination/Pagination';
 export default function Post({ selectedLanguage }) {
     const [options, setOptions] = useState([]);
@@ -357,7 +358,24 @@ export default function Post({ selectedLanguage }) {
                                 />
                             </div>
                             <div className='col-lg-12 mb-3'>
-                                <label htmlFor="category">Category Name</label>
+                                <div>
+                                    <label htmlFor="languagecode">Language Code<span className='text-danger'>*</span></label>
+
+                                    <select className="form-select" aria-label="Default select example"
+                                        value={postData.vLanguageCode}
+                                        onChange={(e) => setPostData({ ...postData, vLanguageCode: e.target.value })}
+                                        required
+                                    >
+                                        <option selected>Open this select menu</option>
+                                        <option value="hi">hi</option>
+                                        <option value="en">en</option>
+                                        <option value="guj">guj</option>
+                                        <option value="ts">ts</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className='col-lg-12 mb-3'>
+                                <label htmlFor="category">Category Name<span className='text-danger'>*</span></label>
                                 <Select
                                     id="category"
                                     className='mb-3'
@@ -396,7 +414,7 @@ export default function Post({ selectedLanguage }) {
                                     />
                                     <input
                                         type="text"
-                                        className='form-control post-hex-color'
+                                        className='form-control post-hex-color d-none'
                                         name="vStartColor"
                                         value={postData.vStartColor}
                                         onChange={handleHexChange} // Handle text input change
@@ -425,7 +443,7 @@ export default function Post({ selectedLanguage }) {
                                     />
                                     <input
                                         type="text"
-                                        className='form-control post-hex-color'
+                                        className='form-control post-hex-color d-none'
                                         name="vEndColor"
                                         value={postData.vEndColor}
                                         onChange={handleHexChange} // Handle text input change
@@ -437,12 +455,6 @@ export default function Post({ selectedLanguage }) {
                                 <div className="d-inline-block">
                                     <label htmlFor="textcolor">Text Color</label>
                                     <input
-                                        type="text"
-                                        className='form-control post-hex-color'
-                                        name='vTextColor'
-                                        value={postData.vTextColor}
-                                        onChange={(e) => setPostData({ ...postData, vTextColor: e.target.value })} />
-                                    <input
                                         type="color"
                                         name="vTextColor"
                                         id="textcolor"
@@ -450,21 +462,15 @@ export default function Post({ selectedLanguage }) {
                                         value={postData.vTextColor}
                                         onChange={(e) => setPostData({ ...postData, vTextColor: e.target.value })}  // Correctly update the state
                                     />
-                                </div>
-                            </div>
-                            <div className='col-lg-3 mb-2'>
-                                <div className="d-inline-block">
-                                    <label htmlFor="languagecode">Language Code</label>
                                     <input
                                         type="text"
-                                        name="languagecode"
-                                        id="languagecode"
-                                        className='form-control'
-                                        value={postData.vLanguageCode}
-                                        onChange={(e) => setPostData({ ...postData, vLanguageCode: e.target.value })}
-                                    />
+                                        className='form-control post-hex-color'
+                                        name='vTextColor'
+                                        value={postData.vTextColor}
+                                        onChange={(e) => setPostData({ ...postData, vTextColor: e.target.value })} />
                                 </div>
                             </div>
+
                             <div className='col-lg-12 mb-2 text-center'>
                                 <button type='submit' className='btn btn-success'>{isUpdating ? ("Update Dtata") : ("Submit Data")}</button>
                             </div>
