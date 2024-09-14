@@ -19,6 +19,7 @@ export default function Post({ selectedLanguage }) {
         vTextColor: '', // Use a default color or empty string
         vLanguageId: '',
         vImages: '',
+        vLanguageCode: ''
     });
 
     const fileInputRef = useRef(null);
@@ -217,6 +218,7 @@ export default function Post({ selectedLanguage }) {
         formData.append('vStartColor', postData.vStartColor || '#000000');  // Ensure color is appended
         formData.append('vEndColor', postData.vEndColor || '#000000');
         formData.append('vTextColor', postData.vTextColor || '#000000');
+        formData.append('vLanguageCode', postData.vLanguageCode);
 
         if (postData.vImages) {
             formData.append('vImages', postData.vImages);
@@ -450,7 +452,7 @@ export default function Post({ selectedLanguage }) {
                                     />
                                 </div>
                             </div>
-                            {/* <div className='col-lg-3 mb-2'>
+                            <div className='col-lg-3 mb-2'>
                                 <div className="d-inline-block">
                                     <label htmlFor="languagecode">Language Code</label>
                                     <input
@@ -462,7 +464,7 @@ export default function Post({ selectedLanguage }) {
                                         onChange={(e) => setPostData({ ...postData, vLanguageCode: e.target.value })}
                                     />
                                 </div>
-                            </div> */}
+                            </div>
                             <div className='col-lg-12 mb-2 text-center'>
                                 <button type='submit' className='btn btn-success'>{isUpdating ? ("Update Dtata") : ("Submit Data")}</button>
                             </div>
