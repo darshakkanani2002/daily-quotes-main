@@ -54,8 +54,8 @@ body {
 }
 
 .category-select-icon {
-  height: 180px;
-  width: 180px;
+  height: 250px;
+  width: 250px;
 }
 
 /* table */
@@ -80,7 +80,7 @@ body {
 /* post data form */
 .color-input {
   height: 38px;
-  width: 180px;
+  width: 198px;
   border: 0px !important;
   border-radius: 0px;
   display: flex;
@@ -88,6 +88,14 @@ body {
   outline: none !important;
   box-shadow: none !important;
 
+}
+
+.post-hex-color {
+  text-transform: uppercase;
+}
+
+.post-hex-color::placeholder {
+  text-transform: capitalize;
 }
 
 /* Add this to your CSS file */

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
 import axios from 'axios';
-import { Test_Api } from '../Config';
+import { Img_Url, Test_Api } from '../Config';
 import LanguageSelect from '../language/LanguageSelected';
 import DeleteModal from '../modal/DeleteModal';
 import { toast, ToastContainer, } from 'react-toastify';
@@ -14,9 +14,9 @@ export default function Post({ selectedLanguage }) {
     const [postData, setPostData] = useState({
         _id: '',
         vCatId: '',
-        vStartColor: '#000000', // Use a default color or empty string if necessary
-        vEndColor: '#000000', // Use a default color or empty string
-        vTextColor: '#000000', // Use a default color or empty string
+        vStartColor: '', // Use a default color or empty string if necessary
+        vEndColor: '', // Use a default color or empty string
+        vTextColor: '', // Use a default color or empty string
         vLanguageId: '',
         vImages: '',
     });
@@ -187,16 +187,16 @@ export default function Post({ selectedLanguage }) {
         setPostData({
             _id: post._id,  // Set the _id as the vFrameId
             vCatId: post.vCatId,  // Ensure category ID is set
-            vStartColor: post.vStartColor || '#000000', // Default color if value is null
-            vEndColor: post.vEndColor || '#000000', // Default color if value is null
-            vTextColor: post.vTextColor || '#000000', // Default color if value is null
-            vLanguageId: post.vLanguageId || '',
-            vImages: post.vImages || ''
+            vStartColor: post.vStartColor, // Default color if value is null
+            vEndColor: post.vEndColor, // Default color if value is null
+            vTextColor: post.vTextColor, // Default color if value is null
+            vLanguageId: post.vLanguageId,
+            vImages: post.vImages
         });
 
         // If the image is already set, create a preview
         if (post.vImages) {
-            setPreview(`http://192.168.1.3:4500/${post.vImages}`);
+            setPreview(`${Img_Url}${post.vImages}`);
         }
     };
 
@@ -292,9 +292,9 @@ export default function Post({ selectedLanguage }) {
     // --------------------------------------------------------------------
     const resetForm = () => {
         setPostData({
-            vStartColor: '#000000',
-            vEndColor: '#000000',
-            vTextColor: '#000000',
+            vStartColor: '',
+            vEndColor: '',
+            vTextColor: '',
             vLanguageId: '',
             vImages: ''
         });
@@ -377,19 +377,28 @@ export default function Post({ selectedLanguage }) {
                                 <div className="d-inline-block">
                                     <label htmlFor="startcolor">Start Color</label>
                                     <input
+                                        type="text"
+                                        className='form-control post-hex-color'
+                                        name='vStartColor'
+                                        value={postData.vStartColor}
+                                        onChange={(e) => setPostData({ ...postData, vStartColor: e.target.value })}
+                                        placeholder='Enter Start Color'
+                                    />
+                                    <input
                                         type="color"
                                         name="vStartColor"
                                         id="startcolor"
-                                        className='form-control p-0 color-input'
+                                        className='form-control p-0 color-input d-none'
                                         value={postData.vStartColor.slice(0, 7)}
                                         onChange={handleColorChange} // Handle color picker change
                                     />
                                     <input
                                         type="text"
+                                        className='form-control post-hex-color'
                                         name="vStartColor"
                                         value={postData.vStartColor}
                                         onChange={handleHexChange} // Handle text input change
-                                        placeholder="#RRGGBB"
+                                        placeholder="#RRGGBBAA"
                                     />
                                 </div>
                             </div>
@@ -397,25 +406,40 @@ export default function Post({ selectedLanguage }) {
                                 <div className="d-inline-block">
                                     <label htmlFor="endcolor">End Color</label>
                                     <input
+                                        type="text"
+                                        className='form-control post-hex-color'
+                                        name='vEndColor'
+                                        value={postData.vEndColor}
+                                        onChange={(e) => setPostData({ ...postData, vEndColor: e.target.value })}
+                                        placeholder='Enter End Color'
+                                    />
+                                    <input
                                         type="color"
                                         name="vEndColor"
                                         id="endcolor"
-                                        className='form-control p-0 color-input'
+                                        className='form-control p-0 color-input d-none'
                                         value={postData.vEndColor.slice(0, 7)}
                                         onChange={handleColorChange} // Handle color picker change
                                     />
                                     <input
                                         type="text"
+                                        className='form-control post-hex-color'
                                         name="vEndColor"
                                         value={postData.vEndColor}
                                         onChange={handleHexChange} // Handle text input change
-                                        placeholder="#RRGGBB"
+                                        placeholder="#RRGGBBAA"
                                     />
                                 </div>
                             </div>
                             <div className='col-lg-2 mb-2'>
                                 <div className="d-inline-block">
                                     <label htmlFor="textcolor">Text Color</label>
+                                    <input
+                                        type="text"
+                                        className='form-control post-hex-color'
+                                        name='vTextColor'
+                                        value={postData.vTextColor}
+                                        onChange={(e) => setPostData({ ...postData, vTextColor: e.target.value })} />
                                     <input
                                         type="color"
                                         name="vTextColor"
@@ -466,18 +490,18 @@ export default function Post({ selectedLanguage }) {
                                         <tr key={id}>
                                             <td>{id + 1}</td>
                                             <td>
-                                                <img crossOrigin="anonymous" src={`http://192.168.1.3:4500/${item.vImages}`} alt="images" style={{ width: '60px', height: 'auto' }} />
+                                                <img crossOrigin="anonymous" src={`${Img_Url}${item.vImages}`} alt="images" style={{ width: '60px', height: 'auto' }} />
                                             </td>
                                             <td>
-                                                <div>{item.vStartColor}</div>
+                                                <div className='post-hex-color'>{item.vStartColor}</div>
                                                 <input type="color" value={item.vStartColor.slice(0, 7)} name="startcolor" id="startcolor" readOnly />
                                             </td> {/* Ensure color is displayed */}
                                             <td>
-                                                <div>{item.vEndColor}</div>
+                                                <div className='post-hex-color'>{item.vEndColor}</div>
                                                 <input type="color" value={(item.vEndColor.slice(0, 7))} name="endcolor" id="endcolor" readOnly />
                                             </td> {/* Ensure color is displayed */}
                                             <td>
-                                                <div>{item.vTextColor}</div>
+                                                <div className='post-hex-color'>{item.vTextColor}</div>
                                                 <input type="color" value={item.vTextColor} name="textcolor" id="endcolor" readOnly />
                                             </td> {/* Ensure color is displayed */}
                                             <td>

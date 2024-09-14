@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Select from 'react-select';
-import { Test_Api } from '../Config';
+import { Img_Url, Test_Api } from '../Config';
 import axios from 'axios';
 import { toast, ToastContainer, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -76,8 +76,13 @@ export default function Category() {
     // handle File change -----------------------------------------------------------------
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        setCategoryData({ ...categoryData, vIcon: file });
-        setPreview(URL.createObjectURL(file)); // Set the preview URL
+        if (file) {
+            setCategoryData(prevState => ({
+                ...prevState,
+                vIcon: file,  // Add vIcon to postData if a file is selected
+            }));
+            setPreview(URL.createObjectURL(file));  // Set preview for image
+        }
     };
 
     // Category data save api --------------------------------------------------
@@ -92,19 +97,27 @@ export default function Category() {
         formData.append('iCatLine', categoryData.iCatLine);
         formData.append('vlanguageId', languageId);
 
-        // Append the file only if it's a new file
-        if (categoryData.vIcon instanceof File) {
+        // Only append the file if it has been updated
+        if (categoryData.vIcon && categoryData.vIcon instanceof File) {
             formData.append('vIcon', categoryData.vIcon);
         }
 
         if (isUpdating) {
-            formData.append('vCatId', currentId);
-            axios.put(`${Test_Api}category/details`, formData, {
+            const updateData = new FormData();
+            updateData.append('vCatId', currentId);
+            updateData.append('vName', categoryData.vName);
+            updateData.append('iCatFontSize', categoryData.iCatFontSize);
+            updateData.append('iCatLine', categoryData.iCatLine);
+            updateData.append('vlanguageId', languageId);
+            if (categoryData.vIcon instanceof File) {
+                updateData.append('vIcon', categoryData.vIcon);
+            }
+            axios.put(`${Test_Api}category/details`, updateData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             }).then(response => {
-                console.log("category Updated Data ==>", response.data);
+                console.log("Category Updated Data ==>", response.data);
                 fetchData(languageId);
                 toast.success("Category updated successfully!");
                 resetForm();
@@ -121,6 +134,8 @@ export default function Category() {
                 setCategoryData({
                     vName: '',
                     iCatFontSize: '',
+                    iChipVspace: '', // Reset iChipVspace as well
+                    vIcon: null,
                     vlanguageId: '',
                     iCatLine: ''
                 });
@@ -132,6 +147,7 @@ export default function Category() {
             });
         }
     };
+
 
     // Handel Update Data ----------------------------------------------------
 
@@ -145,9 +161,12 @@ export default function Category() {
             vlanguageId: category.vlanguageId,
             vIcon: category.vIcon
         });
+        if (fileInputRef.current) {
+            fileInputRef.current.value = categoryData.vIcon; // Clear the file input field
+        }
         setIsUpdating(true);
         setCurrentId(category._id);
-        setPreview(`http://192.168.1.3:4500/${category.vIcon}`)
+        setPreview(`${Img_Url}${category.vIcon}`)
     };
 
     // Delete category data api ----------------------------------------
@@ -201,7 +220,7 @@ export default function Category() {
                 <div className='side-container category-form p-3'>
                     <form onSubmit={handleSubmit}>
                         <div className='row'>
-                            <div className='col-lg-12 mb-3'>
+                            <div className='col-lg-12'>
                                 <label>Select Language <span className='text-danger'>*</span></label>
                                 <LanguageSelect
                                     value={selectedLanguage}
@@ -209,19 +228,19 @@ export default function Category() {
                                     handleLanguageSelect={handleLanguageSelect}
                                 ></LanguageSelect>
                             </div>
-                            <div className='col-lg-4'>
+                            <div className='col-lg-3'>
                                 <label>Name <span className='text-danger'>*</span></label>
                                 <input value={categoryData.vName} type="text" name="name" id="name" className='form-control mb-3' onChange={(e) => setCategoryData({ ...categoryData, vName: e.target.value })} required />
                             </div>
-                            <div className='col-lg-4'>
+                            <div className='col-lg-3'>
                                 <label htmlFor="fontsize">iCatFontSize <span className='text-danger'>*</span></label>
                                 <input value={categoryData.iCatFontSize} type="text" name="fontsize" id="fontsize" className='form-control mb-3' onChange={(e) => setCategoryData({ ...categoryData, iCatFontSize: e.target.value })} required />
                             </div>
-                            <div className='col-lg-3 d-none'>
+                            <div className='col-lg-3'>
                                 <label htmlFor="vspace">iChipVspace</label>
                                 <input type="text" name="vspace" id="vspace" className='form-control mb-3' onChange={(e) => setCategoryData({ ...categoryData, iChipVspace: e.target.value })} />
                             </div>
-                            <div className='col-lg-4'>
+                            <div className='col-lg-3'>
                                 <label htmlFor="vspace">iCatLine</label>
                                 <input value={categoryData.iCatLine} type="text" name="vspace" id="vspace" className='form-control mb-3' onChange={(e) => setCategoryData({ ...categoryData, iCatLine: e.target.value })} />
                             </div>
@@ -251,9 +270,9 @@ export default function Category() {
                                     <th>Name</th>
                                     <th>iCatFontSize</th>
                                     <th>iCatLine</th>
-                                    <th className='d-none'>iChipVspace</th>
+                                    <th>iChipVspace</th>
                                     <th>icon</th>
-                                    <th>Actions</th>
+                                    <th>Delete/Updatae</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -264,13 +283,13 @@ export default function Category() {
                                             <td>{item.vName}</td>
                                             <td>{item.iCatFontSize}</td>
                                             <td>{item.iCatLine}</td>
-                                            <td className='d-none'>{item.iChipVspace}</td>
-                                            <td><img crossOrigin="anonymous" src={`http://192.168.1.3:4500/${item.vIcon}`} alt="" className='category-icon' /></td>
+                                            <td>{item.iChipVspace}</td>
+                                            <td><img crossOrigin="anonymous" src={`${Img_Url}${item.vIcon}`} alt="" className='category-icon' /></td>
                                             <td>
-                                                <button className='btn btn-danger mx-2' onClick={() => setDeleteId(item._id)} data-bs-toggle="modal" data-bs-target="#deleteModal" title='Delete'>
+                                                <button className='btn btn-danger mx-2' onClick={() => setDeleteId(item._id)} data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                     <i className="fa-solid fa-trash"></i>
                                                 </button>
-                                                <button className='btn btn-success mx-2' onClick={() => handleUpdate(item)} title='Update'>
+                                                <button className='btn btn-success mx-2' onClick={() => handleUpdate(item)}>
                                                     <i className="fa-solid fa-pen-to-square"></i>
                                                 </button>
                                             </td>
@@ -278,11 +297,9 @@ export default function Category() {
                                     ))
                                 ) : (
                                     <tr className='text-center'>
-                                        <td colSpan="7" className='p-2'>
-                                            <div className='data-not-found-bg'>
-                                                <img src="/images/question.png" alt="question" className='img-fluid data-no-found-ic' />
-                                                <span className='table-data-not-found-text mt-1 d-block'>Data Not Found !</span>
-                                            </div>
+                                        <td colSpan="7" className='py-3'>
+                                            <img src="/images/no-data-icon.png" alt="" className='img-fluid table-no-data-img' />
+                                            <span className='table-data-not-found-text mt-1 d-block'>Data Not Found !</span>
                                         </td>
                                     </tr>
                                 )}
