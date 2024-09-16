@@ -31,7 +31,7 @@ export default function Post({ selectedLanguage }) {
     const [currentId, setCurrentId] = useState(null)
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
-    const postsPerPage = 12;  // Display 12 posts per page
+    const postsPerPage = 10;  // Display 12 posts per page
 
     useEffect(() => {
         if (postData.vLanguageId) {
