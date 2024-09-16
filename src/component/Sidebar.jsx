@@ -26,7 +26,7 @@ export default function Sidebar() {
                 </Button>
 
                 <div className="sidebar d-none sidebar-menu-display">
-                    <h2>Daily Quates</h2>
+                    <h2><img src="/images/fav-icon.png" alt="fav-icon" className='img-fluid' /><span className='h5 fw-bold'>Daily Quates</span></h2>
                     <ul className="side-menu">
                         <li className={`my-2 ${activeMenu === 'language' ? 'active' : ''}`}>
                             <Link to="/" className='nav-link active' onClick={() => handleMenuClick('language')}>
