@@ -21,7 +21,7 @@ export default function Sidebar() {
     return (
         <div>
             <>
-                <Button variant="primary" onClick={handleShow} className="mb-3 d-md-none">
+                <Button variant="primary" onClick={handleShow} className="mb-3 d-md-none sidebar-toggel-button">
                     <i className="fa-solid fa-bars"></i>
                 </Button>
 
