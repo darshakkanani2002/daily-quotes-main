@@ -164,8 +164,10 @@ export default function Language() {
                                 ) : (
                                     <tr className='text-center'>
                                         <td colSpan="3" className='py-3'>
-                                            <img src="/images/ic-content.svg" alt="ic-content" className='img-fluid' />
-                                            <span className='table-data-not-found-text mt-1 d-block'>Data Not Found !</span>
+                                            <div className='data-not-found-bg'>
+                                                <img src="/images/question.png" alt="question" className='img-fluid' />
+                                                <span className='table-data-not-found-text mt-1 d-block'>Data Not Found !</span>
+                                            </div>
                                         </td>
                                     </tr>
                                 )}
