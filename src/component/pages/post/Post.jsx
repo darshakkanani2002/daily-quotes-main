@@ -262,6 +262,7 @@ export default function Post({ selectedLanguage }) {
                         ...prevState,
                         vCatId: responseData.vCatId,  // Ensure category ID is retained
                         _id: responseData._id,
+                        vLanguageCode: responseData.vLanguageCode
                     }));
                     console.log("Created Post Data ==>", response.data);
 
@@ -300,7 +301,8 @@ export default function Post({ selectedLanguage }) {
             vEndColor: '',
             vTextColor: '',
             vLanguageId: '',
-            vImages: ''
+            vImages: '',
+            vLanguageCode: postData.vLanguageCode
         });
         setPreview(null);
         if (fileInputRef.current) {

@@ -32,8 +32,11 @@ export default function PostForm({
                         <div className='col-lg-12 mb-3'>
                             <div>
                                 <label htmlFor="languagecode">Language Code<span className='text-danger'>*</span></label>
+                                <input type="text" className='form-control' value={postData.vLanguageCode}
+                                    onChange={(e) => setPostData({ ...postData, vLanguageCode: e.target.value })}
+                                    required />
 
-                                <select className="form-select" aria-label="Default select example"
+                                {/* <select type='text' className="form-select" aria-label="Default select example"
                                     value={postData.vLanguageCode}
                                     onChange={(e) => setPostData({ ...postData, vLanguageCode: e.target.value })}
                                     required
@@ -43,7 +46,7 @@ export default function PostForm({
                                     <option value="en">en</option>
                                     <option value="gu">gu</option>
                                     <option value="ts">ts</option>
-                                </select>
+                                </select> */}
                             </div>
                         </div>
                         <div className='col-lg-12 mb-3'>
