@@ -25,7 +25,7 @@ export default function Sidebar() {
                     <i className="fa-solid fa-bars"></i>
                 </Button>
 
-                <div className="sidebar d-none d-md-block">
+                <div className="sidebar d-none sidebar-menu-display">
                     <h2>Daily Quates</h2>
                     <ul className="side-menu">
                         <li className={`my-2 ${activeMenu === 'language' ? 'active' : ''}`}>

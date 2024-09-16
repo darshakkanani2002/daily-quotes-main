@@ -26,7 +26,7 @@ export default function Header() {
                     {/* <Button variant="primary" className="mb-0 me-2">
                         <i className="fa-solid fa-bars"></i>
                     </Button> */}
-                    <h2 className='ms-lg-0 ms-md-0 ms-sm-5 ms-5'>{getHeaderName()}</h2>
+                    <h2 className='ms-lg-0 ms-md-5 ms-sm-5 ms-5'>{getHeaderName()}</h2>
                 </div>
             </div>
         </div>

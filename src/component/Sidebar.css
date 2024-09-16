@@ -61,12 +61,19 @@
     width: 22px;
 }
 
-@media (max-width:768px) {
+@media (max-width:769px) {
     .sidebar-toggel-button {
         position: absolute;
         top: 7px;
         left: 7px;
         background-color: #4B49AC;
         border: 1px solid #4B49AC;
+        display: block !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .sidebar-menu-display {
+        display: block !important;
     }
 }
