@@ -16,7 +16,8 @@ export default function PostForm({
     preview,
     handleColorChange,
     handleHexChange,
-    isUpdating }) {
+    isUpdating,
+    handleChange }) {
     return (
         <div>
             <div className='side-container category-form p-3'>
@@ -58,6 +59,26 @@ export default function PostForm({
                                 onChange={handleCategorySelect}
                                 options={options}
                                 required
+                            />
+                        </div>
+                        <div className='col-lg-4 position-relative mb-3'>
+                            <label className='post-checkbox-lable'>isTime</label>
+                            <input
+                                type="checkbox"
+                                name="isTime"
+                                checked={postData.isTime}
+                                onChange={handleChange}
+                                className='post-checkbox-input-1'
+                            />
+                        </div>
+                        <div className='col-lg-4 position-relative mb-3'>
+                            <label className='post-checkbox-lable'>isTrending</label>
+                            <input
+                                type="checkbox"
+                                name="isTrending"
+                                checked={postData.isTrending}
+                                onChange={handleChange}
+                                className='post-checkbox-input-2'
                             />
                         </div>
                         <div className='col-lg-6 mb-3'>

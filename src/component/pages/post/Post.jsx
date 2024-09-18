@@ -21,7 +21,9 @@ export default function Post({ selectedLanguage }) {
         vTextColor: '', // Use a default color or empty string
         vLanguageId: '',
         vImages: '',
-        vLanguageCode: ''
+        vLanguageCode: '',
+        isTime: false,
+        isTrending: false,
     });
 
     const fileInputRef = useRef(null);
@@ -112,6 +114,23 @@ export default function Post({ selectedLanguage }) {
         if (selectedOption && selectedOption.id) {
             fetchData(selectedOption.id); // Pass the selected category id to fetch data
         }
+    };
+
+    // Handle Cahnge for isTime and isTrending Checkbox----------------------------------------
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+
+        // Log to console if isTime checkbox is changed
+        if (name === 'isTime') {
+            console.log('isTime:', checked);
+        } else if (name === 'isTrending') {
+            console.log('isTrending', checked)
+        }
+
+        setPostData({
+            ...postData,
+            [name]: type === 'checkbox' ? checked : value
+        });
     };
     // Handle File Change -----------------------------------------------------------------
     // Inside the Post component
@@ -221,6 +240,8 @@ export default function Post({ selectedLanguage }) {
         formData.append('vEndColor', postData.vEndColor || '#000000');
         formData.append('vTextColor', postData.vTextColor || '#000000');
         formData.append('vLanguageCode', postData.vLanguageCode);
+        formData.append('isTime', postData.isTime);
+        formData.append('isTrending', postData.isTrending)
 
         if (postData.vImages) {
             formData.append('vImages', postData.vImages);
@@ -366,6 +387,7 @@ export default function Post({ selectedLanguage }) {
                     handleHexChange={handleHexChange}
                     isUpdating={isUpdating}
                     options={options}
+                    handleChange={handleChange}
                 />
 
                 {/* Post List Data ---------------------------------------------------------------------- */}
