@@ -114,18 +114,20 @@ export default function Language() {
                     transition:Bounce
                 />
                 <div className='side-container'>
-                    <form onSubmit={handleSubmit}>
-                        <div className="row">
-                            <div className="col-lg-7">
-                                <input type="text" value={languageData.vName} className='form-control py-2' placeholder='Language' onChange={(e) => setLanguageData({ ...languageData, vName: e.target.value })} />
+                    <div className='category-form p-3'>
+                        <form onSubmit={handleSubmit}>
+                            <div className="row">
+                                <div className="col-lg-7">
+                                    <input type="text" value={languageData.vName} className='form-control py-2' placeholder='Language' onChange={(e) => setLanguageData({ ...languageData, vName: e.target.value })} />
+                                </div>
+                                <div >
+                                    <button type='submit' className='btn btn-success my-3'>
+                                        {isUpdating ? 'Update Language' : 'Add Language'}
+                                    </button>
+                                </div>
                             </div>
-                            <div >
-                                <button type='submit' className='btn btn-success my-3'>
-                                    {isUpdating ? 'Update Language' : 'Add Language'}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
 

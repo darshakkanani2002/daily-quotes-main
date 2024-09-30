@@ -220,7 +220,7 @@ export default function Category() {
                 <div className='side-container category-form p-3'>
                     <form onSubmit={handleSubmit}>
                         <div className='row'>
-                            <div className='col-lg-12'>
+                            <div className='col-lg-12 mb-3'>
                                 <label>Select Language <span className='text-danger'>*</span></label>
                                 <LanguageSelect
                                     value={selectedLanguage}
