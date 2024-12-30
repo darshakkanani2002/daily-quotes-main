@@ -9,6 +9,7 @@ export default function Language() {
     const [language, setLanguage] = useState([]);
     const [languageData, setLanguageData] = useState({
         vName: '',
+        vCode: '',
     });
     const [deleteId, setDeleteId] = useState(null);
     const [isUpdating, setIsUpdating] = useState(false);
@@ -34,8 +35,9 @@ export default function Language() {
         e.preventDefault();
         if (isUpdating) {
             const updateData = {
-                vlanguageId: currentId,
-                vName: languageData.vName
+                vLanguageId: currentId,
+                vName: languageData.vName,
+                vCode: languageData.vCode,
             };
             console.log("Updated Language Data ==> ", updateData)
 
@@ -45,6 +47,7 @@ export default function Language() {
                         console.log("Language Update Data ==>", response.data);
                         setLanguageData({
                             vName: '',
+                            vCode: '',
                         });
                         fetchData();
                     }).catch(error => {
@@ -61,6 +64,7 @@ export default function Language() {
                     fetchData();
                     setLanguageData({
                         vName: '',
+                        vCode: '',
                     })
                 }).catch(error => {
                     console.log(error);
@@ -77,7 +81,8 @@ export default function Language() {
     // update data handle----------------------------------------------------------------------------------------
     const handleUpdate = (language) => {
         setLanguageData({
-            vName: language.vName
+            vName: language.vName,
+            vCode: language.vCode,
         });
         setIsUpdating(true);
         setCurrentId(language._id);
@@ -86,7 +91,7 @@ export default function Language() {
 
     const handleDelete = () => {
         axios.delete(`${Test_Api}language/details`, {
-            data: { vlanguageId: deleteId }
+            data: { vLanguageId: deleteId }
         }).then(response => {
             console.log("Language deleted successfully:", response.data);
             fetchData();
@@ -120,6 +125,9 @@ export default function Language() {
                                 <div className="col-lg-7">
                                     <input type="text" value={languageData.vName} className='form-control py-2' placeholder='Language' onChange={(e) => setLanguageData({ ...languageData, vName: e.target.value })} />
                                 </div>
+                                <div className='col-lg-5'>
+                                    <input type="text" value={languageData.vCode} className='form-control py-2' placeholder='vCode' onChange={(e) => setLanguageData({ ...languageData, vCode: e.target.value })} />
+                                </div>
                                 <div >
                                     <button type='submit' className='btn btn-success my-3'>
                                         {isUpdating ? 'Update Language' : 'Add Language'}
@@ -138,6 +146,7 @@ export default function Language() {
                             <tr>
                                 <th>No.</th>
                                 <th>Language</th>
+                                <th>Vcode</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -147,6 +156,7 @@ export default function Language() {
                                     <tr key={id}>
                                         <td>{id + 1}</td>
                                         <td>{item.vName}</td>
+                                        <td>{item.vCode}</td>
                                         <td>
                                             <button className='btn btn-danger mx-2 px-3'
                                                 onClick={() => setDeleteId(item._id)}
