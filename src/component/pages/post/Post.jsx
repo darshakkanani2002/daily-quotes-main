@@ -171,7 +171,7 @@ export default function Post({ selectedLanguage }) {
     };
 
     // Handle form submission to ensure colors are sent correctly
-    const handleSubmit = (e,) => {
+    const handleSubmit = (e, _id = postData._id ) => {
         e.preventDefault();
 
         const formData = new FormData();
@@ -199,7 +199,7 @@ export default function Post({ selectedLanguage }) {
             }
 
             axios.put(`${Test_Api}post/details`, {
-                vPostId: postData._id,  // Add vPostId here
+                vPostId: _id,  // Add vPostId here
                 vLanguageId: postData.vLanguageId,
                 vCatId: postData.vCatId,
                 isTime: postData.isTime,
