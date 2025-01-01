@@ -16,14 +16,12 @@ export default function Post({ selectedLanguage }) {
     const [postData, setPostData] = useState({
         _id: '',
         vCatId: '',
-        vStartColor: '', // Use a default color or empty string if necessary
-        vEndColor: '', // Use a default color or empty string
-        vTextColor: '', // Use a default color or empty string
         vLanguageId: '',
         vImages: '',
         vLanguageCode: '',
         isTime: false,
         isTrending: false,
+        isPremium: false,
     });
 
     const fileInputRef = useRef(null);
@@ -42,12 +40,12 @@ export default function Post({ selectedLanguage }) {
     }, [postData.vLanguageId]);
 
     // Fetch Data --------------------------------------------------------------------
-    const fetchData = (vCatId) => {
+    const fetchData = (vCatId, page = 1, limit = 33) => {
         if (!vCatId) {
             console.error('vCatId is missing.');
             return;
         }
-        axios.post(`${Test_Api}post/withoutLoginList`, { vCatId })
+        axios.post(`${Test_Api}post/withoutLoginList`, { vCatId, iPage: page, iLimit: limit })
             .then(response => {
                 console.log("Post Data List ==>", response.data.data);
                 setPost(response.data.data); // Ensure response.data.data exists
@@ -66,7 +64,7 @@ export default function Post({ selectedLanguage }) {
             console.log('Fetching categories with vLanguageId:', postData.vLanguageId);
 
             const response = await axios.post(`${Test_Api}category/list`, {
-                vlanguageId: postData.vLanguageId
+                vLanguageId: postData.vLanguageId
             }, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -143,56 +141,6 @@ export default function Post({ selectedLanguage }) {
         }
     };
 
-    const rgbaToHex = (r, g, b, a, alphaScale) => {
-        const alpha = Math.round(a * alphaScale).toString(16).padStart(2, '0');
-        return `#${alpha}${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-    };
-
-    const hexToRgba = (hex, alphaScale) => {
-        let r = 0, g = 0, b = 0, a = 1;
-
-        if (hex.length === 9) { // Full 8-char hex (#AARRGGBB)
-            a = parseInt(hex.slice(1, 3), 16) / alphaScale; // Alpha from first 2 characters
-            r = parseInt(hex.slice(3, 5), 16);
-            g = parseInt(hex.slice(5, 7), 16);
-            b = parseInt(hex.slice(7, 9), 16);
-        } else if (hex.length === 7) { // RGB only (#RRGGBB)
-            r = parseInt(hex.slice(1, 3), 16);
-            g = parseInt(hex.slice(3, 5), 16);
-            b = parseInt(hex.slice(5, 7), 16);
-        }
-
-        return `rgba(${r}, ${g}, ${b}, ${a})`;
-    };
-    const handleColorChange = (e) => {
-        const { name, value } = e.target;
-        const alphaScale = name === 'vStartColor' ? 80 : 32; // Custom alpha scale per color field
-
-        // Convert hex color to RGBA and then back to 8-char hex
-        const rgbaColor = hexToRgba(value, alphaScale); // Append 'FF' to handle alpha as fully opaque
-        const [r, g, b, a] = rgbaColor.match(/\d+(\.\d+)?/g).map(Number);
-
-        // Convert RGBA back to 8-char hex
-        const hexColor = rgbaToHex(r, g, b, a, alphaScale);
-
-        setPostData(prevState => ({
-            ...prevState,
-            [name]: hexColor
-        }));
-    };
-
-    const handleHexChange = (e) => {
-        const { name, value } = e.target;
-        const alphaScale = 100; // Custom alpha scale per color field
-
-        // Validate if hex code is in correct format
-        if (/^#[0-9A-Fa-f]{8}$/.test(value)) {
-            setPostData(prevState => ({
-                ...prevState,
-                [name]: value
-            }));
-        }
-    };
 
     // handleUpdate function
     const handleUpdate = (post) => {
@@ -209,9 +157,9 @@ export default function Post({ selectedLanguage }) {
         setPostData({
             _id: post._id,  // Set the _id as the vFrameId
             vCatId: post.vCatId,  // Ensure category ID is set
-            vStartColor: post.vStartColor, // Default color if value is null
-            vEndColor: post.vEndColor, // Default color if value is null
-            vTextColor: post.vTextColor, // Default color if value is null
+            isTime: post.isTime,
+            isPremium: post.isPremium,
+            isTrending: post.isTrending,
             vLanguageId: post.vLanguageId,
             vImages: post.vImages
         });
@@ -223,7 +171,7 @@ export default function Post({ selectedLanguage }) {
     };
 
     // Handle form submission to ensure colors are sent correctly
-    const handleSubmit = (e) => {
+    const handleSubmit = (e,) => {
         e.preventDefault();
 
         const formData = new FormData();
@@ -235,10 +183,7 @@ export default function Post({ selectedLanguage }) {
             return;
         }
 
-        formData.append('vCatId', catId);  // Ensure category ID is appended
-        formData.append('vStartColor', postData.vStartColor || '#000000');  // Ensure color is appended
-        formData.append('vEndColor', postData.vEndColor || '#000000');
-        formData.append('vTextColor', postData.vTextColor || '#000000');
+        formData.append('vPostId', postData._id);  // Ensure category ID is appended
         formData.append('vLanguageCode', postData.vLanguageCode);
         formData.append('isTime', postData.isTime);
         formData.append('isTrending', postData.isTrending)
@@ -253,7 +198,15 @@ export default function Post({ selectedLanguage }) {
                 return;
             }
 
-            axios.put(`${Test_Api}post/details`, { vFrameId: postData._id }, formData, {
+            axios.put(`${Test_Api}post/details`, {
+                vPostId: postData._id,  // Add vPostId here
+                vLanguageId: postData.vLanguageId,
+                vCatId: postData.vCatId,
+                isTime: postData.isTime,
+                isPremium: postData.isPremium,
+                isTrending: postData.isTrending,
+                vImages: postData.vImages,
+            }, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 }
@@ -264,7 +217,6 @@ export default function Post({ selectedLanguage }) {
                     toast.success("Post updated successfully!");
                     resetForm();
                     fetchData(catId);  // Use the correct vCatId here
-
                 })
                 .catch(error => {
                     console.error("Update failed:", error.response ? error.response.data : error.message);
@@ -272,11 +224,19 @@ export default function Post({ selectedLanguage }) {
                 });
         } else {
             // Creating a new post
-            axios.post(`${Test_Api}post/details`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                }
-            })
+            axios.post(`${Test_Api}post/details`, {
+                vLanguageId: postData.vLanguageId,
+                vCatId: postData.vCatId,
+                isTime: postData.isTime,
+                isPremium: postData.isPremium,
+                isTrending: postData.isTrending,
+                vImages: postData.vImages,
+            },
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                })
                 .then(response => {
                     const responseData = response.data.data;
                     setPostData(prevState => ({
@@ -304,8 +264,11 @@ export default function Post({ selectedLanguage }) {
     // Delete Handle ----------------------------------------------
     const handleDelete = () => {
         const catId = postData.vCatId || selectedCategory?.id;
+        // Ensure deleteID is an array
+        const imageIdArray = Array.isArray(deleteID) ? deleteID : [deleteID];
+
         axios.delete(`${Test_Api}post/details`, {
-            data: { vImageId: deleteID }
+            data: { arrImageId: imageIdArray }
         }).then(response => {
             console.log("Deleted Post Data Response:", response.data);
             fetchData(catId); // Re-fetch data
@@ -313,14 +276,11 @@ export default function Post({ selectedLanguage }) {
         }).catch(error => {
             console.log("Delete Error:", error);
         });
-    }
+    };
 
     // --------------------------------------------------------------------
     const resetForm = () => {
         setPostData({
-            vStartColor: '',
-            vEndColor: '',
-            vTextColor: '',
             vLanguageId: '',
             vImages: '',
             vLanguageCode: postData.vLanguageCode
@@ -381,10 +341,9 @@ export default function Post({ selectedLanguage }) {
                     selectedCategory={selectedCategory}
                     handleCategorySelect={handleCategorySelect}
                     handleFileChange={handleFileChange}
+                    vLanguageId={postData.vLanguageId}
                     fileInputRef={fileInputRef}
                     preview={preview}
-                    handleColorChange={handleColorChange}
-                    handleHexChange={handleHexChange}
                     isUpdating={isUpdating}
                     options={options}
                     handleChange={handleChange}

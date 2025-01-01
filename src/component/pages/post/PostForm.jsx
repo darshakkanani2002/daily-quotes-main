@@ -14,8 +14,7 @@ export default function PostForm({
     handleFileChange,
     fileInputRef,
     preview,
-    handleColorChange,
-    handleHexChange,
+    vLanguageId,
     isUpdating,
     handleChange }) {
     return (
@@ -89,84 +88,6 @@ export default function PostForm({
                             />
                             {preview && <img crossOrigin="anonymous" src={preview} alt="Preview" className='img-fluid mt-2 post-select-icon' />}
                         </div>
-                        <div className='col-lg-2 mb-2'>
-                            <div className="d-inline-block">
-                                <label htmlFor="startcolor">Start Color</label>
-                                <input
-                                    type="text"
-                                    className='form-control post-hex-color'
-                                    name='vStartColor'
-                                    value={postData.vStartColor}
-                                    onChange={(e) => setPostData({ ...postData, vStartColor: e.target.value })}
-                                    placeholder='Enter Start Color'
-                                />
-                                <input
-                                    type="color"
-                                    name="vStartColor"
-                                    id="startcolor"
-                                    className='form-control p-0 color-input d-none'
-                                    value={postData.vStartColor.slice(0, 7)}
-                                    onChange={handleColorChange} // Handle color picker change
-                                />
-                                <input
-                                    type="text"
-                                    className='form-control post-hex-color d-none'
-                                    name="vStartColor"
-                                    value={postData.vStartColor}
-                                    onChange={handleHexChange} // Handle text input change
-                                    placeholder="#RRGGBBAA"
-                                />
-                            </div>
-                        </div>
-                        <div className='col-lg-2 mb-2'>
-                            <div className="d-inline-block">
-                                <label htmlFor="endcolor">End Color</label>
-                                <input
-                                    type="text"
-                                    className='form-control post-hex-color'
-                                    name='vEndColor'
-                                    value={postData.vEndColor}
-                                    onChange={(e) => setPostData({ ...postData, vEndColor: e.target.value })}
-                                    placeholder='Enter End Color'
-                                />
-                                <input
-                                    type="color"
-                                    name="vEndColor"
-                                    id="endcolor"
-                                    className='form-control p-0 color-input d-none'
-                                    value={postData.vEndColor.slice(0, 7)}
-                                    onChange={handleColorChange} // Handle color picker change
-                                />
-                                <input
-                                    type="text"
-                                    className='form-control post-hex-color d-none'
-                                    name="vEndColor"
-                                    value={postData.vEndColor}
-                                    onChange={handleHexChange} // Handle text input change
-                                    placeholder="#RRGGBBAA"
-                                />
-                            </div>
-                        </div>
-                        <div className='col-lg-2 mb-2'>
-                            <div className="d-inline-block">
-                                <label htmlFor="textcolor">Text Color</label>
-                                <input
-                                    type="color"
-                                    name="vTextColor"
-                                    id="textcolor"
-                                    className='form-control p-0 color-input'
-                                    value={postData.vTextColor}
-                                    onChange={(e) => setPostData({ ...postData, vTextColor: e.target.value })}  // Correctly update the state
-                                />
-                                <input
-                                    type="text"
-                                    className='form-control post-hex-color'
-                                    name='vTextColor'
-                                    value={postData.vTextColor}
-                                    onChange={(e) => setPostData({ ...postData, vTextColor: e.target.value })} />
-                            </div>
-                        </div>
-
                         <div className='col-lg-12 mb-2 text-center'>
                             <button type='submit' className='btn btn-success'>{isUpdating ? ("Update Dtata") : ("Submit Data")}</button>
                         </div>

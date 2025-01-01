@@ -13,10 +13,10 @@ export default function Category() {
     const [category, setCategory] = useState([]);
     const [categoryData, setCategoryData] = useState({
         vName: '',
-        iCatFontSize: '',
+        iNumber: '',
         vIcon: '',
         vLanguageId: '',
-        iCatLine: '',
+        iAppType: '',
     });
 
     const [options, setOptions] = useState([]);
@@ -72,16 +72,80 @@ export default function Category() {
     };
 
     // Handle File Change
-    const handleFileChange = (e) => {
+    // const handleFileChange = (e) => {
+    //     const file = e.target.files[0];
+    //     if (file) {
+    //         setCategoryData((prevState) => ({
+    //             ...prevState,
+    //             vIcon: file, // Add vIcon to postData if a file is selected
+    //         }));
+    //         setPreview(URL.createObjectURL(file)); // Set preview for image
+    //     }
+    //     if (!file) return;
+    //     const formData = new FormData();
+    //     formData.append(e.target.name, file);
+    //     try{
+    //         const
+    //     }
+    // };
+
+    // const handleFileChange = async (e) => {
+    //     const file = e.target.files[0];
+    //     if (!file) return;
+
+    //     // const formData = new FormData();
+    //     // formData.append(e.target.name, file);
+    //     const vIcon = categoryData.vIcon
+
+    //     try {
+    //         const res = await axios.post(`${Test_Api}addImage/details`, {vIcon}, {
+    //             headers: {
+    //                 "Content-Type": "multipart/form-data"
+    //             }
+    //         });
+    //         // Assuming the API returns the paths of the uploaded images
+    //         if (e.target.name === "vIcon") {
+    //             setCategoryData(prevState => ({
+    //                 ...prevState,
+    //                 vIcon: res.data.data.vImage
+    //             }));
+    //         }
+    //         console.log("Uploaded Data ===>", res.data.data);
+    //     } catch (err) {
+    //         console.error("Error uploading images:", err);
+    //     }
+
+    // };
+
+    const handleFileChange = async (e) => {
         const file = e.target.files[0];
-        if (file) {
-            setCategoryData((prevState) => ({
-                ...prevState,
-                vIcon: file, // Add vIcon to postData if a file is selected
-            }));
-            setPreview(URL.createObjectURL(file)); // Set preview for image
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append(e.target.name, file); // Append the file to the form data
+        const vIcon = categoryData.vIcon
+
+        try {
+            const res = await axios.post(`${Test_Api}addImage/details`, { vIcon }, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+
+            // Assuming the API returns the paths of the uploaded images
+            if (res.data?.data?.vImage) {
+                setCategoryData((prevState) => ({
+                    ...prevState,
+                    vIcon: res.data.data.vImage
+                }));
+            }
+
+            console.log("Uploaded Data ===>", res.data.data);
+        } catch (err) {
+            console.error("Error uploading images:", err);
         }
     };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -100,7 +164,12 @@ export default function Category() {
         formData.append('vName', categoryData.vName);
         formData.append('iCatFontSize', categoryData.iCatFontSize);
         formData.append('iCatLine', categoryData.iCatLine);
+        formData.append('vLanguageId', languageId.toString());
 
+        // Append vIcon directly as a file
+        if (categoryData.vIcon) {
+            formData.append('vIcon', categoryData.vIcon); // vIcon is the file object, no need for .toString()
+        }
         // For update request, append vLanguageId from categoryData (if exists), otherwise use the selectedLanguage
         if (isUpdating) {
             // Only append vLanguageId if it's not already part of categoryData (for update purposes)
@@ -111,12 +180,9 @@ export default function Category() {
 
             // Perform PUT request to update the category
             axios
-                .put(`${Test_Api}category/details`, formData, {
+                .put(`${Test_Api}category/details`, { vLanguageId: categoryData.vLanguageId, vCatId: currentId, vName: categoryData.vName, vIcon: categoryData.vIcon.toString(), iAppType: categoryData.iAppType, iNumber: categoryData.iNumber }, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                    },
-                    params: {
-                        vLanguageId: languageId.toString(), // Pass vLanguageId as a query parameter as well
                     },
                 })
                 .then((response) => {
@@ -134,12 +200,9 @@ export default function Category() {
 
             // Perform POST request to create a new category
             axios
-                .post(`${Test_Api}category/details`, formData, {
+                .post(`${Test_Api}category/details`, { vLanguageId: categoryData.vLanguageId, vName: categoryData.vName, vIcon: categoryData.vIcon.toString(), iAppType: categoryData.iAppType, iNumber: categoryData.iNumber }, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                    },
-                    params: {
-                        vLanguageId: languageId.toString(), // Pass vLanguageId as a query parameter
                     },
                 })
                 .then((response) => {
@@ -161,8 +224,8 @@ export default function Category() {
         setCategoryData({
             _id: category._id,
             vName: category.vName,
-            iCatFontSize: category.iCatFontSize,
-            iCatLine: category.iCatLine,
+            iAppType: category.iAppType,
+            iNumber: category.iNumber,
             vLanguageId: category.vLanguageId,
             vIcon: category.vIcon,
         });
@@ -195,10 +258,10 @@ export default function Category() {
     const resetForm = () => {
         setCategoryData({
             vName: '',
-            iCatFontSize: '',
+            iAppType: '',
             vIcon: null,
             vLanguageId: '',
-            iCatLine: '',
+            iNumber: '',
         });
         setPreview(null); // Remove the image preview
         if (fileInputRef.current) {
@@ -252,10 +315,10 @@ export default function Category() {
                             </div>
                             <div className="col-lg-3">
                                 <label htmlFor="fontsize">
-                                    iCatFontSize <span className="text-danger">*</span>
+                                    iNumber <span className="text-danger">*</span>
                                 </label>
                                 <input
-                                    value={categoryData.iCatFontSize}
+                                    value={categoryData.iNumber}
                                     type="text"
                                     name="fontsize"
                                     id="fontsize"
@@ -263,25 +326,26 @@ export default function Category() {
                                     onChange={(e) =>
                                         setCategoryData({
                                             ...categoryData,
-                                            iCatFontSize: e.target.value,
+                                            iNumber: e.target.value,
                                         })
                                     }
                                     required
                                 />
                             </div>
                             <div className="col-lg-3">
-                                <label htmlFor="vspace">iChipVspace</label>
+                                <label htmlFor="vspace">iAppType</label>
                                 <input
+                                    value={categoryData.iAppType}
                                     type="text"
                                     name="vspace"
                                     id="vspace"
                                     className="form-control mb-3"
                                     onChange={(e) =>
-                                        setCategoryData({ ...categoryData, iChipVspace: e.target.value })
+                                        setCategoryData({ ...categoryData, iAppType: e.target.value })
                                     }
                                 />
                             </div>
-                            <div className="col-lg-3">
+                            <div className="col-lg-3 d-none">
                                 <label htmlFor="vspace">iCatLine</label>
                                 <input
                                     value={categoryData.iCatLine}
@@ -298,19 +362,14 @@ export default function Category() {
                                 <label htmlFor="icon">Icon</label>
                                 <input
                                     type="file"
-                                    name="file"
+                                    name="vIcon"
                                     id="icon"
                                     className="form-control mb-3"
                                     onChange={handleFileChange}
                                     ref={fileInputRef}
                                 />
-                                {preview && (
-                                    <img
-                                        crossOrigin="anonymous"
-                                        src={preview}
-                                        alt="Preview"
-                                        className="img-fluid mt-2 category-select-icon"
-                                    />
+                                {categoryData.vIcon && (
+                                    <img crossOrigin="anonymous" src={`${Img_Url}${categoryData.vIcon}`} alt="Original Preview" style={{ width: '100px', height: 'auto', marginTop: '10px' }} />
                                 )}
                             </div>
 
@@ -330,9 +389,8 @@ export default function Category() {
                                 <tr>
                                     <th>No.</th>
                                     <th>Name</th>
-                                    <th>iCatFontSize</th>
-                                    <th>iCatLine</th>
-                                    <th>iChipVspace</th>
+                                    <th>iNumber</th>
+                                    <th>iAppType</th>
                                     <th>Icon</th>
                                     <th>Delete/Update</th>
                                 </tr>
@@ -343,9 +401,8 @@ export default function Category() {
                                         <tr key={id}>
                                             <td>{id + 1}</td>
                                             <td>{item.vName}</td>
-                                            <td>{item.iCatFontSize}</td>
-                                            <td>{item.iCatLine}</td>
-                                            <td>{item.iChipVspace}</td>
+                                            <td>{item.iNumber}</td>
+                                            <td>{item.iAppType}</td>
                                             <td>
                                                 <img
                                                     crossOrigin="anonymous"
