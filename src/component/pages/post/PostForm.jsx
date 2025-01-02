@@ -29,7 +29,7 @@ export default function PostForm({
                                 handleLanguageSelect={handleLanguageSelect}
                             />
                         </div>
-                        <div className='col-lg-12 mb-3'>
+                        <div className='col-lg-12 mb-3 d-none'>
                             <div>
                                 <label htmlFor="languagecode">Language Code<span className='text-danger'>*</span></label>
                                 <input type="text" className='form-control' value={postData.vLanguageCode}

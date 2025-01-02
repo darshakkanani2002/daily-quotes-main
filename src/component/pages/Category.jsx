@@ -126,7 +126,7 @@ export default function Category() {
         const vIcon = categoryData.vIcon
 
         try {
-            const res = await axios.post(`${Test_Api}addImage/details`, { vIcon }, formData, {
+            const res = await axios.post(`${Test_Api}addImage/details`, { vImage:categoryData.vIcon }, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }

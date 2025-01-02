@@ -163,6 +163,7 @@ export default function Post({ selectedLanguage }) {
             vLanguageId: post.vLanguageId,
             vImages: post.vImages
         });
+        console.log("post id", _id = postData._id);
 
         // If the image is already set, create a preview
         if (post.vImages) {
@@ -171,7 +172,7 @@ export default function Post({ selectedLanguage }) {
     };
 
     // Handle form submission to ensure colors are sent correctly
-    const handleSubmit = (e, _id = postData._id ) => {
+    const handleSubmit = (e, _id = postData._id) => {
         e.preventDefault();
 
         const formData = new FormData();
@@ -193,10 +194,16 @@ export default function Post({ selectedLanguage }) {
         }
 
         if (isUpdating) {
+
+            console.log("post id", vPostId = postData._id);
+
             if (!postData._id) {
                 toast.error("vFrameId is missing! Please try again.");
                 return;
             }
+
+
+
 
             axios.put(`${Test_Api}post/details`, {
                 vPostId: _id,  // Add vPostId here
@@ -211,6 +218,8 @@ export default function Post({ selectedLanguage }) {
                     'Content-Type': 'multipart/form-data',
                 }
             })
+
+
                 .then(response => {
                     console.log("Post Updated data ==>", response.data.data);
                     setIsUpdating(false);
@@ -222,6 +231,7 @@ export default function Post({ selectedLanguage }) {
                     console.error("Update failed:", error.response ? error.response.data : error.message);
                     toast.error("Update failed. Please check the category selection.");
                 });
+
         } else {
             // Creating a new post
             axios.post(`${Test_Api}post/details`, {
