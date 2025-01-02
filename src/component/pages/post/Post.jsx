@@ -123,6 +123,8 @@ export default function Post({ selectedLanguage }) {
             console.log('isTime:', checked);
         } else if (name === 'isTrending') {
             console.log('isTrending', checked)
+        }else if (name === 'isPremium') {
+            console.log('isPremium', checked)
         }
 
         setPostData({
@@ -163,7 +165,6 @@ export default function Post({ selectedLanguage }) {
             vLanguageId: post.vLanguageId,
             vImages: post.vImages
         });
-        console.log("post id", _id = postData._id);
 
         // If the image is already set, create a preview
         if (post.vImages) {
@@ -194,9 +195,6 @@ export default function Post({ selectedLanguage }) {
         }
 
         if (isUpdating) {
-
-            console.log("post id", vPostId = postData._id);
-
             if (!postData._id) {
                 toast.error("vFrameId is missing! Please try again.");
                 return;
