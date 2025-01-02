@@ -45,6 +45,24 @@ export default function Sidebar() {
                                 Post
                             </Link>
                         </li>
+                        <li className={`my-2 ${activeMenu === 'banner' ? 'active' : ''}`}>
+                            <Link to="/banner" className='nav-link' onClick={() => handleMenuClick('banner')}>
+                                <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                Banner
+                            </Link>
+                        </li>
+                        <li className={`my-2 ${activeMenu === 'reels' ? 'active' : ''}`}>
+                            <Link to="/reels" className='nav-link' onClick={() => handleMenuClick('reels')}>
+                                <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                Reels
+                            </Link>
+                        </li>
+                        <li className={`my-2 ${activeMenu === 'font' ? 'active' : ''}`}>
+                            <Link to="/font" className='nav-link' onClick={() => handleMenuClick('font')}>
+                                <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                Fonts
+                            </Link>
+                        </li>
                     </ul>
                 </div>
 
@@ -67,6 +85,24 @@ export default function Sidebar() {
                             <li className={`my-2 ${activeMenu === 'post' ? 'active' : ''}`}>
                                 <Link to="/post" className='nav-link' onClick={() => handleMenuClick('post')}>
                                     Post
+                                </Link>
+                            </li>
+                            <li className={`my-2 ${activeMenu === 'banner' ? 'active' : ''}`}>
+                                <Link to="/banner" className='nav-link' onClick={() => handleMenuClick('banner')}>
+                                    <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                    Banner
+                                </Link>
+                            </li>
+                            <li className={`my-2 ${activeMenu === 'reels' ? 'active' : ''}`}>
+                                <Link to="/reels" className='nav-link' onClick={() => handleMenuClick('reels')}>
+                                    <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                    Reels
+                                </Link>
+                            </li>
+                            <li className={`my-2 ${activeMenu === 'font' ? 'active' : ''}`}>
+                                <Link to="/font" className='nav-link' onClick={() => handleMenuClick('font')}>
+                                    <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                    Fonts
                                 </Link>
                             </li>
                         </ul>

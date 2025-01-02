@@ -116,36 +116,26 @@ export default function Category() {
     //     }
 
     // };
-
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
         const formData = new FormData();
-        formData.append(e.target.name, file); // Append the file to the form data
-        const vIcon = categoryData.vIcon
+        formData.append('vIcon', file); // Ensure the correct key name matches API requirements
 
         try {
-            const res = await axios.post(`${Test_Api}addImage/details`, { vImage:categoryData.vIcon }, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
+            const response = await axios.post(`${Test_Api}addImage/details`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
-
-            // Assuming the API returns the paths of the uploaded images
-            if (res.data?.data?.vImage) {
-                setCategoryData((prevState) => ({
-                    ...prevState,
-                    vIcon: res.data.data.vImage
-                }));
+            if (response.data?.data?.vImage) {
+                setCategoryData((prev) => ({ ...prev, vIcon: response.data.data.vImage }));
             }
-
-            console.log("Uploaded Data ===>", res.data.data);
-        } catch (err) {
-            console.error("Error uploading images:", err);
+            console.log('Uploaded Data:', response.data.data);
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            toast.error('Image upload failed!');
         }
     };
-
 
     const handleSubmit = (e) => {
         e.preventDefault();

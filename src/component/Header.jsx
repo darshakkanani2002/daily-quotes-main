@@ -15,6 +15,12 @@ export default function Header() {
                 return 'Post';
             case '/contact':
                 return 'Contact';
+            case '/banner':
+                return 'Banner';
+            case '/reels':
+                return 'Reels';
+            case '/font':
+                return 'Fonts';
             default:
                 return 'Dashboard';
         }
