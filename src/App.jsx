@@ -9,6 +9,8 @@ import Post from './component/pages/post/Post'
 import Banner from './component/banner/Banner'
 import Reels from './component/reels/Reels'
 import Font from './component/font/Font'
+import FrameColor from './component/framecolor/FrameColor'
+import Background from './component/background/Background'
 
 function App() {
 
@@ -27,6 +29,8 @@ function App() {
             <Route path='/banner' element={<Banner></Banner>}></Route>
             <Route path='/reels' element={<Reels></Reels>}></Route>
             <Route path='/font' element={<Font></Font>}></Route>
+            <Route path='/framecolor' element={<FrameColor></FrameColor>}></Route>
+            <Route path="/background" element={<Background></Background>}></Route>
           </Routes>
         </div>
       </Router>

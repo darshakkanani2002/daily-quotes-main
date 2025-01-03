@@ -63,6 +63,18 @@ export default function Sidebar() {
                                 Fonts
                             </Link>
                         </li>
+                        <li className={`my-2 ${activeMenu === 'framecolor' ? 'active' : ''}`}>
+                            <Link to="/framecolor" className='nav-link' onClick={() => handleMenuClick('framecolor')}>
+                                <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                Frame Color
+                            </Link>
+                        </li>
+                        <li className={`my-2 ${activeMenu === 'background' ? 'active' : ''}`}>
+                            <Link to="/background" className='nav-link' onClick={() => handleMenuClick('background')}>
+                                <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                Background
+                            </Link>
+                        </li>
                     </ul>
                 </div>
 
@@ -103,6 +115,18 @@ export default function Sidebar() {
                                 <Link to="/font" className='nav-link' onClick={() => handleMenuClick('font')}>
                                     <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
                                     Fonts
+                                </Link>
+                            </li>
+                            <li className={`my-2 ${activeMenu === 'framecolor' ? 'active' : ''}`}>
+                                <Link to="/framecolor" className='nav-link' onClick={() => handleMenuClick('framecolor')}>
+                                    <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                    Frame Color
+                                </Link>
+                            </li>
+                            <li className={`my-2 ${activeMenu === 'background' ? 'active' : ''}`}>
+                                <Link to="/background" className='nav-link' onClick={() => handleMenuClick('background')}>
+                                    <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                    Background
                                 </Link>
                             </li>
                         </ul>

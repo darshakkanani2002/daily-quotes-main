@@ -21,6 +21,10 @@ export default function Header() {
                 return 'Reels';
             case '/font':
                 return 'Fonts';
+            case '/framecolor':
+                return 'Frame Color';
+            case '/background':
+                return 'Background';
             default:
                 return 'Dashboard';
         }
