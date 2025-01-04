@@ -35,15 +35,18 @@ export default function Background() {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('vimage', backgroundData.vImage);
+        // const formData = new FormData();
+        // formData.append('vimage', backgroundData.vImage);
+        const payload = {
+            vImages: backgroundData.vImage
+        }
         try {
-            const response = await axios.post(`${Test_Api}background/details`, { vImages: backgroundData.vImage }, {
+            const response = await axios.post(`${Test_Api}background/details`, payload, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             console.log("Background Iamges uploaded successfully:", response.data);
             toast.success("Background Iamges uploaded successfully!");
-            fetchData();
+            fetchData(response.data);
             setPreview(null);
             setBackgroundData({ vImage: '' });
 
@@ -71,7 +74,7 @@ export default function Background() {
             .then((response) => {
                 console.log("Deleted Reels Data ==>", response.data);
                 toast.success("Background Iamges deleted successfully!");
-                fetchData();
+                fetchData(response.data);
                 setDeleteId(null);
             })
             .catch((error) => {

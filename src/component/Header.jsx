@@ -25,6 +25,10 @@ export default function Header() {
                 return 'Frame Color';
             case '/background':
                 return 'Background';
+            case '/upcomingevent':
+                return 'Upcoming Event';
+            case '/homecategory':
+                return 'Home Category';
             default:
                 return 'Dashboard';
         }

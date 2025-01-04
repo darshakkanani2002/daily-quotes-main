@@ -11,6 +11,8 @@ import Reels from './component/reels/Reels'
 import Font from './component/font/Font'
 import FrameColor from './component/framecolor/FrameColor'
 import Background from './component/background/Background'
+import UpcomingEvent from './component/upcomingevent/UpcomingEvent'
+import HomeCategory from './component/homecategory/HomeCategory'
 
 function App() {
 
@@ -31,6 +33,8 @@ function App() {
             <Route path='/font' element={<Font></Font>}></Route>
             <Route path='/framecolor' element={<FrameColor></FrameColor>}></Route>
             <Route path="/background" element={<Background></Background>}></Route>
+            <Route path='/upcomingevent' element={<UpcomingEvent></UpcomingEvent>}></Route>
+            <Route path='/homecategory' element={<HomeCategory></HomeCategory>}></Route>
           </Routes>
         </div>
       </Router>
