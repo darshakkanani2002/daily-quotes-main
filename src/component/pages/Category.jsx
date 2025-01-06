@@ -70,58 +70,12 @@ export default function Category() {
             console.log('Selected Options ===>', selectedOption);
         }
     };
-
-    // Handle File Change
-    // const handleFileChange = (e) => {
-    //     const file = e.target.files[0];
-    //     if (file) {
-    //         setCategoryData((prevState) => ({
-    //             ...prevState,
-    //             vIcon: file, // Add vIcon to postData if a file is selected
-    //         }));
-    //         setPreview(URL.createObjectURL(file)); // Set preview for image
-    //     }
-    //     if (!file) return;
-    //     const formData = new FormData();
-    //     formData.append(e.target.name, file);
-    //     try{
-    //         const
-    //     }
-    // };
-
-    // const handleFileChange = async (e) => {
-    //     const file = e.target.files[0];
-    //     if (!file) return;
-
-    //     // const formData = new FormData();
-    //     // formData.append(e.target.name, file);
-    //     const vIcon = categoryData.vIcon
-
-    //     try {
-    //         const res = await axios.post(`${Test_Api}addImage/details`, {vIcon}, {
-    //             headers: {
-    //                 "Content-Type": "multipart/form-data"
-    //             }
-    //         });
-    //         // Assuming the API returns the paths of the uploaded images
-    //         if (e.target.name === "vIcon") {
-    //             setCategoryData(prevState => ({
-    //                 ...prevState,
-    //                 vIcon: res.data.data.vImage
-    //             }));
-    //         }
-    //         console.log("Uploaded Data ===>", res.data.data);
-    //     } catch (err) {
-    //         console.error("Error uploading images:", err);
-    //     }
-
-    // };
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
         const formData = new FormData();
-        formData.append('vIcon', file); // Ensure the correct key name matches API requirements
+        formData.append('vImage', file); // Ensure the correct key name matches API requirements
 
         try {
             const response = await axios.post(`${Test_Api}addImage/details`, formData, {
@@ -179,6 +133,7 @@ export default function Category() {
                     toast.success('Category updated successfully!');
                     fetchData(languageId); // Re-fetch data based on languageId
                     resetForm(); // Reset the form for the next action
+                    setCategoryData(categoryData.vLanguageId);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -199,6 +154,7 @@ export default function Category() {
                     toast.success('Category created successfully!');
                     fetchData(languageId); // Re-fetch data based on languageId
                     resetForm(); // Reset the form for the next action
+                    setCategoryData(categoryData.vLanguageId);
                 })
                 .catch((error) => {
                     console.error(error);
