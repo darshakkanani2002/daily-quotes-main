@@ -205,7 +205,19 @@ export default function UpcomingEvent() {
     };
     return (
         <div>
-            <ToastContainer autoClose={2000} theme="dark" />
+            <ToastContainer
+                position="top-center"
+                autoClose={1000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition:Bounce
+            />
             <div className="side-container category-form p-3 mt-5">
                 <form onSubmit={handleSubmit}>
                     <div className="row">
@@ -260,55 +272,55 @@ export default function UpcomingEvent() {
                 </form>
             </div>
 
-                <div className="side-container mt-5">
-                    <table className="table text-center">
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Name</th>
-                                <th>Date</th>
-                                <th>Image</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentPosts.length > 0 ? (
-                                currentPosts.map((item, id) => (
-                                    <tr key={id}>
-                                        <td>{id + 1}</td>
-                                        <td>{item.vName}</td>
-                                        <td>{item.dtDate}</td>
-                                        <td>
-                                            {item.vImage ? <img src={`${Img_Url}${item.vImage}`} alt="Event" style={{ width: '50px' }} /> : 'N/A'}
-                                        </td>
-                                        <td>
-                                            <button
-                                                className="btn btn-danger mx-2"
-                                                onClick={() => setDeleteId(item._id)}
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal"
-                                            >
-                                                <i className="fa-solid fa-trash"></i>
-                                            </button>
-                                            <button className="btn btn-success mx-2" onClick={() => handleUpdate(item)}>
-                                                <i className="fa-solid fa-pen-to-square"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr className='text-center'>
-                                    <td colSpan="5" className='p-2'>
-                                        <div className='data-not-found-bg'>
-                                            <img src="/images/question.png" alt="question" className='img-fluid' />
-                                            <span className='table-data-not-found-text mt-1 d-block'>Data Not Found !</span>
-                                        </div>
+            <div className="side-container mt-5">
+                <table className="table text-center">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Image</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {currentPosts.length > 0 ? (
+                            currentPosts.map((item, id) => (
+                                <tr key={id}>
+                                    <td>{id + 1}</td>
+                                    <td>{item.vName}</td>
+                                    <td>{item.dtDate}</td>
+                                    <td>
+                                        {item.vImage ? <img src={`${Img_Url}${item.vImage}`} alt="Event" style={{ width: '50px' }} /> : 'N/A'}
+                                    </td>
+                                    <td>
+                                        <button
+                                            className="btn btn-danger mx-2"
+                                            onClick={() => setDeleteId(item._id)}
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
+                                        >
+                                            <i className="fa-solid fa-trash"></i>
+                                        </button>
+                                        <button className="btn btn-success mx-2" onClick={() => handleUpdate(item)}>
+                                            <i className="fa-solid fa-pen-to-square"></i>
+                                        </button>
                                     </td>
                                 </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                            ))
+                        ) : (
+                            <tr className='text-center'>
+                                <td colSpan="5" className='p-2'>
+                                    <div className='data-not-found-bg'>
+                                        <img src="/images/question.png" alt="question" className='img-fluid' />
+                                        <span className='table-data-not-found-text mt-1 d-block'>Data Not Found !</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
 
             <DeleteModal deleteID={deleteID} handleDelete={handleDelete} />
 

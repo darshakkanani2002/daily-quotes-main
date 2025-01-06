@@ -16,6 +16,7 @@ export default function Post({ selectedLanguage }) {
     const [postData, setPostData] = useState({
         _id: '',
         vCatId: '',
+        vPostId: '',
         vLanguageId: '',
         vImages: '',
         vLanguageCode: '',
@@ -123,7 +124,7 @@ export default function Post({ selectedLanguage }) {
             console.log('isTime:', checked);
         } else if (name === 'isTrending') {
             console.log('isTrending', checked)
-        }else if (name === 'isPremium') {
+        } else if (name === 'isPremium') {
             console.log('isPremium', checked)
         }
 
@@ -199,12 +200,8 @@ export default function Post({ selectedLanguage }) {
                 toast.error("vFrameId is missing! Please try again.");
                 return;
             }
-
-
-
-
             axios.put(`${Test_Api}post/details`, {
-                vPostId: _id,  // Add vPostId here
+                vPostId: postData._id,  // Add vPostId here
                 vLanguageId: postData.vLanguageId,
                 vCatId: postData.vCatId,
                 isTime: postData.isTime,

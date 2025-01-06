@@ -1,46 +1,36 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Img_Url, Test_Api } from '../Config';
-import LanguageSelect from '../language/LanguageSelected';
+import DeleteModal from '../modal/DeleteModal';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Banner() {
-    const [selectedLanguage, setSelectedLanguage] = useState(null);
     const [banner, setBanner] = useState([]);
     const [bannerData, setBannerData] = useState({
-        vLanguageId: '',
+        _id: '',
         vBannerImg: '',
     });
     const [preview, setPreview] = useState(null);
+    const [isUpdateMode, setIsUpdateMode] = useState(false);
+    const [updateId, setUpdateId] = useState(null);
+    const [deleteID, setDeleteId] = useState(null);
 
     useEffect(() => {
         fetchData();
     }, []);
 
     const fetchData = () => {
-        axios.post(`${Test_Api}banner/details`)
+        axios.get(`${Test_Api}banner/details`)
             .then((response) => {
                 console.log("Banner image Data ==>", response.data.data);
                 setBanner(response.data.data || []);
             })
             .catch(error => {
-                console.log("Fetch error:", error);
+                console.error("Fetch error:", error);
+                toast.error("Failed to fetch banner data!");
             });
     };
-
-
-    // Handle Language Select
-    const handleLanguageSelect = (selectedOption) => {
-        setSelectedLanguage(selectedOption);
-        setBannerData((prevState) => ({
-            ...prevState,
-            vLanguageId: selectedOption ? selectedOption.id : '',
-        }));
-        if (selectedOption) {
-            fetchData(selectedOption.id);
-            console.log('Selected Options ===>', selectedOption);
-        }
-    };
-
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -54,35 +44,88 @@ export default function Banner() {
         e.preventDefault();
         const formData = new FormData();
         formData.append('vBannerImg', bannerData.vBannerImg);
-        formData.append('vLanguageId', bannerData.vLanguageId);
 
-        axios.post(`${Test_Api}category/list`, { vLanguageId: bannerData.vLanguageId }, formData)
+        if (isUpdateMode) {
+            // Update API
+            axios.put(`${Test_Api}banner/details`, formData)
+                .then((response) => {
+                    console.log("Banner updated successfully:", response.data);
+                    toast.success("Banner updated successfully!");
+                    fetchData();
+                    resetForm();
+                })
+                .catch((error) => {
+                    console.error("Error updating banner:", error);
+                    toast.error("Failed to update banner!");
+                });
+        } else {
+            // Create API
+            axios.post(`${Test_Api}banner/details`, formData)
+                .then((response) => {
+                    console.log("Banner saved successfully:", response.data);
+                    toast.success("Banner saved successfully!");
+                    fetchData();
+                    resetForm();
+                    setBannerData({ vBannerImg: '' })
+                })
+                .catch((error) => {
+                    console.error("Error saving banner:", error);
+                    toast.error("Failed to save banner!");
+                });
+        }
+    };
+
+    const handleUpdate = (item) => {
+        setIsUpdateMode(true);
+        setUpdateId(item._id);
+        setBannerData({ ...bannerData, vBannerImg: item.vBannerImg });
+        setPreview(`${Img_Url}${item.vBannerImg}`);
+    };
+
+    const handleDelete = () => {
+        if (!deleteID) {
+            toast.error('No banner selected for deletion.');
+            return;
+        }
+
+        axios
+            .delete(`${Test_Api}banner/details`, { data: { vBannerId: deleteID } })
             .then((response) => {
-                console.log("Banner image saved successfully:", response.data);
+                toast.success('Banner deleted successfully!');
                 fetchData();
-                setPreview(null);
-                setBannerData({ vBannerImg: '' });
+                setDeleteId(null);
             })
             .catch((error) => {
-                console.error("Error saving banner:", error);
+                console.error('Error deleting banner:', error);
+                toast.error('Failed to delete banner!');
             });
+    };
+
+    const resetForm = () => {
+        setPreview(null);
+        setBannerData({ vBannerImg: '' });
+        setIsUpdateMode(false);
+        setUpdateId(null);
     };
 
     return (
         <div>
+            <ToastContainer
+                position="top-center"
+                autoClose={1000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition:Bounce
+            />
             <div className="side-container category-form p-3 mt-5">
                 <form onSubmit={handleSubmit}>
                     <div className="row">
-                        <div className='col-12'>
-                            <label>
-                                Select Language <span className="text-danger">*</span>
-                            </label>
-                            <LanguageSelect
-                                value={selectedLanguage}
-                                selectedLanguage={selectedLanguage}
-                                handleLanguageSelect={handleLanguageSelect}
-                            />
-                        </div>
                         <div className="col-lg-12">
                             <label htmlFor="icon">Banner Image</label>
                             <input
@@ -94,6 +137,7 @@ export default function Banner() {
                             />
                             {preview && (
                                 <img
+                                    crossOrigin="anonymous"
                                     src={preview}
                                     alt="Preview"
                                     style={{ width: '100px', height: 'auto', marginTop: '10px' }}
@@ -102,7 +146,9 @@ export default function Banner() {
                         </div>
 
                         <div className="col-lg-12 text-center">
-                            <button type="submit" className="btn btn-success">Add Data</button>
+                            <button type="submit" className="btn btn-success">
+                                {isUpdateMode ? 'Update Data' : 'Add Data'}
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -158,6 +204,7 @@ export default function Banner() {
                     </table>
                 </div>
             </div>
+            <DeleteModal deleteID={deleteID} handleDelete={handleDelete} />
         </div>
     );
 }

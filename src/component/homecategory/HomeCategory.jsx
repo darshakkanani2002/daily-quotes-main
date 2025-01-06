@@ -14,7 +14,9 @@ export default function HomeCategory() {
         vLanguageId: '',
         vName: '',
         iNumber: '',
+        iAppType: '',
         vIcon: '',  // Store the image path here
+
     });
     const [options, setOptions] = useState([]);
     const [editId, setEditId] = useState(null);
@@ -92,7 +94,8 @@ export default function HomeCategory() {
             vLanguageId: homecategoryData.vLanguageId,
             vName: homecategoryData.vName,
             iNumber: homecategoryData.iNumber,
-            vIcon: homecategoryData.vIcon,
+            iAppType: homecategoryData.iAppType,
+            // vIcon: homecategoryData.vIcon,
         };
 
         if (editId) {
@@ -105,6 +108,7 @@ export default function HomeCategory() {
                         vName: '',
                         iNumber: '',
                         vIcon: '',
+                        iAppType: '',
                     });
                     fetchData(selectedLanguage?.id); // Refetch data
                     toast.success('Home Category updated successfully!');
@@ -115,6 +119,7 @@ export default function HomeCategory() {
                     toast.error('Failed to update home category.');
                 });
         } else {
+            payload.vIcon = homecategoryData.vIcon;
             axios.post(`${Test_Api}homeCategory/details`, payload)
                 .then(response => {
                     const newHomeCategory = response.data.data;
@@ -148,6 +153,7 @@ export default function HomeCategory() {
             vName: item.vName,
             iNumber: item.iNumber,
             vIcon: item.vIcon,
+            iAppType: item.iAppType
         });
     };
 
@@ -206,6 +212,18 @@ export default function HomeCategory() {
 
                             />
                         </div>
+                        <div className="col-lg-3">
+                            <label>
+                                iAppType <span className="text-danger">*</span>
+                            </label>
+                            <input
+                                value={homecategoryData.iAppType}
+                                type="text"
+                                className="form-control mb-3"
+                                onChange={(e) => setHomecategoryData({ ...homecategoryData, iAppType: e.target.value })}
+
+                            />
+                        </div>
                         <div className="col-lg-12">
                             <label>
                                 Icon <span className="text-danger">*</span>
@@ -235,6 +253,7 @@ export default function HomeCategory() {
                             <th>Name</th>
                             <th>Icon</th>
                             <th>iNumber</th>
+                            <th>iAppType</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -252,6 +271,7 @@ export default function HomeCategory() {
                                         )}
                                     </td>
                                     <td>{item.iNumber}</td>
+                                    <td>{item.iAppType}</td>
                                     <td>
                                         <button
                                             className="btn btn-danger mx-2"
