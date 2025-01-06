@@ -63,27 +63,48 @@ export default function HomeCategory() {
         }
     };
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
+    // const handleImageChange = (e) => {
+    //     const file = e.target.files[0];
+    //     if (!file) {
+    //         const formData = new FormData();
+    //         formData.append('vImage', file);
 
-            axios.post(`${Test_Api}addImage/details`, { vIcon: homecategoryData.vIcon })
-                .then(response => {
-                    const imagePath = response.data.data.vImage;
-                    setHomecategoryData((prevState) => ({
-                        ...prevState,
-                        vIcon: response.data.vImage,  // Save the image URL in vIcon
-                    }));
-                    setImagePreview(URL.createObjectURL(file));  // Set image preview
-                    toast.success('Image uploaded successfully!');
-                    console.log("image upload data ==>", response.data.data)
-                })
-                .catch(error => {
-                    console.error('Error uploading image:', error);
-                    toast.error('Failed to upload image.');
-                });
+    //         axios.post(`${Test_Api}addImage/details`, { vIcon: homecategoryData.vIcon })
+    //             .then(response => {
+    //                 const imagePath = response.data.data.vImage;
+    //                 setHomecategoryData((prevState) => ({
+    //                     ...prevState,
+    //                     vIcon: response.data.vImage,  // Save the image URL in vIcon
+    //                 }));
+    //                 setImagePreview(URL.createObjectURL(file));  // Set image preview
+    //                 toast.success('Image uploaded successfully!');
+    //                 console.log("image upload data ==>", response.data.data)
+    //             })
+    //             .catch(error => {
+    //                 console.error('Error uploading image:', error);
+    //                 toast.error('Failed to upload image.');
+    //             });
+    //     }
+    // };
+
+    const handleImageChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('vImage', file); // Ensure the correct key name matches API requirements
+
+        try {
+            const response = await axios.post(`${Test_Api}addImage/details`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            if (response.data?.data?.vImage) {
+                setHomecategoryData((prev) => ({ ...prev, vIcon: response.data.data.vImage }));
+            }
+            console.log('Uploaded Data:', response.data.data);
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            toast.error('Image upload failed!');
         }
     };
 
@@ -119,7 +140,7 @@ export default function HomeCategory() {
                     toast.error('Failed to update home category.');
                 });
         } else {
-            payload.vIcon = homecategoryData.vIcon;
+            // payload.vIcon = homecategoryData.vIcon;
             axios.post(`${Test_Api}homeCategory/details`, payload)
                 .then(response => {
                     const newHomeCategory = response.data.data;
