@@ -272,7 +272,7 @@ export default function UpcomingEvent() {
                 </form>
             </div>
 
-            <div className="side-container mt-5">
+            <div className="table-responsive side-container mt-5">
                 <table className="table text-center">
                     <thead>
                         <tr>

@@ -213,8 +213,6 @@ export default function Post({ selectedLanguage }) {
                     'Content-Type': 'multipart/form-data',
                 }
             })
-
-
                 .then(response => {
                     console.log("Post Updated data ==>", response.data.data);
                     setIsUpdating(false);

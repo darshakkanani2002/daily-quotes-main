@@ -120,7 +120,7 @@ export default function FrameColor() {
     return (
         <div>
             <div className='side-container'>
-                <div className='category-form p-3'>
+                <div className='category-form p-3 mt-5'>
                     <form onSubmit={handleSubmit}>
                         <div className="row">
                             <div className="col-lg-7">
@@ -153,8 +153,8 @@ export default function FrameColor() {
                 </div>
             </div>
 
-            <div className='side-container'>
-                <div>
+            <div className='side-container mt-5'>
+                <div className='table-responsive'>
                     <table className='table text-center'>
                         <thead>
                             <tr>

@@ -266,7 +266,7 @@ export default function HomeCategory() {
                 </form>
             </div>
 
-            <div className="side-container mt-5">
+            <div className="table-responsive side-container mt-5">
                 <table className="table text-center">
                     <thead>
                         <tr>
@@ -310,7 +310,7 @@ export default function HomeCategory() {
                             ))
                         ) : (
                             <tr className="text-center">
-                                <td colSpan="5" className="p-2">
+                                <td colSpan="6" className="p-2">
                                     <div className="data-not-found-bg">
                                         <img src="/images/question.png" alt="question" className="img-fluid" />
                                         <span className="table-data-not-found-text mt-1 d-block">Data Not Found!</span>

@@ -47,43 +47,43 @@ export default function Sidebar() {
                         </li>
                         <li className={`my-2 ${activeMenu === 'banner' ? 'active' : ''}`}>
                             <Link to="/banner" className='nav-link' onClick={() => handleMenuClick('banner')}>
-                                <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                <i class="fa-solid fa-scroll-torah me-3 sidebar-icon"></i>
                                 Banner
                             </Link>
                         </li>
                         <li className={`my-2 ${activeMenu === 'reels' ? 'active' : ''}`}>
                             <Link to="/reels" className='nav-link' onClick={() => handleMenuClick('reels')}>
-                                <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                <i class="fa-solid fa-school-circle-check me-3 sidebar-icon"></i>
                                 Reels
                             </Link>
                         </li>
                         <li className={`my-2 ${activeMenu === 'font' ? 'active' : ''}`}>
                             <Link to="/font" className='nav-link' onClick={() => handleMenuClick('font')}>
-                                <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                <i class="fa-solid fa-font me-3 sidebar-icon"></i>
                                 Fonts
                             </Link>
                         </li>
                         <li className={`my-2 ${activeMenu === 'framecolor' ? 'active' : ''}`}>
                             <Link to="/framecolor" className='nav-link' onClick={() => handleMenuClick('framecolor')}>
-                                <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                <i class="fa-solid fa-palette me-3 sidebar-icon"></i>
                                 Frame Color
                             </Link>
                         </li>
                         <li className={`my-2 ${activeMenu === 'background' ? 'active' : ''}`}>
                             <Link to="/background" className='nav-link' onClick={() => handleMenuClick('background')}>
-                                <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                <i class="fa-solid fa-square me-3 sidebar-icon"></i>
                                 Background
                             </Link>
                         </li>
                         <li className={`my-2 ${activeMenu === 'upcomingevent' ? 'active' : ''}`}>
                             <Link to="/upcomingevent" className='nav-link' onClick={() => handleMenuClick('upcomingevent')}>
-                                <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                <i class="fa-solid fa-calendar-days me-3 sidebar-icon"></i>
                                 Upcoming Event
                             </Link>
                         </li>
                         <li className={`my-2 ${activeMenu === 'homecategory' ? 'active' : ''}`}>
                             <Link to="/homecategory" className='nav-link' onClick={() => handleMenuClick('homecategory')}>
-                                <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
+                                <i class="fa-solid fa-house me-3 sidebar-icon"></i>
                                 Home Category
                             </Link>
                         </li>
@@ -113,32 +113,37 @@ export default function Sidebar() {
                             </li>
                             <li className={`my-2 ${activeMenu === 'banner' ? 'active' : ''}`}>
                                 <Link to="/banner" className='nav-link' onClick={() => handleMenuClick('banner')}>
-                                    <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
                                     Banner
                                 </Link>
                             </li>
                             <li className={`my-2 ${activeMenu === 'reels' ? 'active' : ''}`}>
                                 <Link to="/reels" className='nav-link' onClick={() => handleMenuClick('reels')}>
-                                    <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
                                     Reels
                                 </Link>
                             </li>
                             <li className={`my-2 ${activeMenu === 'font' ? 'active' : ''}`}>
                                 <Link to="/font" className='nav-link' onClick={() => handleMenuClick('font')}>
-                                    <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
                                     Fonts
                                 </Link>
                             </li>
                             <li className={`my-2 ${activeMenu === 'framecolor' ? 'active' : ''}`}>
                                 <Link to="/framecolor" className='nav-link' onClick={() => handleMenuClick('framecolor')}>
-                                    <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
                                     Frame Color
                                 </Link>
                             </li>
                             <li className={`my-2 ${activeMenu === 'background' ? 'active' : ''}`}>
                                 <Link to="/background" className='nav-link' onClick={() => handleMenuClick('background')}>
-                                    <i className="fa-solid fa-signs-post me-3 sidebar-icon"></i>
                                     Background
+                                </Link>
+                            </li>
+                            <li className={`my-2 ${activeMenu === 'upcomingevent' ? 'active' : ''}`}>
+                                <Link to="/upcomingevent" className='nav-link' onClick={() => handleMenuClick('upcomingevent')}>
+                                    Upcoming Event
+                                </Link>
+                            </li>
+                            <li className={`my-2 ${activeMenu === 'homecategory' ? 'active' : ''}`}>
+                                <Link to="/homecategory" className='nav-link' onClick={() => handleMenuClick('homecategory')}>
+                                    Home Category
                                 </Link>
                             </li>
                         </ul>
