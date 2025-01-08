@@ -13,6 +13,7 @@ import FrameColor from './component/framecolor/FrameColor'
 import Background from './component/background/Background'
 import UpcomingEvent from './component/upcomingevent/UpcomingEvent'
 import HomeCategory from './component/homecategory/HomeCategory'
+import HomePost from './component/homepost/HomePost'
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
             <Route path="/background" element={<Background></Background>}></Route>
             <Route path='/upcomingevent' element={<UpcomingEvent></UpcomingEvent>}></Route>
             <Route path='/homecategory' element={<HomeCategory></HomeCategory>}></Route>
+            <Route path='/homepost' element={<HomePost></HomePost>}></Route>
           </Routes>
         </div>
       </Router>

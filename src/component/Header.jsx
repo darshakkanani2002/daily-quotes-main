@@ -29,6 +29,8 @@ export default function Header() {
                 return 'Upcoming Event';
             case '/homecategory':
                 return 'Home Category';
+            case '/homepost':
+                return 'Home Post';
             default:
                 return 'Dashboard';
         }

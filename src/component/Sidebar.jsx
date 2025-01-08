@@ -87,6 +87,12 @@ export default function Sidebar() {
                                 Home Category
                             </Link>
                         </li>
+                        <li className={`my-2 ${activeMenu === 'homepost' ? 'active' : ''}`}>
+                            <Link to="/homepost" className='nav-link' onClick={() => handleMenuClick('homepost')}>
+                                <i class="fa-solid fa-house me-3 sidebar-icon"></i>
+                                Home Post
+                            </Link>
+                        </li>
                     </ul>
                 </div>
 
