@@ -177,48 +177,38 @@ export default function Post({ selectedLanguage }) {
     const handleSubmit = (e, _id = postData._id) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        // Check if a category has already been selected and stored, otherwise use the current selection.
-        const catId = postData.vCatId || selectedCategory?.id;
-
-        if (!catId) {
-            toast.error("Please select a category.");
-            return;
-        }
-
-        formData.append('vPostId', postData._id);  // Ensure category ID is appended
-        formData.append('vLanguageCode', postData.vLanguageCode);
-        formData.append('isTime', postData.isTime);
-        formData.append('isTrending', postData.isTrending)
-
-        if (postData.vImages) {
-            formData.append('vImages', postData.vImages);
-        }
-
         if (isUpdating) {
             if (!postData._id) {
-                toast.error("vFrameId is missing! Please try again.");
+                toast.error("vPostId is missing! Please try again.");
                 return;
             }
-            axios.put(`${Test_Api}post/details`, {
-                vPostId: postData._id,  // Add vPostId here
-                vLanguageId: postData.vLanguageId,
-                vCatId: postData.vCatId,
-                isTime: postData.isTime,
-                isPremium: postData.isPremium,
-                isTrending: postData.isTrending,
-                vImages: postData.vImages,
-            }, {
+            const catId = postData.vCatId || selectedCategory?.id;
+
+            const updateFormData = new FormData();
+            updateFormData.append('vPostId', currentId);  // Pass vPostId
+            updateFormData.append('vLanguageId', postData.vLanguageId);
+            updateFormData.append('vCatId', postData.vCatId);
+            updateFormData.append('isTime', postData.isTime);
+            updateFormData.append('isPremium', postData.isPremium);
+            updateFormData.append('isTrending', postData.isTrending);
+            if (postData.vImages instanceof File) {
+                // If it's a new file, attach it
+                updateFormData.append('vImages', postData.vImages);
+            } else if (postData.vImages) {
+                // If it's an existing image, send it as a string
+                updateFormData.append('vImages', postData.vImages);
+            }
+            axios.put(`${Test_Api}post/details`, { vPostId: currentId, vCatId: postData.vCatId, vLanguageId: postData.vLanguageId, isTrending: postData.isTrending, isPremium: postData.isPremium, isTime: postData.isTime }, updateFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                }
+                },
             })
                 .then(response => {
-                    console.log("Post Updated data ==>", response.data.data);
+                    console.log("Post Updated Data:", response.data.data);
                     setIsUpdating(false);
                     toast.success("Post updated successfully!");
                     resetForm();
-                    fetchData(catId);  // Use the correct vCatId here
+                    fetchData(catId);  // Ensure correct vCatId is used
                 })
                 .catch(error => {
                     console.error("Update failed:", error.response ? error.response.data : error.message);
@@ -226,6 +216,7 @@ export default function Post({ selectedLanguage }) {
                 });
 
         } else {
+            const catId = postData.vCatId || selectedCategory?.id;
             // Creating a new post
             axios.post(`${Test_Api}post/details`, {
                 vLanguageId: postData.vLanguageId,

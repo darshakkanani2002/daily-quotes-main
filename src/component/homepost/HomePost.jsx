@@ -4,6 +4,8 @@ import Select from 'react-select';
 import axios from 'axios';
 import { Img_Url, Test_Api } from '../Config';
 import DeleteModal from '../modal/DeleteModal';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify styles
 
 export default function HomePost({ selectedLanguage }) {
     const [homepost, setHomepost] = useState([]);
@@ -12,15 +14,15 @@ export default function HomePost({ selectedLanguage }) {
         vCatId: '',
         vLanguageId: '',
         vImages: '',
-        dtDate: '',
-        isTrending: false, // Default to false
-        isPremium: false, // Default to false
-        isTime: false, // Default to false
+        dtCreatedAt: '',
+        isTrending: false,
+        isPremium: false,
+        isTime: false,
     });
     const [options, setOptions] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
-    const [isUpdating, setIsUpdating] = useState(false)
-    const [currentId, setCurrentId] = useState(null)
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [currentId, setCurrentId] = useState(null);
     const fileInputRef = useRef(null);
     const [deleteID, setDeleteId] = useState(null);
     const [preview, setPreview] = useState(null);
@@ -38,12 +40,12 @@ export default function HomePost({ selectedLanguage }) {
     const fetchData = async (page = 1, limit = 33) => {
         try {
             const response = await axios.post(`${Test_Api}homePost/withoutLoginList`, {
-                iPage: page,
-                iLimit: limit,
-                vCatId: homepostData.vCatId, // Ensure vCatId is passed
-                vLanguageId: homepostData.vLanguageId, // Ensure vLanguageId is passed
+                iPage: 1,
+                iLimit: 33,
+                vCatId: homepostData.vCatId,
+                vLanguageId: homepostData.vLanguageId,
             });
-            console.log("Home Post Data List", response.data.data);
+            console.log('Home Post Data List', response.data.data);
             setHomepost(response.data.data);
         } catch (error) {
             console.error('Error fetching home posts:', error.response ? error.response.data : error.message);
@@ -55,7 +57,7 @@ export default function HomePost({ selectedLanguage }) {
             ...prevState,
             vLanguageId: selectedLanguage ? selectedLanguage.value : '',
         }));
-        setOptions([]); // Clear previous options when a new language is selected
+        setOptions([]);
     };
 
     const loadOptions = async () => {
@@ -85,7 +87,6 @@ export default function HomePost({ selectedLanguage }) {
         }
     };
 
-
     const formatDate = (dateString) => {
         if (!dateString) return '';
         const date = new Date(dateString);
@@ -95,81 +96,69 @@ export default function HomePost({ selectedLanguage }) {
         return `${year}/${month}/${day}`;
     };
 
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Create a FormData object
         const formData = new FormData();
-        // Check if a category has already been selected and stored, otherwise use the current selection.
-        const catId = homepostData.vCatId || selectedCategory?.id;
-
-        if (!catId) {
-            toast.error("Please select a category.");
-            return;
-        }
-        formData.append('vCatId', homepostData.vCatId);
-        formData.append('vLanguageId', homepostData.vLanguageId);
-        formData.append('vImages', homepostData.vImages); // Add the file
-        formData.append('dtDate', homepostData.dtDate);
-
-        // Convert checkboxes to boolean
-        formData.append('isTrending', homepostData.isTrending ? true : false);
-        formData.append('isPremium', homepostData.isPremium ? true : false);
-        formData.append('isTime', homepostData.isTime ? true : false);
+        const catId = homepostData.vLanguageId || selectedCategory?.id;
 
         if (isUpdating) {
-            // Append vHomePostId to the FormData for update
-            formData.append('vHomePostId', currentId);
+            formData.append('vCatId', homepostData.vCatId);
+            formData.append('isTime', homepostData.isTime);
+            formData.append('isPremium', homepostData.isPremium);
+            formData.append('isTrending', homepostData.isTrending);
 
-            axios.put(`${Test_Api}homePost/details`, formData, {
+            axios.put(`${Test_Api}homePost/details`, { vHomePostId: currentId, vCatId: homepostData.vCatId }, formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data', // Important for file uploads
+                    'Content-Type': 'multipart/form-data',
                 },
             })
                 .then(response => {
-                    console.log("Home Post Updated List Data ==>", response.data.data);
-                    setHomePostData({
-                        vCatId: '',
-                        vLanguageId: '',
-                        vImages: '',
-                        dtDate: '',
-                        isTrending: '',
-                        isPremium: '',
-                        isTime: '',
-                    });
-                    setPreview(null); // Clear the preview
+                    console.log('Home Post Updated:', response.data.data);
+                    resetForm();
                     fetchData(catId);
                 })
                 .catch(error => {
-                    console.log('Error updating data:', error.response ? error.response.data : error.message);
+                    console.error('Error updating data:', error.response ? error.response.data : error.message);
                 });
         } else {
-            axios
-                .post(`${Test_Api}homePost/details`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data', // Important for file uploads
-                    },
-                })
-                .then((response) => {
-                    console.log('Home Post save Data ==>', response.data.data);
-                    setHomePostData({
-                        vCatId: '',
-                        vLanguageId: '',
-                        vImages: '',
-                        dtDate: '',
-                        isTrending: '',
-                        isPremium: '',
-                        isTime: '',
-                    });
-                    setPreview(null); // Clear the preview
+            formData.append('vCatId', homepostData.vCatId);
+            formData.append('vLanguageId', homepostData.vLanguageId);
+            formData.append('vImages', homepostData.vImages);
+            formData.append('isTime', homepostData.isTime);
+            formData.append('isTrending', homepostData.isTrending);
+            formData.append('isPremium', homepostData.isPremium);
+
+            axios.post(`${Test_Api}homePost/details`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+                .then(response => {
+                    console.log('Home Post Saved:', response.data.data);
+                    toast.success('Home Post saved successfully!');
+                    resetForm();
                     fetchData(catId);
                 })
-                .catch((error) => {
-                    console.log('Error submitting data:', error.response ? error.response.data : error.message);
+                .catch(error => {
+                    console.error('Error saving data:', error.response ? error.response.data : error.message);
                 });
         }
     };
 
+    const resetForm = () => {
+        setHomePostData({
+            vCatId: '',
+            vLanguageId: '',
+            vImages: '',
+            dtCreatedAt: '',
+            isTrending: false,
+            isPremium: false,
+            isTime: false,
+        });
+        setPreview(null);
+        setIsUpdating(false);
+        setCurrentId(null);
+    };
 
     const handleCategorySelect = (selectedOption) => {
         setSelectedCategory(selectedOption);
@@ -177,84 +166,71 @@ export default function HomePost({ selectedLanguage }) {
             ...prevState,
             vCatId: selectedOption ? selectedOption.id : '',
         }));
-        console.log('Selected Category ===>', selectedOption);
+        console.log('Selected Category:', selectedOption);
     };
 
-    // Handle Cahnge for isTime and isTrending Checkbox----------------------------------------
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-
-        // Log to console if isTime checkbox is changed
-        if (name === 'isTime') {
-            console.log('isTime:', checked);
-        } else if (name === 'isTrending') {
-            console.log('isTrending', checked)
-        } else if (name === 'isPremium') {
-            console.log('isPremium', checked)
-        }
-
-        setHomePostData({
-            ...homepostData,
-            [name]: type === 'checkbox' ? checked : value
-        });
+        const { name, type, checked, value } = e.target;
+        setHomePostData((prev) => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value,
+        }));
     };
-
-    // Handle File Change -----------------------------------------------------------------
-    // Inside the Post component
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setHomePostData({ ...homepostData, vImages: file }); // Store the file object
-            setPreview(URL.createObjectURL(file)); // Show a preview
+            setHomePostData((prev) => ({ ...prev, vImages: file }));
+            setPreview(URL.createObjectURL(file));
         }
     };
-    // Handle Update Data
-    // handleUpdate function
+
     const handleUpdate = (post) => {
-        setIsUpdating(true);  // Set the state to updating mode
-        setCurrentId(post._id);  // Store the current post ID
-
-        // Log fetched post colors
-        console.log("Fetched Post Colors:", {
-            vStartColor: post.vStartColor,
-            vEndColor: post.vEndColor,
-            vTextColor: post.vTextColor
-        });
-
+        setIsUpdating(true);
+        setCurrentId(post._id);
         setHomePostData({
             vCatId: post.vCatId,
             vLanguageId: post.vLanguageId,
             vImages: post.vImages,
             dtDate: post.dtDate,
-            isTrending: post.isTrending, // Default to false
-            isPremium: post.isPremium, // Default to false
-            isTime: post.isTime, // Default to false
+            isTrending: post.isTrending,
+            isPremium: post.isPremium,
+            isTime: post.isTime,
         });
-
-        // If the image is already set, create a preview
         if (post.vImages) {
             setPreview(`${Img_Url}${post.vImages}`);
         }
     };
-    // Delete Category Data API
+
     const handleDelete = () => {
-        const languagesId = homepostData.vLanguageId || selectedLanguage?.id;
         axios
             .delete(`${Test_Api}homePost/details`, {
                 data: { arrImageId: [deleteID] },
             })
-            .then((response) => {
-                console.log('Deleted Category Data ==>', response.data);
-                fetchData(languagesId);
-                toast.success('Category deleted successfully!');
+            .then(response => {
+                console.log('Deleted:', response.data);
+                fetchData(homepostData.vLanguageId);
+                toast.success('Post deleted successfully!');
             })
-            .catch((error) => {
-                console.log(error);
+            .catch(error => {
+                console.error('Error deleting post:', error.response ? error.response.data : error.message);
             });
     };
     return (
         <div>
+            <ToastContainer
+                position="top-center"
+                autoClose={1000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition:Bounce
+            />
             <div className="side-container category-form p-3 mt-5">
                 <form onSubmit={handleSubmit}>
                     <div className="row">
@@ -319,7 +295,6 @@ export default function HomePost({ selectedLanguage }) {
                                 type="date"
                                 className="form-control mb-3"
                                 onChange={(e) => setHomePostData({ ...homepostData, dtDate: e.target.value })}
-                                required
                             />
                         </div>
                         <div className="col-lg-12">
@@ -335,7 +310,9 @@ export default function HomePost({ selectedLanguage }) {
                             )}
                         </div>
                         <div className='col-lg-12 mb-2 text-center'>
-                            <button type='submit' className='btn btn-success'>Add Data</button>
+                            <button type="submit" className="btn btn-success">
+                                {isUpdating ? 'Update Data' : 'Add Data'}
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -367,7 +344,7 @@ export default function HomePost({ selectedLanguage }) {
                                             className="category-icon"
                                         />
                                     </td>
-                                    <td>{item.dtDate}</td>
+                                    <td>{formatDate(item.dtCreatedAt)}</td>
                                     <td>{item.isTime ? 'true' : 'false'}</td>
                                     <td>{item.isTrending ? 'true' : 'false'}</td>
                                     <td>{item.isPremium ? 'true' : 'false'}</td>
