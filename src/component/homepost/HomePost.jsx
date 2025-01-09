@@ -100,22 +100,33 @@ export default function HomePost({ selectedLanguage }) {
         e.preventDefault();
         const formData = new FormData();
         const catId = homepostData.vLanguageId || selectedCategory?.id;
+        const vCatId = homepostData.vCatId || selectedCategory?.id;
 
         if (isUpdating) {
-            formData.append('vCatId', homepostData.vCatId);
+            formData.append('vHomePostId', currentId); // Include the post ID in the form data
+            formData.append('vCatId', vCatId);
+            formData.append('vLanguageId', catId);
             formData.append('isTime', homepostData.isTime);
             formData.append('isPremium', homepostData.isPremium);
             formData.append('isTrending', homepostData.isTrending);
 
-            axios.put(`${Test_Api}homePost/details`, { vHomePostId: currentId, vCatId: homepostData.vCatId }, formData, {
+            axios.put(`${Test_Api}homePost/details`, { vHomePostId: currentId, vCatId: vCatId, vLanguageId: catId }, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             })
                 .then(response => {
                     console.log('Home Post Updated:', response.data.data);
-                    resetForm();
-                    fetchData(catId);
+                    setHomePostData({
+                        vCatId: homepostData.vCatId,
+                        vLanguageId: homepostData.vLanguageId,
+                        vImages: '',
+                        dtCreatedAt: '',
+                        isTrending: false,
+                        isPremium: false,
+                        isTime: false,
+                    });
+                    fetchData(vCatId);
                 })
                 .catch(error => {
                     console.error('Error updating data:', error.response ? error.response.data : error.message);
@@ -137,6 +148,15 @@ export default function HomePost({ selectedLanguage }) {
                     console.log('Home Post Saved:', response.data.data);
                     toast.success('Home Post saved successfully!');
                     resetForm();
+                    setHomePostData({
+                        vCatId: homepostData.vCatId,
+                        vLanguageId: homepostData.vLanguageId,
+                        vImages: '',
+                        dtCreatedAt: '',
+                        isTrending: false,
+                        isPremium: false,
+                        isTime: false,
+                    });
                     fetchData(catId);
                 })
                 .catch(error => {
@@ -203,13 +223,14 @@ export default function HomePost({ selectedLanguage }) {
     };
 
     const handleDelete = () => {
+        const catId = homepostData.vLanguageId || selectedCategory?.id;
         axios
             .delete(`${Test_Api}homePost/details`, {
                 data: { arrImageId: [deleteID] },
             })
             .then(response => {
                 console.log('Deleted:', response.data);
-                fetchData(homepostData.vLanguageId);
+                fetchData(catId);
                 toast.success('Post deleted successfully!');
             })
             .catch(error => {
