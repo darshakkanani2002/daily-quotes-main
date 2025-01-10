@@ -143,7 +143,7 @@ export default function Background() {
                                         <td>
                                             <img
                                                 crossOrigin="anonymous"
-                                                src={`${Img_Url}${item.vImages}`}
+                                                src={`${Img_Url}${item.vImage}`}
                                                 style={{ width: '200px', height: '200px' }}
                                             />
                                         </td>
