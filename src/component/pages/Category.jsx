@@ -181,6 +181,9 @@ export default function Category() {
         setIsUpdating(true);
         setCurrentId(category._id);
         setPreview(`${Img_Url}${category.vIcon}`);
+        // Open update modal
+        const updateModal = new bootstrap.Modal(document.getElementById('updateModal'));
+        updateModal.show();
     };
 
     // Delete Category Data API
@@ -401,6 +404,112 @@ export default function Category() {
                     deleteID={deleteID}
                     handleDelete={handleDelete}
                 />
+
+                {/* Update Modal */}
+                <div className="modal fade" id="updateModal" tabIndex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="updateModalLabel">Update Language</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body">
+                                <form onSubmit={handleSubmit}>
+                                    <div className='row'>
+                                        <div className="col-lg-12 mb-3">
+                                            <label>
+                                                Select Language <span className="text-danger">*</span>
+                                            </label>
+                                            <LanguageSelect
+                                                value={selectedLanguage}
+                                                selectedLanguage={selectedLanguage}
+                                                handleLanguageSelect={handleLanguageSelect}
+                                            />
+                                        </div>
+                                        <div className="col-lg-3">
+                                            <label>
+                                                Name <span className="text-danger">*</span>
+                                            </label>
+                                            <input
+                                                value={categoryData.vName}
+                                                type="text"
+                                                name="name"
+                                                id="name"
+                                                className="form-control mb-3"
+                                                onChange={(e) =>
+                                                    setCategoryData({ ...categoryData, vName: e.target.value })
+                                                }
+                                                required
+                                            />
+                                        </div>
+                                        <div className="col-lg-3">
+                                            <label htmlFor="fontsize">
+                                                iNumber <span className="text-danger">*</span>
+                                            </label>
+                                            <input
+                                                value={categoryData.iNumber}
+                                                type="text"
+                                                name="fontsize"
+                                                id="fontsize"
+                                                className="form-control mb-3"
+                                                onChange={(e) =>
+                                                    setCategoryData({
+                                                        ...categoryData,
+                                                        iNumber: e.target.value,
+                                                    })
+                                                }
+                                                required
+                                            />
+                                        </div>
+                                        <div className="col-lg-3">
+                                            <label htmlFor="vspace">iAppType</label>
+                                            <input
+                                                value={categoryData.iAppType}
+                                                type="text"
+                                                name="vspace"
+                                                id="vspace"
+                                                className="form-control mb-3"
+                                                onChange={(e) =>
+                                                    setCategoryData({ ...categoryData, iAppType: e.target.value })
+                                                }
+                                            />
+                                        </div>
+                                        <div className="col-lg-3 d-none">
+                                            <label htmlFor="vspace">iCatLine</label>
+                                            <input
+                                                value={categoryData.iCatLine}
+                                                type="text"
+                                                name="vspace"
+                                                id="vspace"
+                                                className="form-control mb-3"
+                                                onChange={(e) =>
+                                                    setCategoryData({ ...categoryData, iCatLine: e.target.value })
+                                                }
+                                            />
+                                        </div>
+                                        <div className="col-lg-12">
+                                            <label htmlFor="icon">Icon</label>
+                                            <input
+                                                type="file"
+                                                name="vIcon"
+                                                id="icon"
+                                                className="form-control mb-3"
+                                                onChange={handleFileChange}
+                                                ref={fileInputRef}
+                                            />
+                                            {categoryData.vIcon && (
+                                                <img crossOrigin="anonymous" src={`${Img_Url}${categoryData.vIcon}`} alt="Original Preview" style={{ width: '100px', height: 'auto', marginTop: '10px' }} />
+                                            )}
+                                        </div>
+                                    </div>
+                                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">
+                                        Update Language
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

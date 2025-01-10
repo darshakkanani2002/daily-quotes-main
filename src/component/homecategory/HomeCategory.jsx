@@ -285,11 +285,12 @@ export default function HomeCategory() {
                                     <td>{id + 1}</td>
                                     <td>{item.vName}</td>
                                     <td>
-                                        {item.vIcon ? (
-                                            <img src={`${Img_Url}${item.vIcon}`} alt="Icon" style={{ width: '50px' }} />
-                                        ) : (
-                                            'N/A'
-                                        )}
+                                        <img
+                                            crossOrigin="anonymous"
+                                            src={`${Img_Url}${item.vIcon}`}
+                                            alt=""
+                                            className="category-icon"
+                                        />
                                     </td>
                                     <td>{item.iNumber}</td>
                                     <td>{item.iAppType}</td>

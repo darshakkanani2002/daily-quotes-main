@@ -187,7 +187,7 @@ export default function Banner() {
                                                 <i className="fa-solid fa-trash"></i>
                                             </button>
                                             <button
-                                                className="btn btn-success mx-2"
+                                                className="btn btn-success mx-2 d-none"
                                                 onClick={() => handleUpdate(item)}
                                             >
                                                 <i className="fa-solid fa-pen-to-square"></i>

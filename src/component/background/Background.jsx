@@ -143,7 +143,7 @@ export default function Background() {
                                         <td>
                                             <img
                                                 crossOrigin="anonymous"
-                                                src={`${Img_Url}${item.vImage}`}
+                                                src={`${Img_Url}${item.vImages}`}
                                                 style={{ width: '200px', height: '200px' }}
                                             />
                                         </td>
@@ -157,7 +157,7 @@ export default function Background() {
                                                 <i className="fa-solid fa-trash"></i>
                                             </button>
                                             <button
-                                                className="btn btn-success mx-2"
+                                                className="btn btn-success mx-2 d-none"
                                                 onClick={() => toast.info("Update functionality not implemented yet.")}
                                             >
                                                 <i className="fa-solid fa-pen-to-square"></i>

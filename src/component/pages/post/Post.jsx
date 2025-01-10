@@ -150,13 +150,6 @@ export default function Post({ selectedLanguage }) {
         setIsUpdating(true);  // Set the state to updating mode
         setCurrentId(post._id);  // Store the current post ID
 
-        // Log fetched post colors
-        console.log("Fetched Post Colors:", {
-            vStartColor: post.vStartColor,
-            vEndColor: post.vEndColor,
-            vTextColor: post.vTextColor
-        });
-
         setPostData({
             _id: post._id,  // Set the _id as the vFrameId
             vCatId: post.vCatId,  // Ensure category ID is set
@@ -164,15 +157,8 @@ export default function Post({ selectedLanguage }) {
             isPremium: post.isPremium,
             isTrending: post.isTrending,
             vLanguageId: post.vLanguageId,
-            vImages: post.vImages
         });
-
-        // If the image is already set, create a preview
-        if (post.vImages) {
-            setPreview(`${Img_Url}${post.vImages}`);
-        }
     };
-
     // Handle form submission to ensure colors are sent correctly
     const handleSubmit = (e, _id = postData._id) => {
         e.preventDefault();
@@ -191,13 +177,6 @@ export default function Post({ selectedLanguage }) {
             updateFormData.append('isTime', postData.isTime);
             updateFormData.append('isPremium', postData.isPremium);
             updateFormData.append('isTrending', postData.isTrending);
-            if (postData.vImages instanceof File) {
-                // If it's a new file, attach it
-                updateFormData.append('vImages', postData.vImages);
-            } else if (postData.vImages) {
-                // If it's an existing image, send it as a string
-                updateFormData.append('vImages', postData.vImages);
-            }
             axios.put(`${Test_Api}post/details`, { vPostId: currentId, vCatId: postData.vCatId, vLanguageId: postData.vLanguageId, isTrending: postData.isTrending, isPremium: postData.isPremium, isTime: postData.isTime }, updateFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -207,8 +186,12 @@ export default function Post({ selectedLanguage }) {
                     console.log("Post Updated Data:", response.data.data);
                     setIsUpdating(false);
                     toast.success("Post updated successfully!");
-                    resetForm();
+
                     fetchData(catId);  // Ensure correct vCatId is used
+                    setPostData({
+                        ...postData,
+                        vImages: postData.vImages || response.data.data.vImages // Retain the image URL if no new image is uploaded
+                    });
                 })
                 .catch(error => {
                     console.error("Update failed:", error.response ? error.response.data : error.message);
