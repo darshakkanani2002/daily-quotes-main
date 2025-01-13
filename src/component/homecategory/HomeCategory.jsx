@@ -5,12 +5,14 @@ import { Img_Url, Test_Api } from '../Config';
 import DeleteModal from '../modal/DeleteModal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Category from '../pages/Category';
 
 export default function HomeCategory() {
     const [languages, setLanguages] = useState([]);
     const [selectedLanguage, setSelectedLanguage] = useState(null);
     const [homecategory, setHomecategory] = useState([]);
     const [homecategoryData, setHomecategoryData] = useState({
+        _id: '',
         vLanguageId: '',
         vName: '',
         iNumber: '',
@@ -23,6 +25,7 @@ export default function HomeCategory() {
     const [deleteID, setDeleteId] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);  // To show the preview
     const fileInputRef = useRef(null);
+    const [currentId, setCurrentId] = useState(null);
 
     useEffect(() => {
         loadOptions();
@@ -121,8 +124,9 @@ export default function HomeCategory() {
 
         if (editId) {
             payload.vCatId = editId;
-
-            axios.put(`${Test_Api}homeCategory/details`, payload)
+            const formData = new FormData();
+            formData.append('vCatId', currentId);
+            axios.put(`${Test_Api}homeCategory/details`, { vCatId: currentId, vIcon: homecategoryData.vIcon, vLanguageId: homecategoryData.vLanguageId, vName: homecategoryData.vName, iAppType: homecategoryData.iAppType, iNumber: homecategoryData.iNumber }, payload)
                 .then(response => {
                     setHomecategoryData({
                         vLanguageId: '',
@@ -141,7 +145,7 @@ export default function HomeCategory() {
                 });
         } else {
             // payload.vIcon = homecategoryData.vIcon;
-            axios.post(`${Test_Api}homeCategory/details`, payload)
+            axios.post(`${Test_Api}homeCategory/details`, { vIcon: homecategoryData.vIcon, vLanguageId: homecategoryData.vLanguageId, vName: homecategoryData.vName, iAppType: homecategoryData.iAppType, iNumber: homecategoryData.iNumber }, payload)
                 .then(response => {
                     const newHomeCategory = response.data.data;
 
@@ -176,6 +180,7 @@ export default function HomeCategory() {
             vIcon: item.vIcon,
             iAppType: item.iAppType
         });
+        setCurrentId(item._id);
     };
 
     const handleDelete = () => {
@@ -255,7 +260,7 @@ export default function HomeCategory() {
                                 onChange={handleImageChange}
                                 ref={fileInputRef}
                             />
-                            {imagePreview && <img src={imagePreview} alt="Preview" style={{ width: '100px', marginTop: '10px' }} />}
+                            {imagePreview && <img crossOrigin="anonymous" src={imagePreview} alt="Preview" style={{ width: '100px', marginTop: '10px' }} />}
                         </div>
                         <div className="col-lg-12 text-center">
                             <button type="submit" className="btn btn-success">
@@ -288,7 +293,7 @@ export default function HomeCategory() {
                                         <img
                                             crossOrigin="anonymous"
                                             src={`${Img_Url}${item.vIcon}`}
-                                            alt=""
+                                            alt="Category Icon"
                                             className="category-icon"
                                         />
                                     </td>

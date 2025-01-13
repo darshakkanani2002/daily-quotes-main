@@ -16,7 +16,7 @@ export default function UpcomingEvent() {
         vLanguageId: '',
         vName: '',
         dtDate: '',
-        vImage: '',
+        vImages: '',
     });
     const fileInputRef = useRef(null);
     const [options, setOptions] = useState([]);
@@ -24,6 +24,7 @@ export default function UpcomingEvent() {
     const [editId, setEditId] = useState(null);
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
+    const [preview, setPreview] = useState(null);
     const postsPerPage = 10;  // Display 12 posts per page
 
     useEffect(() => {
@@ -91,7 +92,7 @@ export default function UpcomingEvent() {
             vLanguageId: upcomingData.vLanguageId,
             vName: upcomingData.vName,
             dtDate: formattedDate,
-            // vImage: upcomingData.vImage,
+            // vImages: upcomingData.vImages,
         };
 
         if (editId) {
@@ -101,7 +102,7 @@ export default function UpcomingEvent() {
                 .put(`${Test_Api}upcomingEvent/details`, payload)
                 .then((response) => {
                     toast.success('Event updated successfully!');
-                    setUpcomingData({ vName: '', dtDate: '', vLanguageId: '', vImage: '' });
+                    setUpcomingData({ vName: '', dtDate: '', vLanguageId: '', vImages: '' });
                     console.log("Upcoming Event Updated data ==>", response.data.data)
                     setEditId(null);
                     fetchData(selectedLanguage?.id);
@@ -112,10 +113,10 @@ export default function UpcomingEvent() {
                 });
         } else {
             axios
-                .post(`${Test_Api}upcomingEvent/details`, payload)
+                .post(`${Test_Api}upcomingEvent/details`, { vName: upcomingData.vName, dtDate: upcomingData.dtDate, vLanguageId: upcomingData.vLanguageId }, payload)
                 .then((response) => {
                     toast.success('Event added successfully!');
-                    setUpcomingData({ vName: '', dtDate: '', vLanguageId: upcomingData.vLanguageId, vImage: '' });
+                    setUpcomingData({ vName: '', dtDate: '', vLanguageId: upcomingData.vLanguageId, vImages: '' });
                     console.log("Upcoming event save data ==>", response.data.data)
                     fetchData(selectedLanguage?.id);
                 })
@@ -137,27 +138,15 @@ export default function UpcomingEvent() {
             vLanguageId: item.vLanguageId,
             vName: item.vName,
             dtDate: formattedDate, // Correctly formatted local date
-            vImage: item.vImage,
+            vImages: item.vImages,
         });
     };
 
-    const handleFileChange = async (e) => {
+    const handleFileChange = (e) => {
         const file = e.target.files[0];
-        if (!file) return;
-
-        const formData = new FormData();
-        formData.append('vImage', file);
-
-        try {
-            const response = await axios.post(`${Test_Api}addImage/details`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
-            if (response.data?.data?.vImage) {
-                setUpcomingData((prev) => ({ ...prev, vImage: response.data.data.vImage }));
-            }
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            toast.error('Image upload failed!');
+        if (file) {
+            setUpcomingData({ ...upcomingData, vImages: file });
+            setPreview(URL.createObjectURL(file));
         }
     };
 
@@ -254,10 +243,10 @@ export default function UpcomingEvent() {
                         <div className="col-lg-12">
                             <label>Image</label>
                             <input type="file" className="form-control mb-3" onChange={handleFileChange} ref={fileInputRef} />
-                            {upcomingData.vImage && (
+                            {preview && (
                                 <img
                                     crossOrigin="anonymous"
-                                    src={`${Img_Url}${upcomingData.vImage}`}
+                                    src={preview} // Show the local file preview URL
                                     alt="Preview"
                                     style={{ width: '100px', marginTop: '10px' }}
                                 />
@@ -291,7 +280,7 @@ export default function UpcomingEvent() {
                                     <td>{item.vName}</td>
                                     <td>{item.dtDate}</td>
                                     <td>
-                                        {item.vImage ? <img src={`${Img_Url}${item.vImage}`} alt="Event" style={{ width: '50px' }} /> : 'N/A'}
+                                        <img crossOrigin="anonymous" src={`${Img_Url}${item.vImages}`} alt="Event" style={{ width: '50px' }} />
                                     </td>
                                     <td>
                                         <button
