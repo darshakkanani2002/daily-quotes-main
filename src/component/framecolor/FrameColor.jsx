@@ -100,6 +100,9 @@ export default function FrameColor() {
             arrColorsFrame: item.arrColorsFrame,
             arrColorsBorder: item.arrColorsBorder,
         });
+        // Open update modal
+        const updateModal = new bootstrap.Modal(document.getElementById('updateModal'));
+        updateModal.show();
     };
 
     const handleDelete = () => {
@@ -254,6 +257,47 @@ export default function FrameColor() {
                 theme="dark"
                 transition:Bounce
             />
+
+            {/* Update Modal */}
+            <div className="modal fade" id="updateModal" tabIndex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="updateModalLabel">Update Language</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <form onSubmit={handleSubmit}>
+                                <div className="row">
+                                    <div className="col-12 mb-3">
+                                        <label htmlFor="">arrColorsFrame</label>
+                                        <input
+                                            type="text"
+                                            value={framecolorData.arrColorsFrame.join(',')}
+                                            className="form-control py-2"
+                                            placeholder="Enter colors separated by commas"
+                                            onChange={(e) => handleArrayInputChange(e, 'arrColorsFrame')}
+                                        />
+                                    </div>
+                                    <div className="col-12 mb-3">
+                                        <label htmlFor="">arrColorsBorder</label>
+                                        <input
+                                            type="text"
+                                            value={framecolorData.arrColorsBorder.join(',')}
+                                            className="form-control py-2"
+                                            placeholder="Enter colors separated by commas"
+                                            onChange={(e) => handleArrayInputChange(e, 'arrColorsBorder')}
+                                        />
+                                    </div>
+                                </div>
+                                <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">
+                                    Update Language
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

@@ -140,6 +140,9 @@ export default function UpcomingEvent() {
             dtDate: formattedDate, // Correctly formatted local date
             vImages: item.vImages,
         });
+        // Open update modal
+        const updateModal = new bootstrap.Modal(document.getElementById('updateModal'));
+        updateModal.show();
     };
 
     const handleFileChange = (e) => {
@@ -324,6 +327,70 @@ export default function UpcomingEvent() {
                     totalPages={totalPages}
                     handlePaginationClick={handlePaginationClick}
                 ></Pagination>
+            </div>
+
+
+            {/* Update Modal */}
+            <div className="modal fade" id="updateModal" tabIndex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="updateModalLabel">Update Language</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <form onSubmit={handleSubmit}>
+                                <div className="row">
+                                    <div className="col-lg-12 mb-3">
+                                        <label>
+                                            Select Language <span className="text-danger">*</span>
+                                        </label>
+                                        <LanguageSelect value={selectedLanguage} handleLanguageSelect={handleLanguageSelect} />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <label>
+                                            Name <span className="text-danger">*</span>
+                                        </label>
+                                        <input
+                                            value={upcomingData.vName}
+                                            type="text"
+                                            className="form-control mb-3"
+                                            onChange={(e) => setUpcomingData({ ...upcomingData, vName: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <label>
+                                            Date <span className="text-danger">*</span>
+                                        </label>
+                                        <input
+                                            value={upcomingData.dtDate || ''} // Ensure a fallback for null or undefined
+                                            type="date"
+                                            className="form-control mb-3"
+                                            onChange={(e) => setUpcomingData({ ...upcomingData, dtDate: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="col-lg-12">
+                                        <label>Image</label>
+                                        <input type="file" className="form-control mb-3" onChange={handleFileChange} ref={fileInputRef} />
+                                        {preview && (
+                                            <img
+                                                crossOrigin="anonymous"
+                                                src={preview} // Show the local file preview URL
+                                                alt="Preview"
+                                                style={{ width: '100px', marginTop: '10px' }}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                                <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">
+                                    Update Event
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
