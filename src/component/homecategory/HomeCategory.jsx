@@ -181,6 +181,9 @@ export default function HomeCategory() {
             iAppType: item.iAppType
         });
         setCurrentId(item._id);
+        // Open update modal
+        const updateModal = new bootstrap.Modal(document.getElementById('updateModal'));
+        updateModal.show();
     };
 
     const handleDelete = () => {
@@ -329,6 +332,81 @@ export default function HomeCategory() {
             </div>
 
             <DeleteModal deleteID={deleteID} handleDelete={handleDelete} />
+
+            {/* Update Modal */}
+            <div className="modal fade" id="updateModal" tabIndex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="updateModalLabel">Update Language</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <form onSubmit={handleSubmit}>
+                                <div className="row">
+                                    <div className="col-lg-12 mb-3">
+                                        <label>
+                                            Select Language <span className="text-danger">*</span>
+                                        </label>
+                                        <LanguageSelect value={selectedLanguage} handleLanguageSelect={handleLanguageSelect} />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <label>
+                                            Name <span className="text-danger">*</span>
+                                        </label>
+                                        <input
+                                            value={homecategoryData.vName}
+                                            type="text"
+                                            className="form-control mb-3"
+                                            onChange={(e) => setHomecategoryData({ ...homecategoryData, vName: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <label>
+                                            iNumber <span className="text-danger">*</span>
+                                        </label>
+                                        <input
+                                            value={homecategoryData.iNumber}
+                                            type="text"
+                                            className="form-control mb-3"
+                                            onChange={(e) => setHomecategoryData({ ...homecategoryData, iNumber: e.target.value })}
+
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <label>
+                                            iAppType <span className="text-danger">*</span>
+                                        </label>
+                                        <input
+                                            value={homecategoryData.iAppType}
+                                            type="text"
+                                            className="form-control mb-3"
+                                            onChange={(e) => setHomecategoryData({ ...homecategoryData, iAppType: e.target.value })}
+
+                                        />
+                                    </div>
+                                    <div className="col-lg-12">
+                                        <label>
+                                            Icon <span className="text-danger">*</span>
+                                        </label>
+                                        <input
+                                            type="file"
+                                            className="form-control mb-3"
+                                            onChange={handleImageChange}
+                                            ref={fileInputRef}
+                                        />
+                                        {imagePreview && <img crossOrigin="anonymous" src={imagePreview} alt="Preview" style={{ width: '100px', marginTop: '10px' }} />}
+                                    </div>
+                                </div>
+                                <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">
+                                    Update Home Category
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
