@@ -11,7 +11,7 @@ body {
 /* Main content css */
 .content {
   /* width: 100%; */
-  margin-left: 250px !important;
+  margin-left: 280px !important;
   -webkit-flex-grow: 1;
   flex-grow: 1;
   overflow: hidden;

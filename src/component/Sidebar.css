@@ -5,8 +5,31 @@
     padding: 20px;
     height: 100vh;
     position: fixed;
-    width: 250px;
+    width: 280px;
     box-shadow: 0px 0px 6px 3px #d8d8d8;
+    overflow-y: auto;
+}
+
+/* width */
+.sidebar::-webkit-scrollbar {
+    width: 0px;
+}
+
+/* Track */
+.sidebar::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+}
+
+/* Handle */
+.sidebar::-webkit-scrollbar-thumb {
+    background: red;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #b30000;
 }
 
 .sidebar h2 {

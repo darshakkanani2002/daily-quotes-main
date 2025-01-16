@@ -14,6 +14,8 @@ import Background from './component/background/Background'
 import UpcomingEvent from './component/upcomingevent/UpcomingEvent'
 import HomeCategory from './component/homecategory/HomeCategory'
 import HomePost from './component/homepost/HomePost'
+import BussinessCategory from './component/bussiness/BussinessCategory'
+import BussinessSubCategory from './component/bussiness/BussinessSubCategory'
 
 function App() {
 
@@ -37,6 +39,8 @@ function App() {
             <Route path='/upcomingevent' element={<UpcomingEvent></UpcomingEvent>}></Route>
             <Route path='/homecategory' element={<HomeCategory></HomeCategory>}></Route>
             <Route path='/homepost' element={<HomePost></HomePost>}></Route>
+            <Route path='/bussinesscategory' element={<BussinessCategory></BussinessCategory>}></Route>
+            <Route path='/bussinesssubcategory' element={<BussinessSubCategory></BussinessSubCategory>}></Route>
           </Routes>
         </div>
       </Router>

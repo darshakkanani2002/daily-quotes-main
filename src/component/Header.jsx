@@ -31,6 +31,10 @@ export default function Header() {
                 return 'Home Category';
             case '/homepost':
                 return 'Home Post';
+            case '/bussinesscategory':
+                return 'Bussiness Category';
+            case '/bussinesssubcategory':
+                return 'Bussiness Sub Category';
             default:
                 return 'Dashboard';
         }
