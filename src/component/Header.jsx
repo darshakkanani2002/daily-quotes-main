@@ -35,6 +35,8 @@ export default function Header() {
                 return 'Bussiness Category';
             case '/bussinesssubcategory':
                 return 'Bussiness Sub Category';
+                case '/bussinesspost':
+                    return 'Bussiness Post';
             default:
                 return 'Dashboard';
         }

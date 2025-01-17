@@ -16,6 +16,7 @@ import HomeCategory from './component/homecategory/HomeCategory'
 import HomePost from './component/homepost/HomePost'
 import BussinessCategory from './component/bussiness/BussinessCategory'
 import BussinessSubCategory from './component/bussiness/BussinessSubCategory'
+import BussinessPost from './component/bussiness/BussinessPost'
 
 function App() {
 
@@ -41,6 +42,7 @@ function App() {
             <Route path='/homepost' element={<HomePost></HomePost>}></Route>
             <Route path='/bussinesscategory' element={<BussinessCategory></BussinessCategory>}></Route>
             <Route path='/bussinesssubcategory' element={<BussinessSubCategory></BussinessSubCategory>}></Route>
+            <Route path='/bussinesspost' element={<BussinessPost></BussinessPost>}></Route>
           </Routes>
         </div>
       </Router>

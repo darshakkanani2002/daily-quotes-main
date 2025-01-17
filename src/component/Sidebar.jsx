@@ -102,7 +102,13 @@ export default function Sidebar() {
                         <li className={`my-2 ${activeMenu === 'bussinesssubcategory' ? 'active' : ''}`}>
                             <Link to="/bussinesssubcategory" className='nav-link' onClick={() => handleMenuClick('bussinesssubcategory')}>
                                 <i class="fa-solid fa-house me-3 sidebar-icon"></i>
-                                Bussiness Category
+                                Bussiness Sub Category
+                            </Link>
+                        </li>
+                        <li className={`my-2 ${activeMenu === 'bussinesspost' ? 'active' : ''}`}>
+                            <Link to="/bussinesspost" className='nav-link' onClick={() => handleMenuClick('bussinesspost')}>
+                                <i class="fa-solid fa-house me-3 sidebar-icon"></i>
+                                Bussiness Post
                             </Link>
                         </li>
                     </ul>
