@@ -154,7 +154,7 @@ export default function BussinessSubCategory() {
                     <div className="row">
                         <div className="col-lg-12 mb-3">
                             <label>
-                                Select Language <span className="text-danger">*</span>
+                                Bussiness Category <span className="text-danger">*</span>
                             </label>
                             <Select
                                 value={selectedLanguage}
@@ -202,7 +202,9 @@ export default function BussinessSubCategory() {
                     </div>
                 </form>
             </div>
-
+            <div className='text-center mt-4'>
+                <h3>Total Business Sub Category: {bussinessSubCategory.length}</h3>
+            </div>
             <div className="side-container my-5">
                 <div className="table-responsive">
                     <table className="table text-center">

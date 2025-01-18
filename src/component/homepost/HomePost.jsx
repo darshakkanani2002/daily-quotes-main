@@ -6,6 +6,7 @@ import { Img_Url, Test_Api } from '../Config';
 import DeleteModal from '../modal/DeleteModal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import Toastify styles
+import Pagination from '../pagination/Pagination';
 
 export default function HomePost({ selectedLanguage }) {
     const [homepost, setHomepost] = useState([]);
@@ -26,6 +27,9 @@ export default function HomePost({ selectedLanguage }) {
     const fileInputRef = useRef(null);
     const [deleteID, setDeleteId] = useState(null);
     const [preview, setPreview] = useState(null);
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 10;  // Display 12 posts per page
 
     useEffect(() => {
         loadOptions();
@@ -237,6 +241,29 @@ export default function HomePost({ selectedLanguage }) {
                 console.error('Error deleting post:', error.response ? error.response.data : error.message);
             });
     };
+
+    // Pagination Logic ---------------------------------------------------------------------
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = homepost.slice(indexOfFirstPost, indexOfLastPost);
+
+    const totalPages = Math.ceil(homepost.length / postsPerPage);
+
+    const handlePaginationClick = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
     return (
         <div>
             <ToastContainer
@@ -338,7 +365,9 @@ export default function HomePost({ selectedLanguage }) {
                     </div>
                 </form>
             </div>
-
+            <div className='text-center mt-4'>
+                <h3>Total Home Post: {homepost.length}</h3>
+            </div>
             <div className="table-responsive side-container mt-5">
                 <table className="table text-center">
                     <thead>
@@ -353,8 +382,8 @@ export default function HomePost({ selectedLanguage }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {homepost.length > 0 ? (
-                            homepost.map((item, id) => (
+                        {currentPosts.length > 0 ? (
+                            currentPosts.map((item, id) => (
                                 <tr key={id}>
                                     <td>{id + 1}</td>
                                     <td>
@@ -407,6 +436,15 @@ export default function HomePost({ selectedLanguage }) {
                 deleteID={deleteID}
                 handleDelete={handleDelete}
             />
+
+            {/* Pagination */}
+            <Pagination
+                handlePrevious={handlePrevious}
+                handleNext={handleNext}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePaginationClick={handlePaginationClick}
+            ></Pagination>
         </div>
     );
 }

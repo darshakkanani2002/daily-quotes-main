@@ -111,10 +111,12 @@ export default function BussinessCategory() {
                     </div>
                 </div>
             </div>
-
+            <div className='text-center mt-4'>
+                <h3>Total Business Category: {bussinesscat.length}</h3>
+            </div>
             <div className="side-container">
                 <div>
-                    <table className="table text-center">
+                    <table className="table text-center mt-4">
                         <thead>
                             <tr>
                                 <th>No.</th>

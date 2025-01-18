@@ -274,6 +274,9 @@ export default function HomeCategory() {
                 </form>
             </div>
 
+            <div className='text-center mt-4'>
+                <h3>Total Home Category: {homecategory.length}</h3>
+            </div>
             <div className="table-responsive side-container mt-5">
                 <table className="table text-center">
                     <thead>

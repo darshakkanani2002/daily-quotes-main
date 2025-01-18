@@ -3,6 +3,10 @@ import BussinessLanguageSelect from './BussinessLanguageSelect'
 import Select from 'react-select';
 import { Img_Url, Test_Api } from '../Config';
 import axios from 'axios';
+import DeleteModal from '../modal/DeleteModal';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify styles
+import Pagination from '../pagination/Pagination';
 
 export default function BussinessPost({ selectedLanguage }) {
     const [bussinessPost, setBussinessPost] = useState([]);
@@ -20,6 +24,13 @@ export default function BussinessPost({ selectedLanguage }) {
     const fileInputRef = useRef(null);
     const [preview, setPreview] = useState(null);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [currentId, setCurrentId] = useState(null);
+    const [deleteID, setDeleteId] = useState(null);
+
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 10;  // Display 12 posts per page
+
     useEffect(() => {
         loadOptions();
     }, [bussinessPostData.vLanguageId]);
@@ -108,26 +119,142 @@ export default function BussinessPost({ selectedLanguage }) {
     };
     const handleSubmit = (e) => {
         e.preventDefault();
+        const formData = new FormData();
         const catId = bussinessPostData.vLanguageId || selectedCategory?.id;
         const vCatId = bussinessPostData.vCatId || selectedCategory?.id;
-        axios.post(`${Test_Api}businessCatPost/details`, { vCatId: bussinessPostData.vCatId, vLanguageId: bussinessPostData.vLanguageId, isTrending: bussinessPostData.isTrending, isPremium: bussinessPostData.isPremium, isTime: bussinessPostData.isTime }).then(response => {
-            console.log("Bussiness Post Data Save ==>", response.data.data);
-            setBussinessPostData({
-                vCatId: bussinessPostData.vCatId,
-                vLanguageId: bussinessPostData.vLanguageId,
-                vImages: '',
-                isTrending: false,
-                isPremium: false,
-                isTime: false,
-            });
-            fetchData(vCatId);
-        }).catch(error => {
-            console.log(error);
 
-        })
-    }
+        if (isUpdating) {
+            formData.append('vHomePostId', currentId); // Include the post ID in the form data
+            formData.append('vCatId', vCatId);
+            formData.append('vLanguageId', catId);
+            formData.append('isTime', bussinessPostData.isTime);
+            formData.append('isPremium', bussinessPostData.isPremium);
+            formData.append('isTrending', bussinessPostData.isTrending);
+
+            axios.put(`${Test_Api}businessCatPost/details`, { vHomePostId: currentId, vCatId: vCatId, vLanguageId: catId }, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+                .then(response => {
+                    console.log('Home Post Updated:', response.data.data);
+                    setBussinessPostData({
+                        vCatId: bussinessPostData.vCatId,
+                        vLanguageId: bussinessPostData.vLanguageId,
+                        vImages: '',
+                        dtCreatedAt: '',
+                        isTrending: false,
+                        isPremium: false,
+                        isTime: false,
+                    });
+                    fetchData(vCatId);
+                })
+                .catch(error => {
+                    console.error('Error updating data:', error.response ? error.response.data : error.message);
+                });
+        } else {
+            formData.append('vCatId', bussinessPostData.vCatId);
+            formData.append('vLanguageId', bussinessPostData.vLanguageId);
+            formData.append('vImages', bussinessPostData.vImages);
+            formData.append('isTime', bussinessPostData.isTime);
+            formData.append('isTrending', bussinessPostData.isTrending);
+            formData.append('isPremium', bussinessPostData.isPremium);
+
+            axios.post(`${Test_Api}businessCatPost/details`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+                .then(response => {
+                    console.log('Home Post Saved:', response.data.data);
+                    toast.success('Home Post saved successfully!');
+                    setBussinessPostData({
+                        vCatId: bussinessPostData.vCatId,
+                        vLanguageId: bussinessPostData.vLanguageId,
+                        vImages: '',
+                        dtCreatedAt: '',
+                        isTrending: false,
+                        isPremium: false,
+                        isTime: false,
+                    });
+                    fetchData(vCatId);
+                })
+                .catch(error => {
+                    console.error('Error saving data:', error.response ? error.response.data : error.message);
+                });
+        }
+    };
+
+    const handleUpdate = (post) => {
+        setIsUpdating(true);
+        setCurrentId(post._id);
+        setBussinessPostData({
+            vCatId: post.vCatId,
+            vLanguageId: post.vLanguageId,
+            vImages: post.vImages,
+            dtDate: post.dtDate,
+            isTrending: post.isTrending,
+            isPremium: post.isPremium,
+            isTime: post.isTime,
+        });
+        if (post.vImages) {
+            setPreview(`${Img_Url}${post.vImages}`);
+        }
+    };
+
+    const handleDelete = () => {
+        const catId = bussinessPostData.vLanguageId || selectedCategory?.id;
+        axios
+            .delete(`${Test_Api}businessCatPost/details`, {
+                data: { arrImageId: [deleteID] },
+            })
+            .then(response => {
+                console.log('Deleted:', response.data);
+                fetchData(catId);
+                toast.success('Post deleted successfully!');
+            })
+            .catch(error => {
+                console.error('Error deleting post:', error.response ? error.response.data : error.message);
+            });
+    };
+
+    // Pagination Logic ---------------------------------------------------------------------
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = bussinessPost.slice(indexOfFirstPost, indexOfLastPost);
+
+    const totalPages = Math.ceil(bussinessPost.length / postsPerPage);
+
+    const handlePaginationClick = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
     return (
         <div>
+            <ToastContainer
+                position="top-center"
+                autoClose={1000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition:Bounce
+            />
             <div className="side-container category-form p-3 mt-5">
                 <form onSubmit={handleSubmit}>
                     <div className="row">
@@ -214,13 +341,16 @@ export default function BussinessPost({ selectedLanguage }) {
                     </div>
                 </form>
             </div>
-            <div className="table-responsive side-container mt-5">
+            <div className='text-center mt-4'>
+                <h3>Total Business Posts: {bussinessPost.length}</h3>
+            </div>
+            <div className="table-responsive side-container mt-2">
                 <table className="table text-center">
                     <thead>
                         <tr>
                             <th>No.</th>
                             <th>Images</th>
-                            <th>Date</th>
+
                             <th>isTime</th>
                             <th>isTrending</th>
                             <th>isPremium</th>
@@ -228,8 +358,8 @@ export default function BussinessPost({ selectedLanguage }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {bussinessPost.length > 0 ? (
-                            bussinessPost.map((item, id) => (
+                        {currentPosts.length > 0 ? (
+                            currentPosts.map((item, id) => (
                                 <tr key={id}>
                                     <td>{id + 1}</td>
                                     <td>
@@ -240,7 +370,7 @@ export default function BussinessPost({ selectedLanguage }) {
                                             className="category-icon"
                                         />
                                     </td>
-                                    <td>{formatDate(item.dtCreatedAt)}</td>
+
                                     <td>{item.isTime ? 'true' : 'false'}</td>
                                     <td>{item.isTrending ? 'true' : 'false'}</td>
                                     <td>{item.isPremium ? 'true' : 'false'}</td>
@@ -276,6 +406,21 @@ export default function BussinessPost({ selectedLanguage }) {
                     </tbody>
                 </table>
             </div>
+
+            {/* Delete Modal */}
+            <DeleteModal
+                deleteID={deleteID}
+                handleDelete={handleDelete}
+            />
+
+            {/* Pagination */}
+            <Pagination
+                handlePrevious={handlePrevious}
+                handleNext={handleNext}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePaginationClick={handlePaginationClick}
+            ></Pagination>
         </div>
     )
 }

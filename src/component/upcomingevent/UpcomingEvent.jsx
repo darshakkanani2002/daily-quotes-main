@@ -92,7 +92,7 @@ export default function UpcomingEvent() {
             vLanguageId: upcomingData.vLanguageId,
             vName: upcomingData.vName,
             dtDate: formattedDate,
-            // vImages: upcomingData.vImages,
+            vImages: upcomingData.vImages,
         };
 
         if (editId) {
@@ -113,7 +113,7 @@ export default function UpcomingEvent() {
                 });
         } else {
             axios
-                .post(`${Test_Api}upcomingEvent/details`, { vName: upcomingData.vName, dtDate: upcomingData.dtDate, vLanguageId: upcomingData.vLanguageId }, payload)
+                .post(`${Test_Api}upcomingEvent/details`, { vName: upcomingData.vName, dtDate: upcomingData.dtDate, vLanguageId: upcomingData.vLanguageId, vImages: upcomingData.vImages }, payload)
                 .then((response) => {
                     toast.success('Event added successfully!');
                     setUpcomingData({ vName: '', dtDate: '', vLanguageId: upcomingData.vLanguageId, vImages: '' });
@@ -262,6 +262,9 @@ export default function UpcomingEvent() {
                 </form>
             </div>
 
+            <div className='text-center mt-4'>
+                <h3>Total Upcoming Event: {upcoming.length}</h3>
+            </div>
             <div className="table-responsive side-container mt-5">
                 <table className="table text-center">
                     <thead>
