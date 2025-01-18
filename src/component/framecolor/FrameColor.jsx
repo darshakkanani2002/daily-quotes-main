@@ -156,6 +156,10 @@ export default function FrameColor() {
                 </div>
             </div>
 
+            <div className='text-center mt-4'>
+                <h3>Total Frame Color Data: {framecolor.length}</h3>
+            </div>
+
             <div className='side-container mt-5'>
                 <div className='table-responsive'>
                     <table className='table text-center'>

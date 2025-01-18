@@ -326,6 +326,9 @@ export default function Post({ selectedLanguage }) {
                     handleChange={handleChange}
                 />
 
+                <div className='text-center mt-4'>
+                    <h3>Total Post Data: {post.length}</h3>
+                </div>
                 {/* Post List Data ---------------------------------------------------------------------- */}
                 <PostList
                     post={post}

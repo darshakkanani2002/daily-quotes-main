@@ -4,6 +4,7 @@ import { Img_Url, Test_Api } from '../Config';
 import DeleteModal from '../modal/DeleteModal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Pagination from '../pagination/Pagination';
 
 export default function Background() {
     const [background, setBackground] = useState([]);
@@ -13,6 +14,9 @@ export default function Background() {
     const [preview, setPreview] = useState(null);
     const [deleteID, setDeleteId] = useState(null);
     const fileInputRef = useRef(null); // Ref for the file input
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 10;  // Display 12 posts per page
     useEffect(() => {
         fetchData()
     }, [])
@@ -82,6 +86,29 @@ export default function Background() {
                 toast.error("Error deleting reel.");
             });
     };
+
+    // Pagination Logic ---------------------------------------------------------------------
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = background.slice(indexOfFirstPost, indexOfLastPost);
+
+    const totalPages = Math.ceil(background.length / postsPerPage);
+
+    const handlePaginationClick = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
     return (
         <div>
             <ToastContainer
@@ -124,6 +151,9 @@ export default function Background() {
                 </form>
             </div>
 
+            <div className='text-center mt-4'>
+                <h3>Total Background Data: {background.length}</h3>
+            </div>
             {/* Reels Table */}
             <div className="side-container my-5">
                 <div className="table-responsive">
@@ -136,8 +166,8 @@ export default function Background() {
                             </tr>
                         </thead>
                         <tbody>
-                            {background.length > 0 ? (
-                                background.map((item, id) => (
+                            {currentPosts.length > 0 ? (
+                                currentPosts.map((item, id) => (
                                     <tr key={id}>
                                         <td>{id + 1}</td>
                                         <td>
@@ -180,6 +210,15 @@ export default function Background() {
                 deleteID={deleteID}
                 handleDelete={handleDelete}
             />
+
+            {/* Pagination */}
+            <Pagination
+                handlePrevious={handlePrevious}
+                handleNext={handleNext}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePaginationClick={handlePaginationClick}
+            ></Pagination>
         </div>
     )
 }

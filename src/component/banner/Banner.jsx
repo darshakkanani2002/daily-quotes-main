@@ -154,6 +154,10 @@ export default function Banner() {
                 </form>
             </div>
 
+            <div className='text-center mt-4'>
+                <h3>Total Banner Data: {banner.length}</h3>
+            </div>
+
             <div className="side-container my-5">
                 <div className="table-responsive">
                     <table className="table text-center">

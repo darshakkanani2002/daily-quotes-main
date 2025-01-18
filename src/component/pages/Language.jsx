@@ -117,7 +117,9 @@ export default function Language() {
                     </div>
                 </div>
             </div>
-
+            <div className='text-center mt-4'>
+                <h3>Total Language Data: {language.length}</h3>
+            </div>
             <div className="side-container">
                 <div>
                     <table className="table text-center">

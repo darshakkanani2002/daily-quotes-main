@@ -330,7 +330,9 @@ export default function Category() {
                         </div>
                     </form>
                 </div>
-
+                <div className='text-center mt-4'>
+                    <h3>Total Category Data: {category.length}</h3>
+                </div>
                 <div className="side-container my-5">
                     <div className="table-responsive">
                         <table className="table text-center">

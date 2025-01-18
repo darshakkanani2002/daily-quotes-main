@@ -130,7 +130,9 @@ export default function Reels() {
                     </div>
                 </form>
             </div>
-
+            <div className='text-center mt-4'>
+                <h3>Total Reels Data: {reels.length}</h3>
+            </div>
             {/* Reels Table */}
             <div className="side-container my-5">
                 <div className="table-responsive">
