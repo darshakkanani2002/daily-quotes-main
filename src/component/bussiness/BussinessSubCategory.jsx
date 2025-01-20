@@ -5,6 +5,7 @@ import axios from 'axios';
 import DeleteModal from '../modal/DeleteModal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Pagination from '../pagination/Pagination';
 
 export default function BussinessSubCategory() {
     const [bussinessSubCategory, setBussinessSubCategory] = useState([]);
@@ -19,6 +20,9 @@ export default function BussinessSubCategory() {
     const [currentId, setCurrentId] = useState(null);
     const [isUpdating, setIsUpdating] = useState(false);
     const fileInputRef = useRef(null);
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 10;  // Display 12 posts per page
 
     useEffect(() => {
         loadOptions();
@@ -145,6 +149,29 @@ export default function BussinessSubCategory() {
             });
     };
 
+    // Pagination Logic ---------------------------------------------------------------------
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = bussinessSubCategory.slice(indexOfFirstPost, indexOfLastPost);
+
+    const totalPages = Math.ceil(bussinessSubCategory.length / postsPerPage);
+
+    const handlePaginationClick = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
     return (
         <div>
             <ToastContainer position="top-center" autoClose={1000} theme="dark" />
@@ -217,8 +244,8 @@ export default function BussinessSubCategory() {
                             </tr>
                         </thead>
                         <tbody>
-                            {bussinessSubCategory.length > 0 ? (
-                                bussinessSubCategory.map((item, id) => (
+                            {currentPosts.length > 0 ? (
+                                currentPosts.map((item, id) => (
                                     <tr key={id}>
                                         <td>{id + 1}</td>
                                         <td>{item.vName}</td>
@@ -268,7 +295,14 @@ export default function BussinessSubCategory() {
                     </table>
                 </div>
             </div>
-
+            {/* Pagination */}
+            <Pagination
+                handlePrevious={handlePrevious}
+                handleNext={handleNext}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePaginationClick={handlePaginationClick}
+            ></Pagination>
             {/* Delete Modal */}
             <DeleteModal deleteID={deleteId} handleDelete={handleDelete}></DeleteModal>
         </div>

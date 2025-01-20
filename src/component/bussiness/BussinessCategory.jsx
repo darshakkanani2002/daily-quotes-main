@@ -4,6 +4,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast notifications
 import { Test_Api } from '../Config';
 import DeleteModal from '../modal/DeleteModal';
+import Pagination from '../pagination/Pagination';
 
 export default function BussinessCategory() {
     const [bussinesscat, setBussinesscat] = useState([]);
@@ -13,6 +14,9 @@ export default function BussinessCategory() {
     const [isUpdating, setIsUpdating] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const [currentId, setCurrentId] = useState(null);
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 10;  // Display 12 posts per page
     useEffect(() => {
         fetchData();
     }, []);
@@ -83,6 +87,29 @@ export default function BussinessCategory() {
             });
     };
 
+
+    // Pagination Logic ---------------------------------------------------------------------
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = bussinesscat.slice(indexOfFirstPost, indexOfLastPost);
+
+    const totalPages = Math.ceil(bussinesscat.length / postsPerPage);
+
+    const handlePaginationClick = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
     return (
         <div>
             <ToastContainer position="top-center" autoClose={1000} theme="dark" />
@@ -125,8 +152,8 @@ export default function BussinessCategory() {
                             </tr>
                         </thead>
                         <tbody>
-                            {bussinesscat.length > 0 ? (
-                                bussinesscat.map((item, id) => (
+                            {currentPosts.length > 0 ? (
+                                currentPosts.map((item, id) => (
                                     <tr key={id}>
                                         <td>{id + 1}</td>
                                         <td>{item.vName}</td>
@@ -166,7 +193,14 @@ export default function BussinessCategory() {
                     </table>
                 </div>
             </div>
-
+            {/* Pagination */}
+            <Pagination
+                handlePrevious={handlePrevious}
+                handleNext={handleNext}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePaginationClick={handlePaginationClick}
+            ></Pagination>
 
             {/* Update Modal */}
             <div className="modal fade" id="updateModal" tabIndex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">

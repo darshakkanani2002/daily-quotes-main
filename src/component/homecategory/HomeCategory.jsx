@@ -6,6 +6,7 @@ import DeleteModal from '../modal/DeleteModal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Category from '../pages/Category';
+import Pagination from '../pagination/Pagination';
 
 export default function HomeCategory() {
     const [languages, setLanguages] = useState([]);
@@ -26,6 +27,9 @@ export default function HomeCategory() {
     const [imagePreview, setImagePreview] = useState(null);  // To show the preview
     const fileInputRef = useRef(null);
     const [currentId, setCurrentId] = useState(null);
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 10;  // Display 12 posts per page
 
     useEffect(() => {
         loadOptions();
@@ -205,6 +209,29 @@ export default function HomeCategory() {
             });
     };
 
+    // Pagination Logic ---------------------------------------------------------------------
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = homecategory.slice(indexOfFirstPost, indexOfLastPost);
+
+    const totalPages = Math.ceil(homecategory.length / postsPerPage);
+
+    const handlePaginationClick = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
     return (
         <div>
             <ToastContainer autoClose={2000} theme="dark" />
@@ -231,7 +258,7 @@ export default function HomeCategory() {
                         </div>
                         <div className="col-lg-3">
                             <label>
-                                iNumber <span className="text-danger">*</span>
+                                iNumber
                             </label>
                             <input
                                 value={homecategoryData.iNumber}
@@ -243,7 +270,7 @@ export default function HomeCategory() {
                         </div>
                         <div className="col-lg-3">
                             <label>
-                                iAppType <span className="text-danger">*</span>
+                                iAppType
                             </label>
                             <input
                                 value={homecategoryData.iAppType}
@@ -290,8 +317,8 @@ export default function HomeCategory() {
                         </tr>
                     </thead>
                     <tbody>
-                        {homecategory.length > 0 ? (
-                            homecategory.map((item, id) => (
+                        {currentPosts.length > 0 ? (
+                            currentPosts.map((item, id) => (
                                 <tr key={id}>
                                     <td>{id + 1}</td>
                                     <td>{item.vName}</td>
@@ -336,6 +363,14 @@ export default function HomeCategory() {
 
             <DeleteModal deleteID={deleteID} handleDelete={handleDelete} />
 
+            {/* Pagination */}
+            <Pagination
+                handlePrevious={handlePrevious}
+                handleNext={handleNext}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePaginationClick={handlePaginationClick}
+            ></Pagination>
             {/* Update Modal */}
             <div className="modal fade" id="updateModal" tabIndex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
                 <div className="modal-dialog">

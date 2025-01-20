@@ -4,6 +4,7 @@ import { Test_Api } from '../Config';
 import DeleteModal from '../modal/DeleteModal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Pagination from '../pagination/Pagination';
 
 export default function FrameColor() {
     const [framecolor, setFramecolor] = useState([]);
@@ -14,6 +15,9 @@ export default function FrameColor() {
     });
     const [deleteId, setDeleteId] = useState(null);
     const [editId, setEditId] = useState(null);
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 10;  // Display 12 posts per page
 
     useEffect(() => {
         fetchData();
@@ -120,6 +124,30 @@ export default function FrameColor() {
             });
     };
 
+    // Pagination Logic ---------------------------------------------------------------------
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = framecolor.slice(indexOfFirstPost, indexOfLastPost);
+
+    const totalPages = Math.ceil(framecolor.length / postsPerPage);
+
+    const handlePaginationClick = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+
     return (
         <div>
             <div className='side-container'>
@@ -172,8 +200,8 @@ export default function FrameColor() {
                             </tr>
                         </thead>
                         <tbody>
-                            {framecolor.length > 0 ? (
-                                framecolor.map((item, id) => (
+                            {currentPosts.length > 0 ? (
+                                currentPosts.map((item, id) => (
                                     <tr key={id}>
                                         <td>{id + 1}</td>
                                         <td>
@@ -247,6 +275,15 @@ export default function FrameColor() {
             {/* Delete Confirmation Modal */}
             <DeleteModal deleteID={deleteId} handleDelete={handleDelete} />
 
+
+            {/* Pagination */}
+            <Pagination
+                handlePrevious={handlePrevious}
+                handleNext={handleNext}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePaginationClick={handlePaginationClick}
+            ></Pagination>
             {/* Toast Container */}
             <ToastContainer
                 position="top-center"

@@ -131,7 +131,7 @@ export default function BussinessPost({ selectedLanguage }) {
             formData.append('isPremium', bussinessPostData.isPremium);
             formData.append('isTrending', bussinessPostData.isTrending);
 
-            axios.put(`${Test_Api}businessCatPost/details`, { vHomePostId: currentId, vCatId: vCatId, vLanguageId: catId }, formData, {
+            axios.put(`${Test_Api}businessCatPost/details`, { vHomePostId: currentId, vCatId: vCatId, vLanguageId: catId, isTime: bussinessPostData.isTime, isPremium: bussinessPostData.isPremium, isTrending: bussinessPostData.isTrending }, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -147,7 +147,7 @@ export default function BussinessPost({ selectedLanguage }) {
                         isPremium: false,
                         isTime: false,
                     });
-                    fetchData(vCatId);
+                    fetchData(bussinessPostData.vCatId);
                 })
                 .catch(error => {
                     console.error('Error updating data:', error.response ? error.response.data : error.message);
@@ -177,7 +177,7 @@ export default function BussinessPost({ selectedLanguage }) {
                         isPremium: false,
                         isTime: false,
                     });
-                    fetchData(vCatId);
+                    fetchData(bussinessPostData.vCatId );
                 })
                 .catch(error => {
                     console.error('Error saving data:', error.response ? error.response.data : error.message);
@@ -310,17 +310,6 @@ export default function BussinessPost({ selectedLanguage }) {
                                 className='post-checkbox-input-2'
                             />
                         </div>
-                        <div className="col-lg-3">
-                            <label>
-                                Date <span className="text-danger">*</span>
-                            </label>
-                            <input
-                                value={bussinessPostData.dtDate || ''} // Ensure a fallback for null or undefined
-                                type="date"
-                                className="form-control mb-3"
-                                onChange={(e) => setBussinessPostData({ ...bussinessPostData, dtDate: e.target.value })}
-                            />
-                        </div>
                         <div className="col-lg-12">
                             <label>Image</label>
                             <input type="file" className="form-control mb-3" onChange={handleFileChange} ref={fileInputRef} />
@@ -350,7 +339,6 @@ export default function BussinessPost({ selectedLanguage }) {
                         <tr>
                             <th>No.</th>
                             <th>Images</th>
-
                             <th>isTime</th>
                             <th>isTrending</th>
                             <th>isPremium</th>
@@ -376,19 +364,21 @@ export default function BussinessPost({ selectedLanguage }) {
                                     <td>{item.isPremium ? 'true' : 'false'}</td>
 
                                     <td>
+
                                         <button
-                                            className="btn btn-primary me-2"
-                                            onClick={() => handleUpdate(item)}
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            className="btn btn-danger"
+                                            className="btn btn-danger mx-2"
                                             onClick={() => setDeleteId(item._id)}
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModal"
                                         >
-                                            Delete
+                                            <i className="fa-solid fa-trash"></i>
+                                        </button>
+
+                                        <button
+                                            className="btn btn-success mx-2"
+                                            onClick={() => handleUpdate(item)}
+                                        >
+                                            <i className="fa-solid fa-pen-to-square"></i>
                                         </button>
                                     </td>
                                 </tr>
