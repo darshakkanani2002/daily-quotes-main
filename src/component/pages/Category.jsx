@@ -413,7 +413,7 @@ export default function Category() {
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="updateModalLabel">Update Language</h5>
+                                <h5 className="modal-title" id="updateModalLabel">Update Categroy</h5>
                                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div className="modal-body">
@@ -503,7 +503,7 @@ export default function Category() {
                                         )}
                                     </div>
                                     <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">
-                                        Update Language
+                                        Update Category
                                     </button>
                                 </form>
                             </div>

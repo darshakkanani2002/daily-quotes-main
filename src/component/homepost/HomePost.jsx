@@ -347,7 +347,7 @@ export default function HomePost({ selectedLanguage }) {
                         </div>
                         <div className="col-lg-12">
                             <label>Image</label>
-                            <input type="file" className="form-control mb-3" onChange={handleFileChange} ref={fileInputRef} />
+                            <input type="file" className="form-control mb-3" onChange={handleFileChange} ref={fileInputRef} multiple />
                             {preview && (
                                 <img
                                     crossOrigin="anonymous"
@@ -401,18 +401,19 @@ export default function HomePost({ selectedLanguage }) {
 
                                     <td>
                                         <button
-                                            className="btn btn-primary me-2"
-                                            onClick={() => handleUpdate(item)}
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            className="btn btn-danger"
+                                            className="btn btn-danger mx-2"
                                             onClick={() => setDeleteId(item._id)}
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModal"
                                         >
-                                            Delete
+                                            <i className="fa-solid fa-trash"></i>
+                                        </button>
+
+                                        <button
+                                            className="btn btn-success mx-2"
+                                            onClick={() => handleUpdate(item)}
+                                        >
+                                            <i className="fa-solid fa-pen-to-square"></i>
                                         </button>
                                     </td>
                                 </tr>

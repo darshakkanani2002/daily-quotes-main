@@ -304,7 +304,7 @@ export default function FrameColor() {
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title" id="updateModalLabel">Update Language</h5>
+                            <h5 className="modal-title" id="updateModalLabel">Update Frame color</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
@@ -332,7 +332,7 @@ export default function FrameColor() {
                                     </div>
                                 </div>
                                 <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">
-                                    Update Language
+                                    Update Frame color
                                 </button>
                             </form>
                         </div>

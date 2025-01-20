@@ -145,20 +145,27 @@ export default function Post({ selectedLanguage }) {
     };
 
 
-    // handleUpdate function
     const handleUpdate = (post) => {
-        setIsUpdating(true);  // Set the state to updating mode
-        setCurrentId(post._id);  // Store the current post ID
+        setIsUpdating(true); // Set the state to updating mode
+        setCurrentId(post._id); // Store the current post ID
 
         setPostData({
-            _id: post._id,  // Set the _id as the vFrameId
-            vCatId: post.vCatId,  // Ensure category ID is set
+            _id: post._id, // Set the _id as the vFrameId
+            vCatId: post.vCatId, // Ensure category ID is set
             isTime: post.isTime,
             isPremium: post.isPremium,
             isTrending: post.isTrending,
             vLanguageId: post.vLanguageId,
         });
+
+        // Set preview image for the current post
+        if (post.vImages) {
+            setPreview(`${Img_Url}${post.vImages}`); // Construct full URL if needed
+        } else {
+            setPreview(null); // Reset preview if no image
+        }
     };
+
     // Handle form submission to ensure colors are sent correctly
     const handleSubmit = (e, _id = postData._id) => {
         e.preventDefault();

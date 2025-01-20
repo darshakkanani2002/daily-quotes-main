@@ -224,7 +224,7 @@ export default function BussinessCategory() {
                                         />
                                     </div>
                                     <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">
-                                        Update Language
+                                        Update Bussiness Category
                                     </button>
                                 </div>
                             </form>

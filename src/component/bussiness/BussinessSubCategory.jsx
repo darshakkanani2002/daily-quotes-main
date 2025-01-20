@@ -295,6 +295,67 @@ export default function BussinessSubCategory() {
                     </table>
                 </div>
             </div>
+            {/* Update Modal */}
+            <div className="modal fade" id="updateModal" tabIndex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="updateModalLabel">Update Bussiness Sub Category</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <form onSubmit={handleSubmit}>
+                                <div className="row">
+                                    <div className="col-lg-12 mb-3">
+                                        <label>
+                                            Bussiness Category <span className="text-danger">*</span>
+                                        </label>
+                                        <Select
+                                            value={selectedLanguage}
+                                            onChange={handleLanguageSelect}
+                                            options={options}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <label>
+                                            Name <span className="text-danger">*</span>
+                                        </label>
+                                        <input
+                                            value={bussinessSubCategoryData.vName}
+                                            type="text"
+                                            name="name"
+                                            id="name"
+                                            className="form-control mb-3"
+                                            onChange={(e) =>
+                                                setBussinessSubCategoryData({ ...bussinessSubCategoryData, vName: e.target.value })
+                                            }
+                                            required
+                                        />
+                                    </div>
+                                    <div className="col-lg-12">
+                                        <label htmlFor="icon">Icon</label>
+                                        <input
+                                            type="file"
+                                            name="vIcon"
+                                            id="icon"
+                                            className="form-control mb-3"
+                                            onChange={handleFileChange}
+                                            ref={fileInputRef}
+                                        />
+                                        {bussinessSubCategoryData.vIcon && (
+                                            <img crossOrigin="anonymous" src={`${Img_Url}${bussinessSubCategoryData.vIcon}`} alt="Original Preview" style={{ width: '100px', height: 'auto', marginTop: '10px' }} />
+                                        )}
+                                    </div>
+                                    <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">
+                                        Update Bussiness Sub Category
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {/* Pagination */}
             <Pagination
                 handlePrevious={handlePrevious}

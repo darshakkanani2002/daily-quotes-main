@@ -148,8 +148,12 @@ export default function HomeCategory() {
                     toast.error('Failed to update home category.');
                 });
         } else {
+            const formData = new FormData();
+            formData.append('vCatId', currentId);
+            formData.append('iAppType', homecategoryData.iAppType ?? 0); // Default value: 0
+            formData.append('iNumber', homecategoryData.iNumber ?? 2); // Default value: 2
             // payload.vIcon = homecategoryData.vIcon;
-            axios.post(`${Test_Api}homeCategory/details`, { vIcon: homecategoryData.vIcon, vLanguageId: homecategoryData.vLanguageId, vName: homecategoryData.vName, iAppType: homecategoryData.iAppType, iNumber: homecategoryData.iNumber }, payload)
+            axios.post(`${Test_Api}homeCategory/details`, { vIcon: homecategoryData.vIcon, vLanguageId: homecategoryData.vLanguageId, vName: homecategoryData.vName }, payload, formData)
                 .then(response => {
                     const newHomeCategory = response.data.data;
 
@@ -376,7 +380,7 @@ export default function HomeCategory() {
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title" id="updateModalLabel">Update Language</h5>
+                            <h5 className="modal-title" id="updateModalLabel">Update Home Categoery</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
