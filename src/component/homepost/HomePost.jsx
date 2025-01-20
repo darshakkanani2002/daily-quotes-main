@@ -60,7 +60,9 @@ export default function HomePost({ selectedLanguage }) {
         setHomePostData((prevState) => ({
             ...prevState,
             vLanguageId: selectedLanguage ? selectedLanguage.value : '',
+            vCatId: '' // Reset category ID
         }));
+        setSelectedCategory(null); // Reset selected category
         setOptions([]);
     };
 

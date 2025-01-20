@@ -60,7 +60,9 @@ export default function BussinessPost({ selectedLanguage }) {
         setBussinessPostData((prevState) => ({
             ...prevState,
             vLanguageId: selectedLanguage ? selectedLanguage.value : '',
+            vCatId: '' // Reset category ID
         }));
+        setSelectedCategory(null); // Reset selected category
         setOptions([]);
     };
 
@@ -177,7 +179,7 @@ export default function BussinessPost({ selectedLanguage }) {
                         isPremium: false,
                         isTime: false,
                     });
-                    fetchData(bussinessPostData.vCatId );
+                    fetchData(bussinessPostData.vCatId);
                 })
                 .catch(error => {
                     console.error('Error saving data:', error.response ? error.response.data : error.message);

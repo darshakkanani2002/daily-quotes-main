@@ -93,10 +93,12 @@ export default function Post({ selectedLanguage }) {
     const handleLanguageSelect = (selectedLanguage) => {
         setPostData(prevState => ({
             ...prevState,
-            vLanguageId: selectedLanguage ? selectedLanguage.value : ''
+            vLanguageId: selectedLanguage ? selectedLanguage.value : '',
+            vCatId: '' // Reset category ID
         }));
+        setSelectedCategory(null); // Reset selected category
         if (selectedLanguage) {
-            console.log("Selected Options ===>", selectedLanguage);
+            console.log("Selected Language ===>", selectedLanguage);
         }
     };
 
