@@ -223,7 +223,7 @@ export default function BussinessSubCategory() {
 
                         <div className="col-lg-12 text-center">
                             <button type="submit" className="btn btn-success">
-                                {isUpdating ? 'Save Change' : 'Add Data'}
+                                {isUpdating ? 'Update Data' : 'Add Data'}
                             </button>
                         </div>
                     </div>

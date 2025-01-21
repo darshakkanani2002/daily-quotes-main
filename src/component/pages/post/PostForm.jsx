@@ -80,7 +80,7 @@ export default function PostForm({
                             {preview && <img crossOrigin="anonymous" src={preview} alt="Preview" className='img-fluid mt-2 post-select-icon' />}
                         </div>
                         <div className='col-lg-12 mb-2 text-center'>
-                            <button type='submit' className='btn btn-success'>{isUpdating ? ("Update Dtata") : ("Submit Data")}</button>
+                            <button type='submit' className='btn btn-success'>{isUpdating ? ("Update Dtata") : ("Add Data")}</button>
                         </div>
                     </div>
                 </form>

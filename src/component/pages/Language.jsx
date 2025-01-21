@@ -109,7 +109,7 @@ export default function Language() {
                                 </div>
                                 <div>
                                     <button type="submit" className="btn btn-success my-3">
-                                        {isUpdating ? 'Update Language' : 'Add Language'}
+                                        {isUpdating ? 'Update Data' : 'Add Data'}
                                     </button>
                                 </div>
                             </div>

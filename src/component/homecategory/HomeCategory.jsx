@@ -298,7 +298,7 @@ export default function HomeCategory() {
                         </div>
                         <div className="col-lg-12 text-center">
                             <button type="submit" className="btn btn-success">
-                                {editId ? 'Save Changes' : 'Add Event'}
+                                {editId ? 'Update Data' : 'Add Data'}
                             </button>
                         </div>
                     </div>

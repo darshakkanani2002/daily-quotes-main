@@ -88,24 +88,27 @@ export default function UpcomingEvent() {
             ? new Date(upcomingData.dtDate).toISOString().split('T')[0].replace(/-/g, '/')
             : '';
 
-        const payload = {
-            vLanguageId: upcomingData.vLanguageId,
-            vName: upcomingData.vName,
-            dtDate: formattedDate,
-            vImages: upcomingData.vImages,
-        };
+        const formData = new FormData();
+        formData.append('vLanguageId', upcomingData.vLanguageId);
+        formData.append('vName', upcomingData.vName);
+        formData.append('dtDate', formattedDate);
+        if (upcomingData.vImages) {
+            formData.append('vImages', upcomingData.vImages);
+        }
 
         if (editId) {
-            payload.vEventId = editId;
+            formData.append('vEventId', editId);
 
             axios
-                .put(`${Test_Api}upcomingEvent/details`, payload)
+                .put(`${Test_Api}upcomingEvent/details`, { vEventId: editId, vLanguageId: upcomingData.vLanguageId, vName: upcomingData.vName, dtDate: formattedDate }, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                })
                 .then((response) => {
                     toast.success('Event updated successfully!');
                     setUpcomingData({ vName: '', dtDate: '', vLanguageId: '', vImages: '' });
-                    console.log("Upcoming Event Updated data ==>", response.data.data)
                     setEditId(null);
                     fetchData(selectedLanguage?.id);
+                    resetForm();
                 })
                 .catch((error) => {
                     console.error('Error updating data:', error);
@@ -113,12 +116,14 @@ export default function UpcomingEvent() {
                 });
         } else {
             axios
-                .post(`${Test_Api}upcomingEvent/details`, { vName: upcomingData.vName, dtDate: upcomingData.dtDate, vLanguageId: upcomingData.vLanguageId, vImages: upcomingData.vImages }, payload)
+                .post(`${Test_Api}upcomingEvent/details`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                })
                 .then((response) => {
                     toast.success('Event added successfully!');
-                    setUpcomingData({ vName: '', dtDate: '', vLanguageId: upcomingData.vLanguageId, vImages: '' });
-                    console.log("Upcoming event save data ==>", response.data.data)
+                    setUpcomingData({ vName: '', dtDate: '', vLanguageId: '', vImages: '' });
                     fetchData(selectedLanguage?.id);
+                    resetForm();
                 })
                 .catch((error) => {
                     console.error('Error adding data:', error);
@@ -126,6 +131,7 @@ export default function UpcomingEvent() {
                 });
         }
     };
+
 
     const handleUpdate = (item) => {
         const formattedDate = item.dtDate
@@ -140,6 +146,12 @@ export default function UpcomingEvent() {
             dtDate: formattedDate, // Correctly formatted local date
             vImages: item.vImages,
         });
+        // Set preview image for the current post
+        if (item.vImages) {
+            setPreview(`${Img_Url}${item.vImages}`); // Construct full URL if needed
+        } else {
+            setPreview(null); // Reset preview if no image
+        }
 
     };
 
@@ -170,6 +182,19 @@ export default function UpcomingEvent() {
             });
     };
 
+    const resetForm = () => {
+        setUpcomingData({
+            vLanguageId: '',
+            vName: '',
+            dtDate: '',
+            vImages: '',
+        });
+        setPreview(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';  // Reset file input
+        }
+        setEditId(false);  // Reset update mode
+    };
 
     // Pagination Logic ---------------------------------------------------------------------
     const indexOfLastPost = currentPage * postsPerPage;
@@ -255,7 +280,7 @@ export default function UpcomingEvent() {
                         </div>
                         <div className="col-lg-12 text-center">
                             <button type="submit" className="btn btn-success">
-                                {editId ? 'Save Changes' : 'Add Event'}
+                                {editId ? 'Update Data' : 'Add Data'}
                             </button>
                         </div>
                     </div>

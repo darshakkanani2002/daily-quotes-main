@@ -130,7 +130,7 @@ export default function BussinessCategory() {
                                 </div>
                                 <div>
                                     <button type="submit" className="btn btn-success my-3">
-                                        {isUpdating ? 'Update Category' : 'Add Category'}
+                                        {isUpdating ? 'Update Data' : 'Add Data'}
                                     </button>
                                 </div>
                             </div>
