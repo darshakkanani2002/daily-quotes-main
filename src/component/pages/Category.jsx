@@ -418,16 +418,6 @@ export default function Category() {
                             </div>
                             <div className="modal-body">
                                 <form onSubmit={handleSubmit}>
-                                    <div className="col-lg-12 mb-3">
-                                        <label>
-                                            Select Language <span className="text-danger">*</span>
-                                        </label>
-                                        <LanguageSelect
-                                            value={selectedLanguage}
-                                            selectedLanguage={selectedLanguage}
-                                            handleLanguageSelect={handleLanguageSelect}
-                                        />
-                                    </div>
                                     <div className="col-lg-3">
                                         <label>
                                             Name <span className="text-danger">*</span>
