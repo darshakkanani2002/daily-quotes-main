@@ -245,8 +245,6 @@ export default function Post({ selectedLanguage }) {
     };
 
 
-
-
     // Delete Handle ----------------------------------------------
     const handleDelete = () => {
         const catId = postData.vCatId || selectedCategory?.id;

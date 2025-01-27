@@ -116,7 +116,7 @@ export default function HomePost({ selectedLanguage }) {
             formData.append('isPremium', homepostData.isPremium);
             formData.append('isTrending', homepostData.isTrending);
 
-            axios.put(`${Test_Api}homePost/details`, { vHomePostId: currentId, vCatId: vCatId, vLanguageId: catId }, formData, {
+            axios.put(`${Test_Api}homePost/details`, { vHomePostId: currentId, vCatId: vCatId, vLanguageId: catId, isTime: false, isPremium: homepostData.isPremium, isTrending: homepostData.isTrending }, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
