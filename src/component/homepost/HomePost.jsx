@@ -380,6 +380,9 @@ export default function HomePost({ selectedLanguage }) {
                             <th>isTime</th>
                             <th>isTrending</th>
                             <th>isPremium</th>
+                            <th>iLike</th>
+                            <th>iDownload</th>
+                            <th>iShare</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -400,7 +403,9 @@ export default function HomePost({ selectedLanguage }) {
                                     <td>{item.isTime ? 'true' : 'false'}</td>
                                     <td>{item.isTrending ? 'true' : 'false'}</td>
                                     <td>{item.isPremium ? 'true' : 'false'}</td>
-
+                                    <td>{item.iLike}</td>
+                                    <td>{item.iDownload}</td>
+                                    <td>{item.iShare}</td>
                                     <td>
                                         <button
                                             className="btn btn-danger mx-2"
@@ -422,7 +427,7 @@ export default function HomePost({ selectedLanguage }) {
                             ))
                         ) : (
                             <tr className='text-center'>
-                                <td colSpan="7" className='p-2'>
+                                <td colSpan="10" className='p-2'>
                                     <div className='data-not-found-bg'>
                                         <img src="/images/question.png" alt="question" className='img-fluid' />
                                         <span className='table-data-not-found-text mt-1 d-block'>Data Not Found !</span>
