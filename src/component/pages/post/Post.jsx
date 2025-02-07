@@ -265,7 +265,8 @@ export default function Post({ selectedLanguage }) {
     // --------------------------------------------------------------------
     const resetForm = () => {
         setPostData({
-            vLanguageId: '',
+            vLanguageId: postData.vLanguageId,
+            vCatId: postData.vCatId,
             vImages: '',
             vLanguageCode: postData.vLanguageCode
         });

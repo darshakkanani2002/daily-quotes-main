@@ -13,6 +13,7 @@ export default function BussinessSubCategory() {
         vCatId: '',
         vName: '',
         vIcon: '',
+        iNumber: ''
     });
     const [options, setOptions] = useState([]);
     const [selectedLanguage, setSelectedLanguage] = useState(null);
@@ -90,13 +91,15 @@ export default function BussinessSubCategory() {
         e.preventDefault();
         console.log('Form Submitted:', bussinessSubCategoryData);
         if (isUpdating) {
-            axios.put(`${Test_Api}businessSubCat/details`, { vCatId: bussinessSubCategoryData.vCatId, vSubCatId: currentId, vIcon: bussinessSubCategoryData.vIcon, vName: bussinessSubCategoryData.vName })
+            axios.put(`${Test_Api}businessSubCat/details`, { vCatId: bussinessSubCategoryData.vCatId, vSubCatId: currentId, vIcon: bussinessSubCategoryData.vIcon, vName: bussinessSubCategoryData.vName, iNumber: bussinessSubCategoryData.iNumber })
                 .then(response => {
                     console.log("Bussiness Sub Category Data Save ==>", response.data.data);
                     toast.success('Subcategory added successfully!');
                     setBussinessSubCategoryData({
                         vCatId: bussinessSubCategoryData.vCatId,
                         vName: '',
+                        iNumber: '',
+                        vIcon: ''
                     });
                     fetchData(bussinessSubCategoryData.vCatId);
                 })
@@ -106,13 +109,15 @@ export default function BussinessSubCategory() {
                 });
         } else {
 
-            axios.post(`${Test_Api}businessSubCat/details`, { vCatId: bussinessSubCategoryData.vCatId, vName: bussinessSubCategoryData.vName, vIcon: bussinessSubCategoryData.vIcon })
+            axios.post(`${Test_Api}businessSubCat/details`, { vCatId: bussinessSubCategoryData.vCatId, vName: bussinessSubCategoryData.vName, vIcon: bussinessSubCategoryData.vIcon, iNumber: bussinessSubCategoryData.iNumber || 2 })
                 .then(response => {
                     console.log("Bussiness Sub Category Data Save ==>", response.data.data);
                     toast.success('Subcategory added successfully!');
                     setBussinessSubCategoryData({
                         vCatId: bussinessSubCategoryData.vCatId,
                         vName: '',
+                        iNumber: '',
+                        vIcon: ''
                     });
                     fetchData(bussinessSubCategoryData.vCatId);
                 })
@@ -127,7 +132,9 @@ export default function BussinessSubCategory() {
     const handleUpdate = (bussinesssubcat) => {
         setBussinessSubCategoryData({
             vName: bussinesssubcat.vName,
-            vCatId: bussinesssubcat.vCatId
+            vCatId: bussinesssubcat.vCatId,
+            iNumber: bussinesssubcat.iNumber,
+            vIcon: bussinesssubcat.vIcon
         });
 
         setIsUpdating(true);
@@ -206,6 +213,18 @@ export default function BussinessSubCategory() {
                                 required
                             />
                         </div>
+                        <div className="col-lg-3">
+                            <label>
+                                iNumber
+                            </label>
+                            <input
+                                value={bussinessSubCategoryData.iNumber}
+                                type="text"
+                                className="form-control mb-3"
+                                onChange={(e) => setBussinessSubCategoryData({ ...bussinessSubCategoryData, iNumber: e.target.value })}
+
+                            />
+                        </div>
                         <div className="col-lg-12">
                             <label htmlFor="icon">Icon</label>
                             <input
@@ -240,6 +259,7 @@ export default function BussinessSubCategory() {
                                 <th>No.</th>
                                 <th>Name</th>
                                 <th>Icon</th>
+                                <th>iNumber</th>
                                 <th>Delete/Update</th>
                             </tr>
                         </thead>
@@ -256,6 +276,9 @@ export default function BussinessSubCategory() {
                                                 alt=""
                                                 className="category-icon"
                                             />
+                                        </td>
+                                        <td>
+                                            {item.iNumber}
                                         </td>
                                         <td>
                                             <button
@@ -331,6 +354,18 @@ export default function BussinessSubCategory() {
                                                 setBussinessSubCategoryData({ ...bussinessSubCategoryData, vName: e.target.value })
                                             }
                                             required
+                                        />
+                                    </div>
+                                    <div className="col-lg-3">
+                                        <label>
+                                            iNumber
+                                        </label>
+                                        <input
+                                            value={bussinessSubCategoryData.iNumber}
+                                            type="text"
+                                            className="form-control mb-3"
+                                            onChange={(e) => setBussinessSubCategoryData({ ...bussinessSubCategoryData, iNumber: e.target.value })}
+
                                         />
                                     </div>
                                     <div className="col-lg-12">

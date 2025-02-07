@@ -106,7 +106,11 @@ export default function Banner() {
         setBannerData({ vBannerImg: '' });
         setIsUpdateMode(false);
         setUpdateId(null);
+
+        // Reset the file input field
+        document.getElementById("icon").value = "";
     };
+
 
     return (
         <div>
