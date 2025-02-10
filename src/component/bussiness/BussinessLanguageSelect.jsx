@@ -3,7 +3,7 @@ import Select from 'react-select';
 import axios from 'axios';
 import { Test_Api } from '../Config';
 
-export default function BussinessLanguageSelect({ selectedLanguage, handleLanguageSelect }) {
+export default function BussinessLanguageSelect({ selectedLanguage, handleBusinessLanguageSelect }) {
     const [options, setOptions] = useState([]);
 
     useEffect(() => {
@@ -28,7 +28,7 @@ export default function BussinessLanguageSelect({ selectedLanguage, handleLangua
         <div>
             <Select
                 value={selectedLanguage}
-                onChange={handleLanguageSelect}
+                onChange={handleBusinessLanguageSelect}
                 options={options}
                 required
             />

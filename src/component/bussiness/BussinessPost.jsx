@@ -7,6 +7,7 @@ import DeleteModal from '../modal/DeleteModal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import Toastify styles
 import Pagination from '../pagination/Pagination';
+import LanguageSelect from '../language/LanguageSelected';
 
 export default function BussinessPost({ selectedLanguage }) {
     const [bussinessPost, setBussinessPost] = useState([]);
@@ -18,6 +19,7 @@ export default function BussinessPost({ selectedLanguage }) {
         isTrending: false,
         isPremium: false,
         isTime: false,
+        vLanguageId: ''
     });
     const [options, setOptions] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -57,7 +59,20 @@ export default function BussinessPost({ selectedLanguage }) {
         }
     };
 
+    // For language Id select Data ---------------------------------------------------------------------------------------
     const handleLanguageSelect = (selectedLanguage) => {
+        setBussinessPostData(prevState => ({
+            ...prevState,
+            vLanguageId: selectedLanguage ? selectedLanguage.value : '',
+            vCatId: '' // Reset category ID
+        }));
+        setSelectedCategory(null); // Reset selected category
+        if (selectedLanguage) {
+            console.log("Selected Language ===>", selectedLanguage);
+        }
+    };
+
+    const handleBusinessLanguageSelect = (selectedLanguage) => {
         setBussinessPostData((prevState) => ({
             ...prevState,
             vLanguageId: selectedLanguage ? selectedLanguage.value : '',
@@ -282,13 +297,22 @@ export default function BussinessPost({ selectedLanguage }) {
             <div className="side-container category-form p-3 mt-5">
                 <form onSubmit={handleSubmit}>
                     <div className="row">
+                        <div className='col-12 mb-3'>
+                            <label >
+                                Language Id
+                            </label>
+                            <LanguageSelect
+                                value={selectedLanguage} // Ensure this matches the format expected by LanguageSelect
+                                handleLanguageSelect={handleLanguageSelect}
+                            />
+                        </div>
                         <div className="col-12 mb-3">
                             <label>
-                                Language Id
+                                Business Category
                             </label>
                             <BussinessLanguageSelect
                                 value={selectedLanguage}
-                                handleLanguageSelect={handleLanguageSelect}
+                                handleBusinessLanguageSelect={handleBusinessLanguageSelect}
                             />
                         </div>
                         <div className="col-12 mb-3">
@@ -419,14 +443,14 @@ export default function BussinessPost({ selectedLanguage }) {
                                     <td>{item.iShare}</td>
                                     <td>
 
-                                        <button
+                                        {/* <button
                                             className="btn btn-danger mx-2"
                                             onClick={() => setDeleteId(item._id)}
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModal"
                                         >
                                             <i className="fa-solid fa-trash"></i>
-                                        </button>
+                                        </button> */}
 
                                         <button
                                             className="btn btn-success mx-2"
