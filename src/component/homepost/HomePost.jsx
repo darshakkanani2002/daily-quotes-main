@@ -30,6 +30,7 @@ export default function HomePost({ selectedLanguage }) {
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 10;  // Display 12 posts per page
+    const [selectedPosts, setSelectedPosts] = useState([]);
 
     useEffect(() => {
         loadOptions();
@@ -132,6 +133,7 @@ export default function HomePost({ selectedLanguage }) {
                         isPremium: false,
                         isTime: false,
                     });
+                    fileInputRef.current.value = ""; // Clear file input
                     fetchData(vCatId);
                 })
                 .catch(error => {
@@ -163,6 +165,7 @@ export default function HomePost({ selectedLanguage }) {
                         isPremium: false,
                         isTime: false,
                     });
+                    fileInputRef.current.value = ""; // Clear file input
                     fetchData(catId);
                 })
                 .catch(error => {
@@ -228,19 +231,41 @@ export default function HomePost({ selectedLanguage }) {
         }
     };
 
-    const handleDelete = () => {
-        const catId = homepostData.vLanguageId || selectedCategory?.id;
+    // Toggle single selection
+    const handleSelect = (postId) => {
+        setSelectedPosts((prev) =>
+            prev.includes(postId)
+                ? prev.filter((id) => id !== postId)
+                : [...prev, postId]
+        );
+    };
+
+    // Toggle select all
+    const handleSelectAll = () => {
+        if (selectedPosts.length === currentPosts.length) {
+            setSelectedPosts([]);
+        } else {
+            setSelectedPosts(currentPosts.map((item) => item._id));
+        }
+    };
+
+
+    // Delete selected posts
+    const handleDeleteSelected = () => {
+        if (selectedPosts.length === 0) return; // Ensure there are selected posts
+
         axios
             .delete(`${Test_Api}homePost/details`, {
-                data: { arrImageId: [deleteID] },
+                data: { arrImageId: selectedPosts }, // Send all selected post IDs
             })
             .then(response => {
                 console.log('Deleted:', response.data);
-                fetchData(catId);
-                toast.success('Post deleted successfully!');
+                fetchData(homepostData.vLanguageId || selectedCategory?.id);
+                toast.success('Selected posts deleted successfully!');
+                setSelectedPosts([]); // Clear selection after deletion
             })
             .catch(error => {
-                console.error('Error deleting post:', error.response ? error.response.data : error.message);
+                console.error('Error deleting posts:', error.response ? error.response.data : error.message);
             });
     };
 
@@ -371,9 +396,27 @@ export default function HomePost({ selectedLanguage }) {
                 <h3>Total Home Post: {homepost.length}</h3>
             </div>
             <div className="table-responsive side-container mt-5">
+                <div className="d-flex justify-content-end mb-2">
+                    <button
+                        className="btn btn-danger"
+                        onClick={() => setDeleteId([homepostData._id])}
+                        disabled={selectedPosts.length === 0}
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                    >
+                        <i className="fa-solid fa-trash"></i>
+                    </button>
+                </div>
                 <table className="table text-center">
                     <thead>
                         <tr>
+                            <th>
+                                <input
+                                    type="checkbox"
+                                    onChange={handleSelectAll}
+                                    checked={selectedPosts.length === currentPosts.length && currentPosts.length > 0}
+                                />
+                            </th>
                             <th>No.</th>
                             <th>Images</th>
                             <th>Date</th>
@@ -390,6 +433,13 @@ export default function HomePost({ selectedLanguage }) {
                         {currentPosts.length > 0 ? (
                             currentPosts.map((item, id) => (
                                 <tr key={id}>
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedPosts.includes(item._id)}
+                                            onChange={() => handleSelect(item._id)}
+                                        />
+                                    </td>
                                     <td>{id + 1}</td>
                                     <td>
                                         <img
@@ -400,21 +450,21 @@ export default function HomePost({ selectedLanguage }) {
                                         />
                                     </td>
                                     <td>{formatDate(item.dtCreatedAt)}</td>
-                                    <td>{item.isTime ? 'true' : 'false'}</td>
-                                    <td>{item.isTrending ? 'true' : 'false'}</td>
-                                    <td>{item.isPremium ? 'true' : 'false'}</td>
+                                    <td>{item.isTime ? "true" : "false"}</td>
+                                    <td>{item.isTrending ? "true" : "false"}</td>
+                                    <td>{item.isPremium ? "true" : "false"}</td>
                                     <td>{item.iLike}</td>
                                     <td>{item.iDownload}</td>
                                     <td>{item.iShare}</td>
                                     <td>
-                                        <button
+                                        {/* <button
                                             className="btn btn-danger mx-2"
-                                            onClick={() => setDeleteId(item._id)}
+                                            onClick={() => setDeleteId([item._id])}
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModal"
                                         >
                                             <i className="fa-solid fa-trash"></i>
-                                        </button>
+                                        </button> */}
 
                                         <button
                                             className="btn btn-success mx-2"
@@ -426,11 +476,13 @@ export default function HomePost({ selectedLanguage }) {
                                 </tr>
                             ))
                         ) : (
-                            <tr className='text-center'>
-                                <td colSpan="10" className='p-2'>
-                                    <div className='data-not-found-bg'>
-                                        <img src="/images/question.png" alt="question" className='img-fluid' />
-                                        <span className='table-data-not-found-text mt-1 d-block'>Data Not Found !</span>
+                            <tr className="text-center">
+                                <td colSpan="11" className="p-2">
+                                    <div className="data-not-found-bg">
+                                        <img src="/images/question.png" alt="question" className="img-fluid" />
+                                        <span className="table-data-not-found-text mt-1 d-block">
+                                            Data Not Found !
+                                        </span>
                                     </div>
                                 </td>
                             </tr>
@@ -442,7 +494,7 @@ export default function HomePost({ selectedLanguage }) {
             {/* Delete Modal */}
             <DeleteModal
                 deleteID={deleteID}
-                handleDelete={handleDelete}
+                handleDelete={handleDeleteSelected}
             />
 
             {/* Pagination */}
