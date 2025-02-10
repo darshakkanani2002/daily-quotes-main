@@ -16,8 +16,8 @@ export default function HomeCategory() {
         _id: '',
         vLanguageId: '',
         vName: '',
-        iNumber: '',
-        iAppType: '',
+        iNumber: '2',
+        iAppType: '0',
         vIcon: '',  // Store the image path here
 
     });

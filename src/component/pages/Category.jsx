@@ -13,10 +13,10 @@ export default function Category() {
     const [category, setCategory] = useState([]);
     const [categoryData, setCategoryData] = useState({
         vName: '',
-        iNumber: '',
+        iNumber: '2',
         vIcon: '',
         vLanguageId: '',
-        iAppType: '',
+        iAppType: '0',
     });
 
     const [options, setOptions] = useState([]);

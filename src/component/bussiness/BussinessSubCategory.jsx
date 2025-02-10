@@ -13,7 +13,7 @@ export default function BussinessSubCategory() {
         vCatId: '',
         vName: '',
         vIcon: '',
-        iNumber: ''
+        iNumber: '2'
     });
     const [options, setOptions] = useState([]);
     const [selectedLanguage, setSelectedLanguage] = useState(null);

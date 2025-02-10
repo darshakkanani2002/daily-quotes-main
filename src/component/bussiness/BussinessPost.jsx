@@ -30,6 +30,7 @@ export default function BussinessPost({ selectedLanguage }) {
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 10;  // Display 12 posts per page
+    const [selectedPosts, setSelectedPosts] = useState([]);
 
     useEffect(() => {
         loadOptions();
@@ -204,21 +205,42 @@ export default function BussinessPost({ selectedLanguage }) {
         }
     };
 
+    // Toggle single selection
+    const handleSelect = (postId) => {
+        setSelectedPosts((prev) =>
+            prev.includes(postId)
+                ? prev.filter((id) => id !== postId)
+                : [...prev, postId]
+        );
+    };
+
+    // Toggle select all
+    const handleSelectAll = () => {
+        if (selectedPosts.length === currentPosts.length) {
+            setSelectedPosts([]);
+        } else {
+            setSelectedPosts(currentPosts.map((item) => item._id));
+        }
+    };
     const handleDelete = () => {
         const catId = bussinessPostData.vLanguageId || selectedCategory?.id;
+        if (selectedPosts.length === 0) return; // Ensure there are selected posts
+
         axios
             .delete(`${Test_Api}businessCatPost/details`, {
-                data: { arrImageId: [deleteID] },
+                data: { arrImageId: selectedPosts }, // Send all selected post IDs
             })
             .then(response => {
                 console.log('Deleted:', response.data);
                 fetchData(catId);
-                toast.success('Post deleted successfully!');
+                toast.success('Selected posts deleted successfully!');
+                setSelectedPosts([]); // Clear selection after deletion
             })
             .catch(error => {
-                console.error('Error deleting post:', error.response ? error.response.data : error.message);
+                console.error('Error deleting posts:', error.response ? error.response.data : error.message);
             });
     };
+
 
     // Pagination Logic ---------------------------------------------------------------------
     const indexOfLastPost = currentPage * postsPerPage;
@@ -336,9 +358,27 @@ export default function BussinessPost({ selectedLanguage }) {
                 <h3>Total Business Posts: {bussinessPost.length}</h3>
             </div>
             <div className="table-responsive side-container mt-2">
+                <div className="d-flex justify-content-end mb-2">
+                    <button
+                        className="btn btn-danger"
+                        onClick={() => setDeleteId([homepostData._id])}
+                        disabled={selectedPosts.length === 0}
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                    >
+                        <i className="fa-solid fa-trash"></i>
+                    </button>
+                </div>
                 <table className="table text-center">
                     <thead>
                         <tr>
+                            <th>
+                                <input
+                                    type="checkbox"
+                                    onChange={handleSelectAll}
+                                    checked={selectedPosts.length === currentPosts.length && currentPosts.length > 0}
+                                />
+                            </th>
                             <th>No.</th>
                             <th>Images</th>
                             <th>isTime</th>
@@ -354,6 +394,13 @@ export default function BussinessPost({ selectedLanguage }) {
                         {currentPosts.length > 0 ? (
                             currentPosts.map((item, id) => (
                                 <tr key={id}>
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedPosts.includes(item._id)}
+                                            onChange={() => handleSelect(item._id)}
+                                        />
+                                    </td>
                                     <td>{id + 1}</td>
                                     <td>
                                         <img
