@@ -134,7 +134,7 @@ export default function HomePost({ selectedLanguage }) {
                         isTime: false,
                     });
                     fileInputRef.current.value = ""; // Clear file input
-                    fetchData(vCatId);
+                    fetchData(catId);
                 })
                 .catch(error => {
                     console.error('Error updating data:', error.response ? error.response.data : error.message);
@@ -176,8 +176,8 @@ export default function HomePost({ selectedLanguage }) {
 
     const resetForm = () => {
         setHomePostData({
-            vCatId: '',
-            vLanguageId: '',
+            vCatId: homepostData.vCatId,
+            vLanguageId: homepostData.vLanguageId,
             vImages: '',
             dtCreatedAt: '',
             isTrending: false,
