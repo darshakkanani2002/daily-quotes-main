@@ -317,7 +317,7 @@ export default function BussinessPost({ selectedLanguage }) {
                         </div>
                         <div className="col-12 mb-3">
                             <label>
-                                Category Name
+                                Business Sub Category Name
                             </label>
                             <Select
                                 id="category"
