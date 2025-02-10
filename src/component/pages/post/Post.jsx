@@ -33,6 +33,7 @@ export default function Post({ selectedLanguage }) {
     // Pagination State
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 10;  // Display 12 posts per page
+    const [selectedPosts, setSelectedPosts] = useState([]);
 
     useEffect(() => {
         if (postData.vLanguageId) {
@@ -245,22 +246,45 @@ export default function Post({ selectedLanguage }) {
     };
 
 
+    // Toggle single selection
+    const handleSelect = (postId) => {
+        setSelectedPosts((prev) =>
+            prev.includes(postId)
+                ? prev.filter((id) => id !== postId)
+                : [...prev, postId]
+        );
+    };
+
+    // Toggle select all
+    const handleSelectAll = () => {
+        if (selectedPosts.length === currentPosts.length) {
+            setSelectedPosts([]);
+        } else {
+            setSelectedPosts(currentPosts.map((item) => item._id));
+        }
+    };
+
     // Delete Handle ----------------------------------------------
     const handleDelete = () => {
         const catId = postData.vCatId || selectedCategory?.id;
-        // Ensure deleteID is an array
-        const imageIdArray = Array.isArray(deleteID) ? deleteID : [deleteID];
+        if (selectedPosts.length === 0) return; // Ensure there are selected posts
 
-        axios.delete(`${Test_Api}post/details`, {
-            data: { arrImageId: imageIdArray }
-        }).then(response => {
-            console.log("Deleted Post Data Response:", response.data);
-            fetchData(catId); // Re-fetch data
-            toast.success('Post deleted successfully!');
-        }).catch(error => {
-            console.log("Delete Error:", error);
-        });
+        axios
+            .delete(`${Test_Api}post/details`, {
+                data: { arrImageId: selectedPosts }, // Send all selected post IDs
+            })
+            .then(response => {
+                console.log('Deleted:', response.data);
+                fetchData(catId);
+                toast.success('Selected posts deleted successfully!');
+                setSelectedPosts([]); // Clear selection after deletion
+            })
+            .catch(error => {
+                console.error('Error deleting posts:', error.response ? error.response.data : error.message);
+            });
     };
+
+
 
     // --------------------------------------------------------------------
     const resetForm = () => {
@@ -343,6 +367,9 @@ export default function Post({ selectedLanguage }) {
                     currentPosts={currentPosts}
                     setDeleteId={setDeleteId}
                     handleUpdate={handleUpdate}
+                    handleSelect={handleSelect}
+                    handleSelectAll={handleSelectAll}
+                    selectedPosts={selectedPosts}
                 ></PostList>
                 {/* Delete Modal */}
                 <DeleteModal deleteID={deleteID} handleDelete={handleDelete}></DeleteModal>
