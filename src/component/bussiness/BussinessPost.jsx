@@ -167,7 +167,6 @@ export default function BussinessPost({ selectedLanguage }) {
                     });
                     resetForm();
                     fetchData(bussinessPostData.vCatId);
-
                 })
                 .catch(error => {
                     console.error('Error updating data:', error.response ? error.response.data : error.message);
