@@ -165,7 +165,9 @@ export default function BussinessPost({ selectedLanguage }) {
                         isPremium: false,
                         isTime: false,
                     });
+                    resetForm();
                     fetchData(bussinessPostData.vCatId);
+
                 })
                 .catch(error => {
                     console.error('Error updating data:', error.response ? error.response.data : error.message);
@@ -195,6 +197,7 @@ export default function BussinessPost({ selectedLanguage }) {
                         isPremium: false,
                         isTime: false,
                     });
+                    resetForm();
                     fetchData(bussinessPostData.vCatId);
                 })
                 .catch(error => {
@@ -256,7 +259,13 @@ export default function BussinessPost({ selectedLanguage }) {
             });
     };
 
-
+    const resetForm = () => {
+        setPreview(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';  // Reset file input
+        }
+        setIsUpdating(false);  // Reset update mode
+    };
     // Pagination Logic ---------------------------------------------------------------------
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
